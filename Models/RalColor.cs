@@ -36,13 +36,13 @@ public sealed class RalColor
 
         }
     }
+
     public IReadOnlyList<string> Tags { get; }
     public string Hex { get; }
     public decimal Brightness { get; }
     public string Number { get; }
     public string Name { get; }
     public string NameDe { get; }
-
     public static RalColor Empty { get; } = new RalColor(
         RalCategory.Classic,
         Array.Empty<string>(),

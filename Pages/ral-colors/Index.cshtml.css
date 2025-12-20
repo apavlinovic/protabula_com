@@ -5,24 +5,25 @@
     gap: var(--padding-sm);
 }
 
-.color {
-    height: 200px;
-    width: 19%;
+::deep .color {
     padding: var(--padding-lg);
+    width: 19%;
     box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    border-radius: var(--border-radius);
+
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     gap: var(--padding-sm);
     text-align: center;
-    transition: all 0.2s ease-in-out;
+    text-decoration: none;
 
     color: #fff;
-    border-radius: var(--border-radius);
 }
 
-.dark {
+::deep .dark {
     color: #000;
     text-shadow: none;
 }
@@ -42,13 +43,13 @@
     font-size: small;
 }
 
-.color:hover {
+::deep .color:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 900px) {
-    .color {
+    ::deep .color {
         width: 32%;
         height: auto;
         padding: var(--padding-lg) 0;

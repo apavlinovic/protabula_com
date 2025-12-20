@@ -1,8 +1,30 @@
 @page "/ral-colors/{colorIdentifier}"
+@using Microsoft.AspNetCore.Mvc.Localization
 @model RalColorDetailsModel
+@inject IViewLocalizer Localizer
 
-<h2>Color Number @Model.ColorIdentifier</h2>
+<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;">
+    <h2>
+        RAL @Model.Color.Number
+    </h2>
 
-<h2>
-    Details for RAL Color @(Model.Color?.Number ?? "Not Found")
-</h2>
+    @if (!string.IsNullOrEmpty(Model.Color.Name))
+    {
+        <span>@Model.Color.Name</span>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.Color.NameDe))
+    {
+        <span>@Model.Color.NameDe</span>
+    }
+
+    <div class="hex">
+        @Model.Color.Hex
+    </div>
+</div>
+
+<div>
+    <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]">
+        &larr; @Localizer["BackToColors"]
+    </a>
+</div>

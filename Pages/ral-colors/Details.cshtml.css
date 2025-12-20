@@ -1,0 +1,17 @@
+.color {
+    padding: var(--padding-lg);
+    border-radius: var(--border-radius);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-sm);
+
+    color: #fff;
+    height: 400px;
+    font-size: 21px;
+}
+
+.color.dark {
+    color: #000;
+    text-shadow: none;
+}
