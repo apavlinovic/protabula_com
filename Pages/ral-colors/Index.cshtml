@@ -24,7 +24,9 @@
         <div class="color-grid">
             @foreach (var color in group)
             {
-                <a asp-page="/ral-colors/Details" asp-route-colorIdentifier="@color.Number"
+                <a asp-page="/ral-colors/Details"
+                    asp-route-culture="@RouteData.Values["culture"]"
+                    asp-route-colorIdentifier="@color.Number"
                     class="color @(color.NeedsDarkText ? "dark" : "")" style="background-color: @color.Hex;">
 
                     <span class="hex">RAL</span>

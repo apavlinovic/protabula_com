@@ -14,19 +14,16 @@ public class RalColorDetailsModel : PageModel
     public string? ColorIdentifier { get; set; }
     public RalColor? Color { get; set; }
 
-    public void OnGet(string colorIdentifier)
-    {
-        ColorIdentifier = colorIdentifier;
-    }
-
     public async Task OnGetAsync(string colorIdentifier)
     {
         if (string.IsNullOrWhiteSpace(colorIdentifier))
         {
             Color = RalColor.Empty;
+            ColorIdentifier = colorIdentifier;
             return;
         }
 
+        ColorIdentifier = colorIdentifier;
         Color = await _loader.LoadSingleAsync(colorIdentifier);
     }
 }
