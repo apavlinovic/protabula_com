@@ -32,7 +32,8 @@ public sealed class RalColor
     {
         get
         {
-            return Tags.Contains("dark");
+            return Tags.Any(tag => tag.Equals("dark", StringComparison.OrdinalIgnoreCase));
+
         }
     }
     public IReadOnlyList<string> Tags { get; }
@@ -41,4 +42,13 @@ public sealed class RalColor
     public string Number { get; }
     public string Name { get; }
     public string NameDe { get; }
+
+    public static RalColor Empty { get; } = new RalColor(
+        RalCategory.Classic,
+        Array.Empty<string>(),
+        "#000000",
+        0m,
+        string.Empty,
+        string.Empty,
+        string.Empty);
 }

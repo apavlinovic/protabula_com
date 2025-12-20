@@ -16,7 +16,6 @@ builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 builder.Services.AddRazorPages(options =>
 {
     const string cultureRouteConstraint = "{culture:regex(^en$|^de$)}";
-
     options.Conventions.AddFolderRouteModelConvention("/", model =>
     {
         foreach (var selector in model.Selectors)

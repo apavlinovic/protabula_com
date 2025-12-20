@@ -9,6 +9,7 @@ public interface IRalColorLoader
 {
     Task<IReadOnlyList<RalColor>> LoadAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<RalColor>> LoadByCategoryAsync(RalCategory category, CancellationToken cancellationToken = default);
+    Task<RalColor?> LoadSingleAsync(string colorNumber, CancellationToken cancellationToken = default);
 }
 
 public sealed class RalColorLoader : IRalColorLoader
@@ -108,25 +109,6 @@ public sealed class RalColorLoader : IRalColorLoader
         return 0m;
     }
 
-    private ColorCategory ParseColorCategory(string? hex)
-    {
-        if (string.IsNullOrWhiteSpace(hex))
-        {
-            return ColorCategory.Unknown;
-        }
-
-        try
-        {
-            var result = ColorClassifier.Classify(hex);
-            return result.Category;
-        }
-        catch (ArgumentException exception)
-        {
-            _logger.LogWarning(exception, "Unable to parse hex color {Hex}", hex);
-            return ColorCategory.Unknown;
-        }
-    }
-
     private RalCategory ParseCategory(string? value, string? number)
     {
         return value switch
@@ -154,6 +136,12 @@ public sealed class RalColorLoader : IRalColorLoader
         return tags
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .ToArray();
+    }
+
+    public Task<RalColor?> LoadSingleAsync(string colorNumber, CancellationToken cancellationToken = default)
+    {
+        return LoadAsync(cancellationToken)
+            .ContinueWith(t => t.Result.FirstOrDefault(c => c.Number.Equals(colorNumber, StringComparison.OrdinalIgnoreCase)), cancellationToken);
     }
 
     private sealed record RalColorRecord(

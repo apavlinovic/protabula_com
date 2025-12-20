@@ -1,0 +1,8 @@
+@page "/ral-colors/{colorIdentifier}"
+@model RalColorDetailsModel
+
+<h2>Color Number @Model.ColorIdentifier</h2>
+
+<h2>
+    Details for RAL Color @(Model.Color?.Number ?? "Not Found")
+</h2>

@@ -1,24 +1,7 @@
-using protabula_com.Models;
-
 namespace protabula_com.Services;
-
-// ColorClassifier.cs
-//
-// Drop-in color classification helper.
-// Requires NuGet package: Colourful
-//
-// Usage:
-//   var result = ColorClassifier.Classify("#FF5733");
-//   Console.WriteLine(result.Category);      // e.g. ColorCategory.Orange
-//   Console.WriteLine(result.CategoryName);  // "Orange"
-//   Console.WriteLine(result.Distance);      // DeltaE to category anchor
-//
-//   var categoryOnly = ColorClassifier.ClassifyCategory("#00AEEF");
-//   // -> ColorCategory.Cyan
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Colourful;
 
@@ -122,7 +105,7 @@ public static class ColorClassifier
 
         foreach (var (category, name, hex) in rawAnchors)
         {
-            var (r, g, b) = HexToRgbInternal(hex);
+            var (r, g, b) = ColorWrangler.HexToRgb(hex);
             var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
             var lab = ToLab(rgb);
 
@@ -148,8 +131,8 @@ public static class ColorClassifier
     {
         if (hex == null) throw new ArgumentNullException(nameof(hex));
 
-        string normalizedHex = NormalizeHex(hex);
-        var (r, g, b) = HexToRgbInternal(normalizedHex);
+        string normalizedHex = ColorWrangler.NormalizeHex(hex);
+        var (r, g, b) = ColorWrangler.HexToRgb(normalizedHex);
 
         var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
         var lab = ToLab(rgb);
@@ -174,63 +157,6 @@ public static class ColorClassifier
             G = g,
             B = b
         };
-    }
-
-    /// <summary>
-    /// Parse a hex color into RGB bytes (0–255).
-    /// Accepts "#RRGGBB" or "RRGGBB" and throws on invalid input.
-    /// </summary>
-    public static (byte r, byte g, byte b) HexToRgb(string hex)
-    {
-        var normalizedHex = NormalizeHex(hex);
-        return HexToRgbInternal(normalizedHex);
-    }
-
-    // ---------- Internal helpers ----------
-
-    private static string NormalizeHex(string hex)
-    {
-        hex = hex.Trim();
-
-        if (hex.StartsWith("#"))
-            hex = hex[1..];
-
-        // Support 3-digit shorthand (#RGB) by expanding to #RRGGBB
-        if (hex.Length == 3)
-        {
-            hex = new string(new[]
-            {
-                    hex[0], hex[0],
-                    hex[1], hex[1],
-                    hex[2], hex[2]
-                });
-        }
-
-        if (hex.Length != 6)
-            throw new ArgumentException("Hex string must be 3 or 6 hex characters (e.g. #ABC or #AABBCC).", nameof(hex));
-
-        // Validate that all chars are valid hex digits
-        for (int i = 0; i < hex.Length; i++)
-        {
-            if (!Uri.IsHexDigit(hex[i]))
-                throw new ArgumentException("Hex string contains invalid characters.", nameof(hex));
-        }
-
-        return "#" + hex.ToUpperInvariant();
-    }
-
-    private static (byte r, byte g, byte b) HexToRgbInternal(string normalizedHex)
-    {
-        // normalizedHex is assumed "#RRGGBB"
-        string hex = normalizedHex.StartsWith("#")
-            ? normalizedHex[1..]
-            : normalizedHex;
-
-        byte r = byte.Parse(hex.Substring(0, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-        byte g = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-        byte b = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-
-        return (r, g, b);
     }
 
     private static LabColor ToLab(RGBColor inputRgb)
