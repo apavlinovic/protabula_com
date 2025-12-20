@@ -1,0 +1,53 @@
+@page "/ral-colors"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@inject IViewLocalizer Localizer
+@model RalColorsModel
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>@Localizer["Intro"]</p>
+
+@{
+    var groups = Model.Colors
+    .OrderBy(color => color.Category)
+    .GroupBy(color => color.Category)
+    .ToList();
+}
+@for (var index = 0; index < groups.Count; index++)
+{
+    var group = groups[index];
+    <section>
+        <h2>@Localizer[$"Category{group.Key}"]</h2>
+        <div class="color-grid">
+            @foreach (var color in group)
+            {
+                <div class="color" style="background-color: @color.Hex;">
+                    <h3>RAL @color.Number</h3>
+                    <span>@color.Hex</span>
+
+                    @if (!string.IsNullOrEmpty(color.Name))
+                    {
+                        <span>@color.Name</span>
+                    }
+
+                    @if (!string.IsNullOrEmpty(color.NameDe))
+                    {
+                        <span>@color.NameDe</span>
+                    }
+
+                    @if (color.ColorCategory != "Unknown")
+                    {
+                        <span style="background-color: @color.ColorCategory;">@color.ColorCategory</span>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+    @if (index < groups.Count - 1)
+    {
+        <hr />
+    }
+}

@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Localization;
 using protabula_com.Localization;
+using protabula_com.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddLocalization(options => options.ResourcesPath = "ResourcesJson");
 builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 
 builder.Services.AddRazorPages(options =>
 {
