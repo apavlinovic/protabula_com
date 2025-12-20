@@ -1,7 +1,34 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.Extensions.Localization;
+using protabula_com.Localization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddLocalization(options => options.ResourcesPath = "ResourcesJson");
+builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+
+builder.Services.AddRazorPages(options =>
+{
+    const string cultureRouteConstraint = "{culture:regex(^en$|^de$)}";
+
+    options.Conventions.AddFolderRouteModelConvention("/", model =>
+    {
+        foreach (var selector in model.Selectors)
+        {
+            var template = selector.AttributeRouteModel?.Template ?? string.Empty;
+            selector.AttributeRouteModel ??= new AttributeRouteModel();
+            selector.AttributeRouteModel.Template = string.IsNullOrEmpty(template)
+                ? cultureRouteConstraint
+                : $"{cultureRouteConstraint}/{template}";
+        }
+    });
+})
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
 var app = builder.Build();
 
@@ -15,7 +42,35 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var supportedCultures = new[] { "en", "de" }
+    .Select(c => new CultureInfo(c))
+    .ToList();
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures,
+    RequestCultureProviders = new[]
+    {
+        new RouteDataRequestCultureProvider { RouteDataStringKey = "culture", UIRouteDataStringKey = "culture" }
+    }
+};
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/en");
+        return;
+    }
+
+    await next();
+});
+
 app.UseRouting();
+
+app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthorization();
 

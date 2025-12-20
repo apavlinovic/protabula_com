@@ -1,5 +1,31 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var requestPath = Context.Request.Path.Value ?? "/";
+    var queryString = Context.Request.QueryString.Value ?? string.Empty;
+    var segments = requestPath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+    var hasCultureSegment = segments.Length > 0 && (segments[0] == "en" || segments[0] == "de");
+
+    string BuildCulturePath(string culture)
+    {
+        if (segments.Length == 0)
+        {
+            return "/" + culture + queryString;
+        }
+
+        if (hasCultureSegment)
+        {
+            segments[0] = culture;
+            return "/" + string.Join('/', segments) + queryString;
+        }
+
+        return "/" + culture + "/" + string.Join('/', segments) + queryString;
+    }
+}
+<!DOCTYPE html>
+<html lang="@currentCulture">
 
 <head>
     <meta charset="utf-8" />
@@ -11,11 +37,16 @@
     <header>
         <nav>
             <div>
-                <a asp-area="" asp-page="/Index">protabula_com</a>
+                <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
             </div>
             <div>
-                <a asp-area="" asp-page="/Index">Home</a>
-                <a asp-area="" asp-page="/Privacy">Privacy</a>
+                <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["Home"]</a>
+                <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+            </div>
+            <div>
+                <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
+                <span>|</span>
+                <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
             </div>
         </nav>
     </header>
@@ -27,7 +58,8 @@
 
     <footer>
         <div>
-            &copy; 2025 - protabula_com - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - @Localizer["SiteName"] - <a asp-area="" asp-page="/Privacy"
+                asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
         </div>
     </footer>
 
