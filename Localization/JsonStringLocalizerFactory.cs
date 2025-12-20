@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace protabula_com.Localization;
 
@@ -7,11 +8,16 @@ public sealed class JsonStringLocalizerFactory : IStringLocalizerFactory
 {
     private readonly string _resourcesPath;
     private readonly string _contentRootPath;
+    private readonly ILoggerFactory _loggerFactory;
 
-    public JsonStringLocalizerFactory(IOptions<LocalizationOptions> localizationOptions, IWebHostEnvironment environment)
+    public JsonStringLocalizerFactory(
+        IOptions<LocalizationOptions> localizationOptions,
+        IWebHostEnvironment environment,
+        ILoggerFactory loggerFactory)
     {
         _resourcesPath = localizationOptions.Value.ResourcesPath ?? string.Empty;
         _contentRootPath = environment.ContentRootPath;
+        _loggerFactory = loggerFactory;
     }
 
     public IStringLocalizer Create(Type resourceSource)
@@ -23,11 +29,14 @@ public sealed class JsonStringLocalizerFactory : IStringLocalizerFactory
 
     public IStringLocalizer Create(string baseName, string location)
     {
+        // Trim the assembly prefix so baseName matches folder layout under ResourcesJson/.
         if (!string.IsNullOrWhiteSpace(location) && baseName.StartsWith(location + ".", StringComparison.Ordinal))
         {
             baseName = baseName[(location.Length + 1)..];
         }
 
-        return new JsonStringLocalizer(_contentRootPath, _resourcesPath, baseName);
+        // Each view gets a localizer rooted at its baseName path.
+        var logger = _loggerFactory.CreateLogger<JsonStringLocalizer>();
+        return new JsonStringLocalizer(_contentRootPath, _resourcesPath, baseName, logger);
     }
 }
