@@ -1,27 +1,56 @@
 /* Page-specific styles for the RAL colors list. */
 .color-grid {
-    --color-box-size: 200px;
-    --gap-size: 10px;
-
-    display: grid;
-    grid-template-columns: repeat(
-        auto-fill,
-        minmax(var(--color-box-size), 1fr)
-    );
-    gap: var(--gap-size);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-sm);
 }
 
 .color {
-    height: var(--color-box-size);
-    width: var(--color-box-size);
+    height: 200px;
+    width: 19%;
+    padding: var(--padding-lg);
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: var(--gap-size);
+    gap: var(--padding-sm);
+    text-align: center;
+    transition: all 0.2s ease-in-out;
 
     color: #fff;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    border-radius: var(--border-radius);
+}
+
+.dark {
+    color: #000;
+    text-shadow: none;
+}
+
+.hex {
+    text-transform: uppercase;
+}
+
+.number {
+    font-size: 1.45rem;
+    margin: 0 var(--gap-size);
+    border-bottom: 1px solid currentColor;
+    margin-bottom: var(--padding-md);
+}
+
+.name {
+    font-size: small;
+}
+
+.color:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 900px) {
+    .color {
+        width: 32%;
+        height: auto;
+        padding: var(--padding-lg) 0;
+    }
 }

@@ -64,13 +64,11 @@ public sealed class RalColorLoader : IRalColorLoader
                 }
 
                 var category = ParseCategory(record.Category, record.Number);
-                var colorCategory = ParseColorCategory(record.Hex);
                 var brightness = ParseBrightness(record.Brightness, record.Number);
                 var tags = ParseTags(record.Tags);
 
                 colors.Add(new RalColor(
                     category,
-                    colorCategory.ToString(),
                     tags,
                     record.Hex ?? string.Empty,
                     brightness,

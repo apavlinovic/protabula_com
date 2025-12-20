@@ -1,31 +1,24 @@
-html {
-  font-size: 14px;
+:root {
+    --padding-sm: 5px;
+    --padding-md: 10px;
+    --padding-lg: 15px;
+    --padding-xl: 20px;
+
+    --border-radius: 8px;
+
+    --wrapper-max-width: 1200px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+* {
+    box-sizing: border-box;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+html,
 body {
-  margin-bottom: 60px;
-}
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, avenir next, avenir,
+        segoe ui, helvetica neue, Adwaita Sans, Cantarell, Ubuntu, roboto, noto,
+        helvetica, arial, sans-serif;
+    margin: 0;
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    font-size: 18px;
 }

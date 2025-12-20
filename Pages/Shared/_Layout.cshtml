@@ -31,41 +31,47 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - protabula_com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="~/protabula_com.styles.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/protabula_com.styles.css" asp-append-version="true" />
 </head>
 
 <body>
-    <header>
-        <nav>
-            <div>
-                <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
-            </div>
-            <div>
-                <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["Home"]</a>
-                <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
-            </div>
-            <div>
-                <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
-                <span>|</span>
-                <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
-            </div>
-        </nav>
-    </header>
-    <div>
-        <main role="main">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer>
-        <div>
-            &copy; 2025 - @Localizer["SiteName"] - <a asp-area="" asp-page="/Privacy"
-                asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+    <div class="lato-protabula_com">
+        <header>
+            <nav>
+                <div>
+                    <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
+                </div>
+                <div>
+                    <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["Home"]</a>
+                    <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+                </div>
+                <div>
+                    <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
+                    <span>|</span>
+                    <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
+                </div>
+            </nav>
+        </header>
+        <div class="wrapper">
+            <main role="main">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
 
-    @await RenderSectionAsync("Scripts", required: false)
+        <footer>
+            <div>
+                &copy; 2025 - @Localizer["SiteName"] - <a asp-area="" asp-page="/Privacy"
+                    asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+            </div>
+        </footer>
+
+        @await RenderSectionAsync("Scripts", required: false)
+    </div>
 </body>
 
 </html>

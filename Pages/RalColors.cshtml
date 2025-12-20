@@ -24,23 +24,19 @@
         <div class="color-grid">
             @foreach (var color in group)
             {
-                <div class="color" style="background-color: @color.Hex;">
-                    <h3>RAL @color.Number</h3>
-                    <span>@color.Hex</span>
+                <div class="color @(color.NeedsDarkText ? "dark" : "")" style="background-color: @color.Hex;">
+
+                    <span class="hex">RAL</span>
+                    <h3 class="number">@color.Number</h3>
 
                     @if (!string.IsNullOrEmpty(color.Name))
                     {
-                        <span>@color.Name</span>
+                        <span class="name">@color.Name</span>
                     }
 
                     @if (!string.IsNullOrEmpty(color.NameDe))
                     {
-                        <span>@color.NameDe</span>
-                    }
-
-                    @if (color.ColorCategory != "Unknown")
-                    {
-                        <span style="background-color: @color.ColorCategory;">@color.ColorCategory</span>
+                        <span class="name">@color.NameDe</span>
                     }
                 </div>
             }
