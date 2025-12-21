@@ -24,6 +24,7 @@
     --root-black: #000000;
     --root-pink: #FFC0CB;
     --root-rose: #FF007F;
+    --root-beige: #F5F5DC;
 
     --spacing-xs: 3px;
     --spacing-sm: 6px;
@@ -134,6 +135,7 @@ hr {
 .badge-black { background-color: var(--root-black); color: #fff;}
 .badge-pink { background-color: var(--root-pink); color: #000; }
 .badge-rose { background-color: var(--root-rose); color: #fff;}
+.badge-beige { background-color: var(--root-beige); color: #000; }
 
 /* Color tile */
 .color-tile {
@@ -351,7 +353,6 @@ hr {
     position: relative;
     display: inline-block;
     width: 100%;
-    max-width: 400px;
 }
 
 .search-box .search-icon {

@@ -1,0 +1,9 @@
+{
+  "Title": "RAL Color Converter",
+  "MetaDescription": "Convert RAL colors to HEX, RGB, HSL, and CMYK formats. Free online RAL color code converter with copy-to-clipboard functionality.",
+  "Intro": "Enter a RAL color number to convert it to different color formats.",
+  "SearchPlaceholder": "Enter RAL number (e.g., 7016)...",
+  "Copy": "Copy to clipboard",
+  "ViewDetails": "View color details",
+  "NotFound": "No RAL color found with that number. Please try another."
+}

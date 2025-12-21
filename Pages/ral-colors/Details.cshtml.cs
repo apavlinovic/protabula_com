@@ -18,6 +18,7 @@ public class RalColorDetailsModel : PageModel
     public string? ColorIdentifier { get; set; }
     public RalColor Color { get; set; }
     public SimilarColorsResult SimilarColors { get; set; }
+    public ColorFormats? Formats { get; private set; }
 
     public async Task OnGetAsync(string colorIdentifier)
     {
@@ -36,6 +37,7 @@ public class RalColorDetailsModel : PageModel
 
         if (Color != RalColor.Empty)
         {
+            Formats = ColorFormats.FromHex(Color.Hex);
             var allColors = await _loader.LoadAsync();
             SimilarColors = _similarColorFinder.FindSimilar(Color, allColors);
         }

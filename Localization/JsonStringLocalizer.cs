@@ -13,6 +13,7 @@ public sealed class JsonStringLocalizer : IStringLocalizer
     private readonly string _contentRootPath;
     private readonly string _resourcesPath;
     private readonly string _baseName;
+    private readonly string? _sharedBaseName;
     private readonly ILogger<JsonStringLocalizer> _logger;
 
     public JsonStringLocalizer(
@@ -24,7 +25,21 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         _contentRootPath = contentRootPath;
         _resourcesPath = resourcesPath;
         _baseName = baseName;
+        _sharedBaseName = DetectSharedResourceName(baseName);
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Determines the shared resource file to use based on the page path.
+    /// For pages under "Pages.ral-colors.*", uses "Shared.RalColors".
+    /// </summary>
+    private static string? DetectSharedResourceName(string baseName)
+    {
+        if (baseName.StartsWith("Pages.ral-colors", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Shared.RalColors";
+        }
+        return null;
     }
 
     public LocalizedString this[string name]
@@ -83,33 +98,21 @@ public sealed class JsonStringLocalizer : IStringLocalizer
 
     private string? GetValue(string key, CultureInfo culture)
     {
-        // Try exact culture first (e.g., de-DE).
-        var resources = LoadResources(culture);
-        if (resources.TryGetValue(key, out var value))
+        // Try page-specific resources first
+        var value = GetValueFromBaseName(key, culture, _baseName);
+        if (value != null)
         {
             return value;
         }
 
-        if (!string.IsNullOrEmpty(culture.Name))
+        // Fall back to shared resources if available
+        if (_sharedBaseName != null)
         {
-            // Then neutral culture (e.g., de).
-            var neutralName = culture.TwoLetterISOLanguageName;
-            if (!string.IsNullOrWhiteSpace(neutralName) && !string.Equals(neutralName, culture.Name, StringComparison.OrdinalIgnoreCase))
+            value = GetValueFromBaseName(key, culture, _sharedBaseName);
+            if (value != null)
             {
-                var neutralCulture = CultureInfo.GetCultureInfo(neutralName);
-                var neutralResources = LoadResources(neutralCulture);
-                if (neutralResources.TryGetValue(key, out value))
-                {
-                    return value;
-                }
+                return value;
             }
-        }
-
-        // Finally fall back to invariant (no culture suffix).
-        var invariantResources = LoadResources(CultureInfo.InvariantCulture);
-        if (invariantResources.TryGetValue(key, out value))
-        {
-            return value;
         }
 
         if (_logger.IsEnabled(LogLevel.Debug))
@@ -124,10 +127,47 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         return null;
     }
 
-    private Dictionary<string, string> LoadResources(CultureInfo culture)
+    private string? GetValueFromBaseName(string key, CultureInfo culture, string baseName)
+    {
+        // Try exact culture first (e.g., de-DE).
+        var resources = LoadResources(culture, baseName);
+        if (resources.TryGetValue(key, out var value))
+        {
+            return value;
+        }
+
+        if (!string.IsNullOrEmpty(culture.Name))
+        {
+            // Then neutral culture (e.g., de).
+            var neutralName = culture.TwoLetterISOLanguageName;
+            if (!string.IsNullOrWhiteSpace(neutralName) && !string.Equals(neutralName, culture.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                var neutralCulture = CultureInfo.GetCultureInfo(neutralName);
+                var neutralResources = LoadResources(neutralCulture, baseName);
+                if (neutralResources.TryGetValue(key, out value))
+                {
+                    return value;
+                }
+            }
+        }
+
+        // Finally fall back to invariant (no culture suffix).
+        var invariantResources = LoadResources(CultureInfo.InvariantCulture, baseName);
+        if (invariantResources.TryGetValue(key, out value))
+        {
+            return value;
+        }
+
+        return null;
+    }
+
+    private Dictionary<string, string> LoadResources(CultureInfo culture) =>
+        LoadResources(culture, _baseName);
+
+    private Dictionary<string, string> LoadResources(CultureInfo culture, string baseName)
     {
         // Map the base name and culture into a file path under ResourcesJson/.
-        var resourcePath = BuildResourcePath(culture);
+        var resourcePath = BuildResourcePath(culture, baseName);
         if (resourcePath is null)
         {
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -160,9 +200,9 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         });
     }
 
-    private string? BuildResourcePath(CultureInfo culture)
+    private string? BuildResourcePath(CultureInfo culture, string baseName)
     {
-        var basePath = _baseName.Replace('.', Path.DirectorySeparatorChar);
+        var basePath = baseName.Replace('.', Path.DirectorySeparatorChar);
         var resourcesRoot = Path.Combine(_contentRootPath, _resourcesPath);
 
         if (culture == CultureInfo.InvariantCulture)

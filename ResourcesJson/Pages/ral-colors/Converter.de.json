@@ -1,0 +1,9 @@
+{
+  "Title": "RAL-Farbumrechner",
+  "MetaDescription": "RAL-Farben in HEX, RGB, HSL und CMYK umrechnen. Kostenloser Online-RAL-Farbcode-Konverter mit Kopieren-Funktion.",
+  "Intro": "Geben Sie eine RAL-Farbnummer ein, um sie in verschiedene Farbformate umzurechnen.",
+  "SearchPlaceholder": "RAL-Nummer eingeben (z.B. 7016)...",
+  "Copy": "In Zwischenablage kopieren",
+  "ViewDetails": "Farbdetails anzeigen",
+  "NotFound": "Keine RAL-Farbe mit dieser Nummer gefunden. Bitte versuchen Sie eine andere."
+}

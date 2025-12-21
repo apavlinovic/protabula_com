@@ -1,0 +1,215 @@
+@page "/ral-colors/converter"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model ConverterModel
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-secondary">@Localizer["Intro"]</p>
+
+<div class="converter-container">
+    <div class="autocomplete-container mb-lg">
+        <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text"
+                   id="ralSearch"
+                   placeholder="@Localizer["SearchPlaceholder"]"
+                   value="@Model.SelectedColor?.Number"
+                   autocomplete="off"
+                   oninput="filterColors(this.value)"
+                   onfocus="showDropdown()"
+                   onkeydown="handleKeydown(event)" />
+        </div>
+        <div class="autocomplete-dropdown" id="dropdown">
+            @foreach (var color in Model.AllColors)
+            {
+                <div class="autocomplete-item"
+                     data-number="@color.Number"
+                     data-name="@color.Name?.ToLowerInvariant()"
+                     data-name-de="@color.NameDe?.ToLowerInvariant()"
+                     onclick="selectColor('@color.Number')">
+                    <span class="autocomplete-swatch" style="background-color: @color.Hex;"></span>
+                    <span class="autocomplete-number">@color.Number</span>
+                    @if (!string.IsNullOrEmpty(color.Name))
+                    {
+                        <span class="autocomplete-name">@color.Name</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.SelectedColor != null && Model.Formats != null)
+    {
+        <div class="converter-result">
+            <div class="color-preview-box @(Model.SelectedColor.NeedsDarkText ? "dark" : "")"
+                 style="background-color: @Model.Formats.Hex;">
+                <span class="ral">RAL</span>
+                <h2 class="number">@Model.SelectedColor.Number</h2>
+                @if (!string.IsNullOrEmpty(Model.SelectedColor.Name))
+                {
+                    <span class="name">@Model.SelectedColor.Name</span>
+                }
+            </div>
+
+            <div class="color-formats">
+                <div class="format-row">
+                    <span class="format-label">HEX</span>
+                    <code class="format-value" id="hexValue">@Model.Formats.Hex</code>
+                    <button class="btn-copy" onclick="copyToClipboard('hexValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="format-row">
+                    <span class="format-label">RGB</span>
+                    <code class="format-value" id="rgbValue">@Model.Formats.RgbString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('rgbValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="format-row">
+                    <span class="format-label">HSL</span>
+                    <code class="format-value" id="hslValue">@Model.Formats.HslString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('hslValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="format-row">
+                    <span class="format-label">CMYK</span>
+                    <code class="format-value" id="cmykValue">@Model.Formats.CmykString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('cmykValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <a class="btn btn-ghost mt-lg"
+               asp-page="/ral-colors/Details"
+               asp-route-culture="@RouteData.Values["culture"]"
+               asp-route-colorIdentifier="@Model.SelectedColor.Slug">
+                @Localizer["ViewDetails"] &rarr;
+            </a>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["ral"]))
+    {
+        <p class="text-secondary">@Localizer["NotFound"]</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        const dropdown = document.getElementById('dropdown');
+        const input = document.getElementById('ralSearch');
+        const items = dropdown.querySelectorAll('.autocomplete-item');
+        let activeIndex = -1;
+
+        function showDropdown() {
+            dropdown.classList.add('active');
+            filterColors(input.value);
+        }
+
+        function hideDropdown() {
+            dropdown.classList.remove('active');
+            activeIndex = -1;
+            updateActiveItem();
+        }
+
+        function filterColors(query) {
+            const searchTerm = query.toLowerCase().trim();
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const number = (item.dataset.number || '').toLowerCase();
+                const name = item.dataset.name || '';
+                const nameDe = item.dataset.nameDe || '';
+
+                const matches = searchTerm === '' ||
+                    number.includes(searchTerm) ||
+                    name.includes(searchTerm) ||
+                    nameDe.includes(searchTerm);
+
+                item.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            activeIndex = -1;
+            updateActiveItem();
+        }
+
+        function selectColor(number) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('ral', number);
+            window.location = currentUrl.toString();
+        }
+
+        function handleKeydown(event) {
+            const visibleItems = Array.from(items).filter(item => item.style.display !== 'none');
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                activeIndex = Math.min(activeIndex + 1, visibleItems.length - 1);
+                updateActiveItem(visibleItems);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                activeIndex = Math.max(activeIndex - 1, -1);
+                updateActiveItem(visibleItems);
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                if (activeIndex >= 0 && visibleItems[activeIndex]) {
+                    selectColor(visibleItems[activeIndex].dataset.number);
+                } else if (input.value.trim()) {
+                    selectColor(input.value.trim());
+                }
+            } else if (event.key === 'Escape') {
+                hideDropdown();
+                input.blur();
+            }
+        }
+
+        function updateActiveItem(visibleItems) {
+            items.forEach(item => item.classList.remove('active'));
+            if (visibleItems && activeIndex >= 0 && visibleItems[activeIndex]) {
+                visibleItems[activeIndex].classList.add('active');
+                visibleItems[activeIndex].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.autocomplete-container')) {
+                hideDropdown();
+            }
+        });
+
+        function copyToClipboard(elementId, button) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                button.classList.add('copied');
+                setTimeout(() => button.classList.remove('copied'), 1500);
+            });
+        }
+    </script>
+}

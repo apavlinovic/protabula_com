@@ -29,6 +29,82 @@ public static class ColorWrangler
         return HexToRgbInternal(normalizedHex);
     }
 
+    /// <summary>
+    /// Convert a hex color to HSL (Hue 0-360, Saturation 0-100, Lightness 0-100).
+    /// </summary>
+    public static (int h, int s, int l) HexToHsl(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        return RgbToHsl(r, g, b);
+    }
+
+    /// <summary>
+    /// Convert RGB to HSL.
+    /// </summary>
+    public static (int h, int s, int l) RgbToHsl(byte r, byte g, byte b)
+    {
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        double max = Math.Max(rNorm, Math.Max(gNorm, bNorm));
+        double min = Math.Min(rNorm, Math.Min(gNorm, bNorm));
+        double delta = max - min;
+
+        double h = 0;
+        double s = 0;
+        double l = (max + min) / 2;
+
+        if (delta != 0)
+        {
+            s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+
+            if (max == rNorm)
+                h = ((gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0)) * 60;
+            else if (max == gNorm)
+                h = ((bNorm - rNorm) / delta + 2) * 60;
+            else
+                h = ((rNorm - gNorm) / delta + 4) * 60;
+        }
+
+        return ((int)Math.Round(h), (int)Math.Round(s * 100), (int)Math.Round(l * 100));
+    }
+
+    /// <summary>
+    /// Convert a hex color to CMYK (Cyan 0-100, Magenta 0-100, Yellow 0-100, Key 0-100).
+    /// </summary>
+    public static (int c, int m, int y, int k) HexToCmyk(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        return RgbToCmyk(r, g, b);
+    }
+
+    /// <summary>
+    /// Convert RGB to CMYK.
+    /// </summary>
+    public static (int c, int m, int y, int k) RgbToCmyk(byte r, byte g, byte b)
+    {
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        double k = 1 - Math.Max(rNorm, Math.Max(gNorm, bNorm));
+
+        if (k >= 1)
+            return (0, 0, 0, 100);
+
+        double c = (1 - rNorm - k) / (1 - k);
+        double m = (1 - gNorm - k) / (1 - k);
+        double y = (1 - bNorm - k) / (1 - k);
+
+        return (
+            (int)Math.Round(c * 100),
+            (int)Math.Round(m * 100),
+            (int)Math.Round(y * 100),
+            (int)Math.Round(k * 100)
+        );
+    }
+
     // ---------- Internal helpers ----------
 
     public static string NormalizeHex(string hex)

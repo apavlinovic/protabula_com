@@ -1,9 +1,7 @@
 {
-  "Title": "Alle RAL-Farben",
+  "Title": "RAL-Farbkarte - Komplette Farbliste",
+  "MetaDescription": "Komplette RAL-Farbkarte mit HEX- und RGB-Codes. Durchsuchen Sie alle RAL Classic, RAL Effect und RAL Design System Plus Farben mit Such- und Vergleichstools.",
   "Intro": "Auf dieser Seite finden Sie die Farbnuancen aller drei RAL-Farbpaletten - RAL CLASSIC, RAL EFFECT und RAL DESIGN SYSTEM plus.",
-  "CategoryClassic": "Klassisch",
-  "CategoryDesignPlus": "Design Plus",
-  "CategoryEffect": "Effekt",
   "SearchPlaceholder": "Nach Name oder Nummer suchen...",
   "NoResults": "Keine Farben gefunden, die Ihrer Suche entsprechen."
 }

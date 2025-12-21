@@ -21,13 +21,18 @@ public sealed class RalColorLoader : IRalColorLoader
 
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<RalColorLoader> _logger;
+    private readonly IRootColorClassifier _rootColorClassifier;
     private readonly SemaphoreSlim _loadLock = new(1, 1);
     private IReadOnlyList<RalColor>? _cache;
 
-    public RalColorLoader(IWebHostEnvironment environment, ILogger<RalColorLoader> logger)
+    public RalColorLoader(
+        IWebHostEnvironment environment,
+        ILogger<RalColorLoader> logger,
+        IRootColorClassifier rootColorClassifier)
     {
         _environment = environment;
         _logger = logger;
+        _rootColorClassifier = rootColorClassifier;
     }
 
     public async Task<IReadOnlyList<RalColor>> LoadAsync(CancellationToken cancellationToken = default)
@@ -67,11 +72,14 @@ public sealed class RalColorLoader : IRalColorLoader
                 var category = ParseCategory(record.Category, record.Number);
                 var brightness = ParseBrightness(record.Brightness, record.Number);
                 var tags = ParseTags(record.Tags);
+                var hex = record.Hex ?? string.Empty;
+                var rootColor = _rootColorClassifier.Classify(record.Name, hex);
 
                 colors.Add(new RalColor(
                     category,
+                    rootColor,
                     tags,
-                    record.Hex ?? string.Empty,
+                    hex,
                     brightness,
                     record.Number ?? string.Empty,
                     record.Name ?? string.Empty,
