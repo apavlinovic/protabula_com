@@ -66,9 +66,9 @@ public sealed class RalColor
     public string NameDe { get; }
 
     /// <summary>
-    /// URL-friendly version of the color number (spaces replaced with dashes).
+    /// URL-friendly version of the color number (spaces replaced with underscores).
     /// </summary>
-    public string Slug => Number.Replace(' ', '-');
+    public string Slug => Number.Replace(' ', '_');
 
     public static RalColor Empty { get; } = new RalColor(
         RalCategory.Classic,

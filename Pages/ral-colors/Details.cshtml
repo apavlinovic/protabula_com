@@ -3,18 +3,45 @@
 @using protabula_com.Models
 @model RalColorDetailsModel
 @inject IViewLocalizer Localizer
+@{
+    var colorTitle = string.IsNullOrEmpty(Model.Color.Name)
+        ? $"RAL {Model.Color.Number}"
+        : $"RAL {Model.Color.Number} {Model.Color.Name}";
+    ViewData["Title"] = colorTitle;
+}
 
-<a asp-page="/ral-colors/Index" class="text-secondary" asp-route-culture="@RouteData.Values["culture"]">
+<a asp-page="/ral-colors/Index" class="btn mb-md text-secondary" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]
 </a>
 
+<h1>@colorTitle</h1>
+
+<p class="text-secondary mb-lg">
+    @{
+        var paletteName = Localizer[$"Palette{Model.Color.Category}"].Value;
+    }
+    @if (!string.IsNullOrEmpty(Model.Color.Name) && Model.Color.RootColor != RootColor.Unknown)
+    {
+        @Localizer["IntroWithNameAndRoot", Model.Color.Number, Model.Color.Name, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex]
+    }
+    else if (!string.IsNullOrEmpty(Model.Color.Name))
+    {
+        @Localizer["IntroWithName", Model.Color.Number, Model.Color.Name, paletteName, Model.Color.Hex]
+    }
+    else if (Model.Color.RootColor != RootColor.Unknown)
+    {
+        @Localizer["IntroWithRoot", Model.Color.Number, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex]
+    }
+    else
+    {
+        @Localizer["IntroBasic", Model.Color.Number, paletteName, Model.Color.Hex]
+    }
+</p>
+
 <div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;">
-    <h2>
-        RAL @Model.Color.Number
-    </h2>
 </div>
 
-<table class="color-details">
+<table class="color-details mb-xl">
     <tr>
         <th>@Localizer["LabelName"]</th>
         <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
@@ -44,10 +71,35 @@
     </tr>
 </table>
 
+<section class="contrast-section mt-xl">
+    <h2>@Localizer["ContrastComparison"]</h2>
+    <div class="contrast-grid">
+        <div class="contrast-bg" style="background-color: #FFFFFF;">
+            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
+            <span class="contrast-label">@Localizer["BgWhite"]</span>
+        </div>
+        <div class="contrast-bg" style="background-color: #E0E0E0;">
+            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
+            <span class="contrast-label">@Localizer["BgLightGrey"]</span>
+        </div>
+        <div class="contrast-bg" style="background-color: #9E9E9E;">
+            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
+            <span class="contrast-label">@Localizer["BgGrey"]</span>
+        </div>
+        <div class="contrast-bg" style="background-color: #424242;">
+            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
+            <span class="contrast-label">@Localizer["BgDarkGrey"]</span>
+        </div>
+        <div class="contrast-bg" style="background-color: #000000;">
+            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
+            <span class="contrast-label">@Localizer["BgBlack"]</span>
+        </div>
+    </div>
+</section>
 
 @if (Model.SimilarColors.Classic.Any() || Model.SimilarColors.DesignPlus.Any() || Model.SimilarColors.Effect.Any())
 {
-    <section class="similar-colors">
+    <section class="similar-colors mt-xl">
         <h2>@Localizer["SimilarColors"]</h2>
 
         @if (Model.SimilarColors.Classic.Any())
