@@ -113,23 +113,23 @@
 <section class="contrast-section mt-xl">
     <h2>@Localizer["ContrastComparison"]</h2>
     <div class="contrast-grid">
-        <div class="contrast-bg" style="background-color: #FFFFFF;">
+        <div class="contrast-bg" style="background-color: #FFFFFF;" onclick="openColorPreviewWithBg('#FFFFFF')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgWhite"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #E0E0E0;">
+        <div class="contrast-bg" style="background-color: #E0E0E0;" onclick="openColorPreviewWithBg('#E0E0E0')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgLightGrey"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #9E9E9E;">
+        <div class="contrast-bg" style="background-color: #9E9E9E;" onclick="openColorPreviewWithBg('#9E9E9E')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgGrey"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #424242;">
+        <div class="contrast-bg" style="background-color: #424242;" onclick="openColorPreviewWithBg('#424242')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgDarkGrey"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #000000;">
+        <div class="contrast-bg" style="background-color: #000000;" onclick="openColorPreviewWithBg('#000000')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgBlack"]</span>
         </div>
@@ -214,6 +214,14 @@
         function openColorPreview() {
             document.getElementById('colorPreview').classList.add('active');
             document.body.style.overflow = 'hidden';
+        }
+
+        function openColorPreviewWithBg(bgColor) {
+            document.getElementById('colorPreview').style.backgroundColor = bgColor;
+            document.querySelectorAll('.bg-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.bg === bgColor);
+            });
+            openColorPreview();
         }
 
         function closeColorPreview(event) {

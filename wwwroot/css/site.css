@@ -107,7 +107,7 @@ code {
 .color-tile {
     padding: var(--padding-lg);
     box-sizing: border-box;
-    transition: all 0.2s ease-out;
+    transition: box-shadow 0.2s ease;
     border-radius: var(--border-radius);
 
     display: flex;
@@ -145,8 +145,7 @@ code {
 }
 
 .color-tile:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 3px var(--accent);
 }
 
 /* Button */
