@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLocalization(options => options.ResourcesPath = "ResourcesJson");
 builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
 builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
+builder.Services.AddSingleton<ISimilarColorFinder, SimilarColorFinder>();
 
 builder.Services.AddRazorPages(options =>
 {

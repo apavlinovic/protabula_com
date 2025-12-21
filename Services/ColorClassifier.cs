@@ -1,169 +1,78 @@
+using Colourful;
+using protabula_com.Models;
+
 namespace protabula_com.Services;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Colourful;
-
 /// <summary>
-/// High-level color groups used by ColorClassifier.
+/// Result of finding similar colors, grouped by RAL category.
 /// </summary>
-public enum ColorCategory
+public sealed class SimilarColorsResult
 {
-    Black,
-    Grey,
-    White,
-    Brown,
-    Red,
-    Orange,
-    Yellow,
-    Green,
-    Cyan,
-    Blue,
-    Purple,
-    Pink,
-    Unknown
+    public IReadOnlyList<SimilarColor> Classic { get; init; } = Array.Empty<SimilarColor>();
+    public IReadOnlyList<SimilarColor> DesignPlus { get; init; } = Array.Empty<SimilarColor>();
+    public IReadOnlyList<SimilarColor> Effect { get; init; } = Array.Empty<SimilarColor>();
 }
 
 /// <summary>
-/// Result of a color classification.
+/// A color with its perceptual distance to the reference color.
 /// </summary>
-public sealed class ColorCategoryResult
+public sealed class SimilarColor
 {
-    /// <summary>Original hex string (normalized to #RRGGBB).</summary>
-    public string Hex { get; init; } = "#000000";
-
-    /// <summary>Classified high-level category.</summary>
-    public ColorCategory Category { get; init; }
-
-    /// <summary>Category name as a string (e.g. "Red").</summary>
-    public string CategoryName { get; init; } = string.Empty;
+    public required RalColor Color { get; init; }
 
     /// <summary>
-    /// CIEDE2000 distance to the anchor color representing this category.
-    /// Lower = closer. Typical values &lt; 5 are visually very close.
+    /// CIEDE2000 distance to the reference color.
+    /// Lower = more similar. Values under 5 are very close perceptually.
     /// </summary>
     public double Distance { get; init; }
-
-    /// <summary>RGB components (0–255).</summary>
-    public byte R { get; init; }
-    public byte G { get; init; }
-    public byte B { get; init; }
 }
 
-/// <summary>
-/// Drop-in static helper to classify HEX colors into a small set of
-/// perceptual categories using the Colourful library and CIEDE2000.
-///
-/// Designed to be dependency-light in your project: one file + one NuGet.
-/// </summary>
-public static class ColorClassifier
+public interface ISimilarColorFinder
 {
-    // Represents a category anchor color (the "prototype" for that category).
-    private sealed class ColorAnchor
-    {
-        public ColorCategory Category { get; }
-        public string Name { get; }
-        public string Hex { get; }
-        public LabColor Lab { get; }
-
-        public ColorAnchor(ColorCategory category, string name, string hex, LabColor lab)
-        {
-            Category = category;
-            Name = name;
-            Hex = hex;
-            Lab = lab;
-        }
-    }
-
-    private static readonly IColorDifference<LabColor> _difference = new CIEDE2000ColorDifference();
-
-    // Anchor definitions using common, "typical" colors per group.
-    // We define them by hex and convert once to Lab in the static constructor.
-    private static readonly IReadOnlyList<ColorAnchor> _anchors;
-
-    static ColorClassifier()
-    {
-        // Define palette as hex; we'll convert to Lab once.
-        var rawAnchors = new (ColorCategory Category, string Name, string Hex)[]
-        {
-                (ColorCategory.Black,  "Black",  "#000000"),
-                (ColorCategory.Grey,   "Grey",   "#808080"),
-                (ColorCategory.White,  "White",  "#FFFFFF"),
-                (ColorCategory.Brown,  "Brown",  "#8B4513"), // SaddleBrown-like
-                (ColorCategory.Red,    "Red",    "#FF0000"),
-                (ColorCategory.Orange, "Orange", "#FFA500"),
-                (ColorCategory.Yellow, "Yellow", "#FFFF00"),
-                (ColorCategory.Green,  "Green",  "#008000"),
-                (ColorCategory.Cyan,   "Cyan",   "#00FFFF"),
-                (ColorCategory.Blue,   "Blue",   "#0000FF"),
-                (ColorCategory.Purple, "Purple", "#800080"),
-                (ColorCategory.Pink,   "Pink",   "#FFC0CB"),
-        };
-
-        var anchors = new List<ColorAnchor>(rawAnchors.Length);
-
-        foreach (var (category, name, hex) in rawAnchors)
-        {
-            var (r, g, b) = ColorWrangler.HexToRgb(hex);
-            var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
-            var lab = ToLab(rgb);
-
-            anchors.Add(new ColorAnchor(category, name, hex, lab));
-        }
-
-        _anchors = anchors;
-    }
-
     /// <summary>
-    /// Classify a hex color string (e.g. "#FFAA00" or "FFAA00") into a ColorCategory.
+    /// Find similar colors to the given reference color from all RAL palettes.
     /// </summary>
-    public static ColorCategory ClassifyCategory(string hex)
+    /// <param name="referenceColor">The color to find similar colors for</param>
+    /// <param name="allColors">All available RAL colors to search</param>
+    /// <param name="maxPerCategory">Maximum number of similar colors per category</param>
+    /// <returns>Similar colors grouped by category</returns>
+    SimilarColorsResult FindSimilar(RalColor referenceColor, IReadOnlyList<RalColor> allColors, int maxPerCategory = 5);
+}
+
+public sealed class SimilarColorFinder : ISimilarColorFinder
+{
+    private static readonly IColorDifference<LabColor> Difference = new CIEDE2000ColorDifference();
+
+    public SimilarColorsResult FindSimilar(RalColor referenceColor, IReadOnlyList<RalColor> allColors, int maxPerCategory = 5)
     {
-        return Classify(hex).Category;
-    }
+        var referenceLab = ColorWrangler.HexToLab(referenceColor.Hex);
 
-    /// <summary>
-    /// Classify a hex color string into a ColorCategoryResult, including
-    /// distance and normalized hex.
-    /// </summary>
-    public static ColorCategoryResult Classify(string hex)
-    {
-        if (hex == null) throw new ArgumentNullException(nameof(hex));
-
-        string normalizedHex = ColorWrangler.NormalizeHex(hex);
-        var (r, g, b) = ColorWrangler.HexToRgb(normalizedHex);
-
-        var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
-        var lab = ToLab(rgb);
-
-        // Find the closest anchor in Lab space using CIEDE2000.
-        var best = _anchors
-            .Select(anchor => new
+        var colorDistances = allColors
+            .Where(c => c.Number != referenceColor.Number) // Exclude the reference color itself
+            .Select(c => new SimilarColor
             {
-                Anchor = anchor,
-                Distance = _difference.ComputeDifference(lab, anchor.Lab)
+                Color = c,
+                Distance = Difference.ComputeDifference(referenceLab, ColorWrangler.HexToLab(c.Hex))
             })
-            .OrderBy(x => x.Distance)
-            .First();
+            .ToList();
 
-        return new ColorCategoryResult
+        return new SimilarColorsResult
         {
-            Hex = normalizedHex,
-            Category = best.Anchor.Category,
-            CategoryName = best.Anchor.Name,
-            Distance = best.Distance,
-            R = r,
-            G = g,
-            B = b
+            Classic = colorDistances
+                .Where(c => c.Color.Category == RalCategory.Classic)
+                .OrderBy(c => c.Distance)
+                .Take(maxPerCategory)
+                .ToList(),
+            DesignPlus = colorDistances
+                .Where(c => c.Color.Category == RalCategory.DesignPlus)
+                .OrderBy(c => c.Distance)
+                .Take(maxPerCategory)
+                .ToList(),
+            Effect = colorDistances
+                .Where(c => c.Color.Category == RalCategory.Effect)
+                .OrderBy(c => c.Distance)
+                .Take(maxPerCategory)
+                .ToList()
         };
-    }
-
-    private static LabColor ToLab(RGBColor inputRgb)
-    {
-        var rgbWorkingSpace = RGBWorkingSpaces.sRGB;
-        var rgbToLab = new ConverterBuilder().FromRGB(rgbWorkingSpace).ToLab(Illuminants.D50).Build();
-
-        return rgbToLab.Convert(inputRgb);
     }
 }

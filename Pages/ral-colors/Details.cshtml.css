@@ -1,3 +1,7 @@
+::deep .go-back {
+    color: var(--text-secondary);
+}
+
 .color {
     padding: var(--padding-lg);
     border-radius: var(--border-radius);
@@ -15,3 +19,30 @@
     color: #000;
     text-shadow: none;
 }
+
+
+.similar-colors {
+    margin-top: var(--padding-lg);
+}
+
+.similar-colors h2 {
+    margin-bottom: var(--padding-md);
+}
+
+.similar-colors h3 {
+    margin: var(--padding-md) 0 var(--padding-sm) 0;
+    font-size: 1rem;
+    color: #666;
+}
+
+.similar-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-sm);
+    margin-bottom: var(--padding-xl);
+}
+
+::deep .similar-grid .color-tile {
+    width: 18%;
+}
+

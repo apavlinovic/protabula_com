@@ -24,11 +24,11 @@
         <div class="color-grid">
             @foreach (var color in group)
             {
-                <a class="color @(color.NeedsDarkText ? "dark" : "")" style="background-color: @color.Hex;"
+                <a class="color-tile @(color.NeedsDarkText ? "dark" : "")" style="background-color: @color.Hex;"
                     asp-page="/ral-colors/Details" asp-route-culture="@RouteData.Values["culture"]"
-                    asp-route-colorIdentifier="@color.Number">
+                    asp-route-colorIdentifier="@color.Slug">
 
-                    <span class="hex">RAL</span>
+                    <span class="ral">RAL</span>
                     <h3 class="number">@color.Number</h3>
 
                     @if (!string.IsNullOrEmpty(color.Name))

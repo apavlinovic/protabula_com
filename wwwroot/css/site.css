@@ -1,11 +1,28 @@
 :root {
-    --padding-sm: 5px;
-    --padding-md: 10px;
-    --padding-lg: 15px;
-    --padding-xl: 20px;
+    --text-primary: #222;
+    --text-secondary: #666;
+
+    /* Root colors */
+    --root-yellow: #FFFF00;
+    --root-red: #FF0000;
+    --root-green: #008000;
+    --root-orange: #FFA500;
+    --root-violet: #8B00FF;
+    --root-blue: #0000FF;
+    --root-grey: #808080;
+    --root-brown: #8B4513;
+    --root-white: #FFFFFF;
+    --root-black: #000000;
+    --root-pink: #FFC0CB;
+    --root-rose: #FF007F;
+
+    --padding-xs: 3px;
+    --padding-sm: 6px;
+    --padding-md: 12px;
+    --padding-lg: 18px;
+    --padding-xl: 24px;
 
     --border-radius: 8px;
-
     --wrapper-max-width: 1200px;
 }
 
@@ -20,5 +37,167 @@ body {
         helvetica, arial, sans-serif;
     margin: 0;
 
+    color: var(--text-primary);
     font-size: 18px;
+}
+
+
+table {
+    margin: var(--padding-lg) 0;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th,
+table td {
+    padding: var(--padding-sm) var(--padding-md);
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    width: 140px;
+}
+
+code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+#dotnet-compile-error:empty {
+    visibility: hidden;
+    display: none;
+}
+
+/* Text helpers */
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+/* UI helpers */
+
+/* Badge */
+.badge {
+    display: inline-block;
+    padding: var(--padding-xs) var(--padding-sm);
+    border-radius: var(--border-radius);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.badge-yellow { background-color: var(--root-yellow); color: #000; }
+.badge-red { background-color: var(--root-red);  color: #fff;}
+.badge-green { background-color: var(--root-green); color: #fff;}
+.badge-orange { background-color: var(--root-orange); color: #000; }
+.badge-violet { background-color: var(--root-violet); color: #fff;}
+.badge-blue { background-color: var(--root-blue); color: #fff;}
+.badge-grey { background-color: var(--root-grey); color: #fff;}
+.badge-brown { background-color: var(--root-brown); color: #fff;}
+.badge-white { background-color: var(--root-white); color: #000; border: 1px solid #ccc; }
+.badge-black { background-color: var(--root-black); color: #fff;}
+.badge-pink { background-color: var(--root-pink); color: #000; }
+.badge-rose { background-color: var(--root-rose); color: #fff;}
+
+/* Color tile */
+.color-tile {
+    padding: var(--padding-lg);
+    box-sizing: border-box;
+    transition: all 0.2s ease-out;
+    border-radius: var(--border-radius);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: var(--padding-sm);
+    text-align: center;
+    text-decoration: none;
+
+    color: #fff;
+}
+
+.color-tile.dark {
+    color: #000;
+    text-shadow: none;
+}
+
+.color-tile .hex,
+.color-tile .ral {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.color-tile .number {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 var(--padding-xs);
+    border-bottom: 1px solid currentColor;
+    margin-bottom: var(--padding-md);
+}
+
+.color-tile .name {
+    font-size: 0.85rem;
+}
+
+.color-tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button */
+.btn {
+    display: inline-block;
+    padding: var(--padding-sm) var(--padding-md);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+}
+
+.btn-primary {
+    background-color: var(--text-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    opacity: 0.85;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--text-secondary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--text-primary);
+    color: #fff;
+    border-color: var(--text-primary);
+}
+
+.btn-ghost {
+    background-color: transparent;
+    color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+    color: var(--text-primary);
+}
+
+.btn-sm {
+    padding: var(--padding-xs) var(--padding-sm);
+    font-size: 0.85rem;
+}
+
+.btn-lg {
+    padding: var(--padding-md) var(--padding-lg);
+    font-size: 1.1rem;
 }

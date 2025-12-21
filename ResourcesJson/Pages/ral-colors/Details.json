@@ -1,0 +1,23 @@
+{
+  "BackToColors": "Back to all colors",
+  "SimilarColors": "Similar Colors",
+  "CategoryClassic": "RAL Classic",
+  "CategoryDesignPlus": "RAL Design Plus",
+  "CategoryEffect": "RAL Effect",
+  "LabelName": "Name",
+  "LabelNameDe": "German Name",
+  "LabelRootColor": "Root Color",
+  "LabelHex": "Hex Value",
+  "RootColorYellow": "Yellow",
+  "RootColorRed": "Red",
+  "RootColorGreen": "Green",
+  "RootColorOrange": "Orange",
+  "RootColorViolet": "Violet",
+  "RootColorBlue": "Blue",
+  "RootColorGrey": "Grey",
+  "RootColorBrown": "Brown",
+  "RootColorWhite": "White",
+  "RootColorBlack": "Black",
+  "RootColorPink": "Pink",
+  "RootColorRose": "Rose"
+}

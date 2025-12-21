@@ -1,7 +1,24 @@
 using System.Globalization;
+using Colourful;
 
 public static class ColorWrangler
 {
+    /// <summary>
+    /// Convert a hex color to LAB color space.
+    /// </summary>
+    public static LabColor HexToLab(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
+
+        var converter = new ConverterBuilder()
+            .FromRGB(RGBWorkingSpaces.sRGB)
+            .ToLab(Illuminants.D50)
+            .Build();
+
+        return converter.Convert(rgb);
+    }
+
     /// <summary>
     /// Parse a hex color into RGB bytes (0–255).
     /// Accepts "#RRGGBB" or "RRGGBB" and throws on invalid input.
