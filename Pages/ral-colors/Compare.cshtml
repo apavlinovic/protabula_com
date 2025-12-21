@@ -1,0 +1,138 @@
+@page "/ral-colors/compare"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model CompareModel
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+    ViewData["MetaDescription"] = Localizer["MetaDescription"];
+
+    var autocompleteModel = new ColorAutocompleteModel(
+        "colorSearch",
+        Localizer["SearchPlaceholder"].Value,
+        Model.AllColors);
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-secondary">@Localizer["Intro"]</p>
+
+<div class="compare-controls">
+    <div class="compare-search @(Model.SelectedColors.Count >= 8 ? "disabled" : "")">
+        <partial name="_ColorAutocomplete" model="autocompleteModel" />
+    </div>
+
+    <div class="background-selector">
+        <span class="bg-label">@Localizer["Background"]:</span>
+        <button class="bg-option @(Model.Background == "white" ? "active" : "")"
+                data-bg="white" style="background-color: #FFFFFF;" title="@Localizer["BgWhite"]"></button>
+        <button class="bg-option @(Model.Background == "light-grey" ? "active" : "")"
+                data-bg="light-grey" style="background-color: #E0E0E0;" title="@Localizer["BgLightGrey"]"></button>
+        <button class="bg-option @(Model.Background == "grey" ? "active" : "")"
+                data-bg="grey" style="background-color: #9E9E9E;" title="@Localizer["BgGrey"]"></button>
+        <button class="bg-option @(Model.Background == "dark-grey" ? "active" : "")"
+                data-bg="dark-grey" style="background-color: #424242;" title="@Localizer["BgDarkGrey"]"></button>
+        <button class="bg-option @(Model.Background == "black" ? "active" : "")"
+                data-bg="black" style="background-color: #000000;" title="@Localizer["BgBlack"]"></button>
+    </div>
+</div>
+
+<div class="compare-preview" style="background-color: @Model.GetBackgroundHex();">
+    @for (var i = 0; i < 8; i++)
+    {
+        if (i < Model.SelectedColors.Count)
+        {
+            var color = Model.SelectedColors[i];
+            <div class="compare-swatch @(color.NeedsDarkText ? "dark" : "")"
+                 style="background-color: @color.Hex;"
+                 data-number="@color.Number">
+                <div class="swatch-info">
+                    <span class="swatch-title">RAL @color.Number</span>
+                    @if (!string.IsNullOrEmpty(color.Name))
+                    {
+                        <span class="swatch-name">@color.Name</span>
+                    }
+                    <span class="swatch-hex">@color.Hex</span>
+                </div>
+                <button class="swatch-remove" onclick="removeColor('@color.Number')" title="@Localizer["Remove"]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18"/>
+                        <path d="m6 6 12 12"/>
+                    </svg>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="compare-placeholder" onclick="focusSearch()">
+                <span class="placeholder-text">@Localizer["AddColorHint"]</span>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/color-autocomplete.js"></script>
+    <script>
+        const maxColors = 8;
+
+        // Get current colors from URL
+        function getCurrentColors() {
+            const params = new URLSearchParams(window.location.search);
+            const colorsParam = params.get('colors');
+            return colorsParam ? colorsParam.split(',').filter(c => c) : [];
+        }
+
+        // Update URL with new colors
+        function updateUrl(colors, bg) {
+            const url = new URL(window.location);
+            if (colors.length > 0) {
+                url.searchParams.set('colors', colors.join(','));
+            } else {
+                url.searchParams.delete('colors');
+            }
+            if (bg) {
+                url.searchParams.set('bg', bg);
+            }
+            window.location = url.toString();
+        }
+
+        // Add a color
+        function addColor(number) {
+            const colors = getCurrentColors();
+            if (colors.length < maxColors && !colors.includes(number)) {
+                colors.push(number);
+                const bg = new URLSearchParams(window.location.search).get('bg');
+                updateUrl(colors, bg);
+            }
+        }
+
+        // Remove a color
+        function removeColor(number) {
+            const colors = getCurrentColors().filter(c => c !== number);
+            const bg = new URLSearchParams(window.location.search).get('bg');
+            updateUrl(colors, bg);
+        }
+
+        // Focus the search input
+        function focusSearch() {
+            const input = document.querySelector('#colorSearch .autocomplete-input');
+            if (input) {
+                input.focus();
+            }
+        }
+
+        // Initialize autocomplete
+        initColorAutocomplete('colorSearch', function(number, hex, name) {
+            addColor(number);
+        });
+
+        // Background selector
+        document.querySelectorAll('.background-selector .bg-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const bg = this.dataset.bg;
+                const colors = getCurrentColors();
+                updateUrl(colors, bg);
+            });
+        });
+    </script>
+}

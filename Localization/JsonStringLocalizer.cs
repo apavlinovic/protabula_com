@@ -31,7 +31,7 @@ public sealed class JsonStringLocalizer : IStringLocalizer
 
     /// <summary>
     /// Determines the shared resource file to use based on the page path.
-    /// For pages under "Pages.ral-colors.*", uses "Shared.RalColors".
+    /// For pages under "Pages.ral-colors.*" or color-related partials, uses "Shared.RalColors".
     /// </summary>
     private static string? DetectSharedResourceName(string baseName)
     {
@@ -39,6 +39,13 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         {
             return "Shared.RalColors";
         }
+
+        // Color-related partials also need access to shared RAL resources
+        if (baseName.Contains("ColorAutocomplete", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Shared.RalColors";
+        }
+
         return null;
     }
 

@@ -1,0 +1,62 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model ColorAutocompleteModel
+@inject IViewLocalizer Localizer
+
+@{
+    var colorsByCategory = Model.Colors
+        .GroupBy(c => c.Category)
+        .OrderBy(g => g.Key switch
+        {
+            RalCategory.Classic => 0,
+            RalCategory.DesignPlus => 1,
+            RalCategory.Effect => 2,
+            _ => 99
+        })
+        .ToList();
+}
+
+<div class="autocomplete-container" id="@Model.ContainerId">
+    <div class="search-box">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text"
+               class="autocomplete-input"
+               placeholder="@Model.Placeholder"
+               value="@Model.SelectedNumber"
+               autocomplete="off" />
+    </div>
+    <div class="autocomplete-dropdown">
+        @foreach (var group in colorsByCategory)
+        {
+            var categoryName = group.Key switch
+            {
+                RalCategory.Classic => Localizer["CategoryClassic"].Value,
+                RalCategory.DesignPlus => Localizer["CategoryDesignPlus"].Value,
+                RalCategory.Effect => Localizer["CategoryEffect"].Value,
+                _ => group.Key.ToString()
+            };
+            <div class="autocomplete-section" data-category="@group.Key">
+                <div class="autocomplete-section-header">@categoryName</div>
+                @foreach (var color in group)
+                {
+                    <div class="autocomplete-item"
+                         data-number="@color.Number"
+                         data-hex="@color.Hex"
+                         data-name="@color.Name"
+                         data-search-name="@color.Name?.ToLowerInvariant()"
+                         data-search-name-de="@color.NameDe?.ToLowerInvariant()">
+                        <span class="autocomplete-swatch" style="background-color: @color.Hex;"></span>
+                        <span class="autocomplete-number">@color.Number</span>
+                        @if (!string.IsNullOrEmpty(color.Name))
+                        {
+                            <span class="autocomplete-name">@color.Name</span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

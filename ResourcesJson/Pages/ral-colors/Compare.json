@@ -1,0 +1,9 @@
+{
+  "Title": "RAL Color Comparer",
+  "MetaDescription": "Compare up to 8 RAL colors side by side. Visualize color combinations on different backgrounds to find the perfect match.",
+  "Intro": "Compare up to 8 RAL colors side by side on different backgrounds.",
+  "SearchPlaceholder": "Add a color...",
+  "Background": "Background",
+  "Remove": "Remove color",
+  "AddColorHint": "Add another color to compare"
+}

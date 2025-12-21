@@ -11,39 +11,17 @@
 <h1>@ViewData["Title"]</h1>
 <p class="text-secondary">@Localizer["Intro"]</p>
 
+@{
+    var autocompleteModel = new ColorAutocompleteModel(
+        "colorSearch",
+        Localizer["SearchPlaceholder"].Value,
+        Model.AllColors,
+        Model.SelectedColor?.Number);
+}
+
 <div class="converter-container">
-    <div class="autocomplete-container mb-lg">
-        <div class="search-box">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <input type="text"
-                   id="ralSearch"
-                   placeholder="@Localizer["SearchPlaceholder"]"
-                   value="@Model.SelectedColor?.Number"
-                   autocomplete="off"
-                   oninput="filterColors(this.value)"
-                   onfocus="showDropdown()"
-                   onkeydown="handleKeydown(event)" />
-        </div>
-        <div class="autocomplete-dropdown" id="dropdown">
-            @foreach (var color in Model.AllColors)
-            {
-                <div class="autocomplete-item"
-                     data-number="@color.Number"
-                     data-name="@color.Name?.ToLowerInvariant()"
-                     data-name-de="@color.NameDe?.ToLowerInvariant()"
-                     onclick="selectColor('@color.Number')">
-                    <span class="autocomplete-swatch" style="background-color: @color.Hex;"></span>
-                    <span class="autocomplete-number">@color.Number</span>
-                    @if (!string.IsNullOrEmpty(color.Name))
-                    {
-                        <span class="autocomplete-name">@color.Name</span>
-                    }
-                </div>
-            }
-        </div>
+    <div class="mb-lg">
+        <partial name="_ColorAutocomplete" model="autocompleteModel" />
     </div>
 
     @if (Model.SelectedColor != null && Model.Formats != null)
@@ -120,88 +98,12 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/color-autocomplete.js"></script>
     <script>
-        const dropdown = document.getElementById('dropdown');
-        const input = document.getElementById('ralSearch');
-        const items = dropdown.querySelectorAll('.autocomplete-item');
-        let activeIndex = -1;
-
-        function showDropdown() {
-            dropdown.classList.add('active');
-            filterColors(input.value);
-        }
-
-        function hideDropdown() {
-            dropdown.classList.remove('active');
-            activeIndex = -1;
-            updateActiveItem();
-        }
-
-        function filterColors(query) {
-            const searchTerm = query.toLowerCase().trim();
-            let visibleCount = 0;
-
-            items.forEach(item => {
-                const number = (item.dataset.number || '').toLowerCase();
-                const name = item.dataset.name || '';
-                const nameDe = item.dataset.nameDe || '';
-
-                const matches = searchTerm === '' ||
-                    number.includes(searchTerm) ||
-                    name.includes(searchTerm) ||
-                    nameDe.includes(searchTerm);
-
-                item.style.display = matches ? '' : 'none';
-                if (matches) visibleCount++;
-            });
-
-            activeIndex = -1;
-            updateActiveItem();
-        }
-
-        function selectColor(number) {
+        initColorAutocomplete('colorSearch', function(number, hex, name) {
             const currentUrl = new URL(window.location);
             currentUrl.searchParams.set('ral', number);
             window.location = currentUrl.toString();
-        }
-
-        function handleKeydown(event) {
-            const visibleItems = Array.from(items).filter(item => item.style.display !== 'none');
-
-            if (event.key === 'ArrowDown') {
-                event.preventDefault();
-                activeIndex = Math.min(activeIndex + 1, visibleItems.length - 1);
-                updateActiveItem(visibleItems);
-            } else if (event.key === 'ArrowUp') {
-                event.preventDefault();
-                activeIndex = Math.max(activeIndex - 1, -1);
-                updateActiveItem(visibleItems);
-            } else if (event.key === 'Enter') {
-                event.preventDefault();
-                if (activeIndex >= 0 && visibleItems[activeIndex]) {
-                    selectColor(visibleItems[activeIndex].dataset.number);
-                } else if (input.value.trim()) {
-                    selectColor(input.value.trim());
-                }
-            } else if (event.key === 'Escape') {
-                hideDropdown();
-                input.blur();
-            }
-        }
-
-        function updateActiveItem(visibleItems) {
-            items.forEach(item => item.classList.remove('active'));
-            if (visibleItems && activeIndex >= 0 && visibleItems[activeIndex]) {
-                visibleItems[activeIndex].classList.add('active');
-                visibleItems[activeIndex].scrollIntoView({ block: 'nearest' });
-            }
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.autocomplete-container')) {
-                hideDropdown();
-            }
         });
 
         function copyToClipboard(elementId, button) {
