@@ -470,6 +470,42 @@ hr {
     z-index: 1;
 }
 
+/* Page list */
+.page-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.page-list li a {
+    display: block;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition);
+}
+
+.page-list li a:hover {
+    border-color: var(--accent);
+    background: var(--bg-subtle);
+}
+
+.page-list li a strong {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: var(--spacing-xs);
+}
+
+.page-list li a span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 /* Header */
 header {
     border-bottom: 1px solid var(--border-color);

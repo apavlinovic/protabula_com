@@ -6,7 +6,47 @@
     ViewData["Title"] = Localizer["HomeTitle"];
 }
 
-<div>
-    <h1>@Localizer["WelcomeHeading"]</h1>
-    <p>@Localizer["WelcomeBody"]</p>
-</div>
+<h1>@Localizer["WelcomeHeading"]</h1>
+<p>@Localizer["WelcomeBody"]</p>
+
+<section class="mt-xl">
+    <h2>@Localizer["RalColorsHeading"]</h2>
+    <ul class="page-list">
+        <li>
+            <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]">
+                <strong>@Localizer["AllColors"]</strong>
+                <span>@Localizer["AllColorsDesc"]</span>
+            </a>
+        </li>
+        <li>
+            <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@RouteData.Values["culture"]">
+                <strong>@Localizer["RalClassic"]</strong>
+                <span>@Localizer["RalClassicDesc"]</span>
+            </a>
+        </li>
+        <li>
+            <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@RouteData.Values["culture"]">
+                <strong>@Localizer["RalDesignPlus"]</strong>
+                <span>@Localizer["RalDesignPlusDesc"]</span>
+            </a>
+        </li>
+        <li>
+            <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@RouteData.Values["culture"]">
+                <strong>@Localizer["RalEffect"]</strong>
+                <span>@Localizer["RalEffectDesc"]</span>
+            </a>
+        </li>
+        <li>
+            <a asp-page="/ral-colors/Converter" asp-route-culture="@RouteData.Values["culture"]">
+                <strong>@Localizer["Converter"]</strong>
+                <span>@Localizer["ConverterDesc"]</span>
+            </a>
+        </li>
+        <li>
+            <a asp-page="/ral-colors/Compare" asp-route-culture="@RouteData.Values["culture"]">
+                <strong>@Localizer["Compare"]</strong>
+                <span>@Localizer["CompareDesc"]</span>
+            </a>
+        </li>
+    </ul>
+</section>

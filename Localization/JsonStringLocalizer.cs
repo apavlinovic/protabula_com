@@ -8,12 +8,18 @@ namespace protabula_com.Localization;
 
 public sealed class JsonStringLocalizer : IStringLocalizer
 {
+    private const string SharedFileName = "_Shared";
+
     // Cache per file path so repeated lookups avoid re-reading disk.
-    private static readonly ConcurrentDictionary<string, Dictionary<string, string>> Cache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, Dictionary<string, string>> FileCache = new(StringComparer.OrdinalIgnoreCase);
+
+    // Cache the list of shared resource paths for each base name.
+    private static readonly ConcurrentDictionary<string, IReadOnlyList<string>> SharedPathsCache = new(StringComparer.OrdinalIgnoreCase);
+
     private readonly string _contentRootPath;
     private readonly string _resourcesPath;
     private readonly string _baseName;
-    private readonly string? _sharedBaseName;
+    private readonly IReadOnlyList<string> _sharedBaseNames;
     private readonly ILogger<JsonStringLocalizer> _logger;
 
     public JsonStringLocalizer(
@@ -25,35 +31,49 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         _contentRootPath = contentRootPath;
         _resourcesPath = resourcesPath;
         _baseName = baseName;
-        _sharedBaseName = DetectSharedResourceName(baseName);
+        _sharedBaseNames = GetSharedResourcePaths(baseName, contentRootPath, resourcesPath);
         _logger = logger;
     }
 
     /// <summary>
-    /// Determines the shared resource file to use based on the page path.
-    /// For pages under "Pages.ral-colors.*" or color-related partials, uses "Shared.RalColors".
+    /// Builds a list of _Shared resource paths by walking up the folder hierarchy.
+    /// For "Pages.ral-colors.Compare", returns:
+    ///   - "Pages.ral-colors._Shared"
+    ///   - "Pages._Shared"
+    ///   - "_Shared"
     /// </summary>
-    private static string? DetectSharedResourceName(string baseName)
+    private static IReadOnlyList<string> GetSharedResourcePaths(
+        string baseName,
+        string contentRootPath,
+        string resourcesPath)
     {
-        if (baseName.StartsWith("Pages.ral-colors", StringComparison.OrdinalIgnoreCase))
+        return SharedPathsCache.GetOrAdd(baseName, name =>
         {
-            return "Shared.RalColors";
-        }
+            var paths = new List<string>();
+            var parts = name.Split('.');
 
-        // Color-related partials also need access to shared RAL resources
-        if (baseName.Contains("ColorAutocomplete", StringComparison.OrdinalIgnoreCase))
-        {
-            return "Shared.RalColors";
-        }
+            // Walk up the hierarchy, looking for _Shared at each level
+            // Start from the immediate parent folder, not the file itself
+            for (var i = parts.Length - 1; i >= 1; i--)
+            {
+                var parentPath = string.Join(".", parts.Take(i));
+                var sharedPath = string.IsNullOrEmpty(parentPath)
+                    ? SharedFileName
+                    : $"{parentPath}.{SharedFileName}";
+                paths.Add(sharedPath);
+            }
 
-        return null;
+            // Add root-level _Shared
+            paths.Add(SharedFileName);
+
+            return paths;
+        });
     }
 
     public LocalizedString this[string name]
     {
         get
         {
-            // Basic lookup without formatting.
             var value = GetValue(name, CultureInfo.CurrentUICulture);
             return new LocalizedString(name, value ?? name, resourceNotFound: value is null);
         }
@@ -63,7 +83,6 @@ public sealed class JsonStringLocalizer : IStringLocalizer
     {
         get
         {
-            // Uses string.Format with the current UI culture.
             var format = GetValue(name, CultureInfo.CurrentUICulture) ?? name;
             var value = string.Format(CultureInfo.CurrentUICulture, format, arguments);
             return new LocalizedString(name, value, resourceNotFound: format == name);
@@ -74,12 +93,25 @@ public sealed class JsonStringLocalizer : IStringLocalizer
     {
         var culture = CultureInfo.CurrentUICulture;
         var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var resources = LoadResources(culture);
-        foreach (var entry in resources)
+
+        // First return page-specific resources
+        foreach (var entry in LoadResources(culture, _baseName))
         {
             if (seenKeys.Add(entry.Key))
             {
                 yield return new LocalizedString(entry.Key, entry.Value, resourceNotFound: false);
+            }
+        }
+
+        // Then shared resources (in order from most specific to least)
+        foreach (var sharedBaseName in _sharedBaseNames)
+        {
+            foreach (var entry in LoadResources(culture, sharedBaseName))
+            {
+                if (seenKeys.Add(entry.Key))
+                {
+                    yield return new LocalizedString(entry.Key, entry.Value, resourceNotFound: false);
+                }
             }
         }
 
@@ -91,7 +123,7 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         var parent = culture.Parent;
         while (parent != CultureInfo.InvariantCulture)
         {
-            foreach (var entry in LoadResources(parent))
+            foreach (var entry in LoadResources(parent, _baseName))
             {
                 if (seenKeys.Add(entry.Key))
                 {
@@ -112,10 +144,10 @@ public sealed class JsonStringLocalizer : IStringLocalizer
             return value;
         }
 
-        // Fall back to shared resources if available
-        if (_sharedBaseName != null)
+        // Walk up the hierarchy looking for _Shared files
+        foreach (var sharedBaseName in _sharedBaseNames)
         {
-            value = GetValueFromBaseName(key, culture, _sharedBaseName);
+            value = GetValueFromBaseName(key, culture, sharedBaseName);
             if (value != null)
             {
                 return value;
@@ -168,27 +200,18 @@ public sealed class JsonStringLocalizer : IStringLocalizer
         return null;
     }
 
-    private Dictionary<string, string> LoadResources(CultureInfo culture) =>
-        LoadResources(culture, _baseName);
-
     private Dictionary<string, string> LoadResources(CultureInfo culture, string baseName)
     {
-        // Map the base name and culture into a file path under ResourcesJson/.
         var resourcePath = BuildResourcePath(culture, baseName);
         if (resourcePath is null)
         {
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
-        return Cache.GetOrAdd(resourcePath, path =>
+        return FileCache.GetOrAdd(resourcePath, path =>
         {
             if (!File.Exists(path))
             {
-                // Missing file is normal (e.g., no de-DE file yet).
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug("Localization file not found at {Path}", path);
-                }
                 return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
 
@@ -200,7 +223,6 @@ public sealed class JsonStringLocalizer : IStringLocalizer
             }
             catch (JsonException exception)
             {
-                // Invalid JSON should not break a request.
                 _logger.LogWarning(exception, "Invalid JSON localization file at {Path}", path);
                 return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }

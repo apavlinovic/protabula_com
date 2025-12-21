@@ -1,0 +1,17 @@
+.color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+::deep .color-tile {
+    width: 19%;
+}
+
+@media (max-width: 900px) {
+    ::deep .color-tile {
+        width: 32%;
+        height: auto;
+        padding: var(--spacing-lg) 0;
+    }
+}

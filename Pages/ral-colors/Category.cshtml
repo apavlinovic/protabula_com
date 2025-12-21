@@ -1,0 +1,77 @@
+@page "/ral-colors/{category:regex(^(classic|design-plus|effect)$)}"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@inject IViewLocalizer Localizer
+@model CategoryModel
+@{
+    var categoryKey = Model.Category?.ToString() ?? "";
+    ViewData["Title"] = Localizer[$"Title{categoryKey}"];
+    ViewData["MetaDescription"] = Localizer[$"MetaDescription{categoryKey}"];
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>@Localizer[$"Intro{categoryKey}"]</p>
+
+<div class="search-box mb-lg">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <input type="text" id="colorSearch" placeholder="@Localizer["SearchPlaceholder"]" oninput="filterColors(this.value)" />
+</div>
+
+<div class="color-grid">
+    @foreach (var color in Model.Colors)
+    {
+        <a class="color-tile @(color.NeedsDarkText ? "dark" : "")" style="background-color: @color.Hex;"
+           asp-page="/ral-colors/Details" asp-route-culture="@RouteData.Values["culture"]"
+           asp-route-colorIdentifier="@color.Slug"
+           data-name="@color.Name?.ToLowerInvariant()"
+           data-name-de="@color.NameDe?.ToLowerInvariant()"
+           data-number="@color.Number.ToLowerInvariant()">
+
+            <span class="ral">RAL</span>
+            <h3 class="number">@color.Number</h3>
+
+            @if (!string.IsNullOrEmpty(color.Name))
+            {
+                <span class="name">@color.Name</span>
+            }
+
+            @if (!string.IsNullOrEmpty(color.NameDe))
+            {
+                <span class="name">@color.NameDe</span>
+            }
+        </a>
+    }
+</div>
+
+<p id="noResults" class="text-secondary hidden">@Localizer["NoResults"]</p>
+
+@section Scripts {
+    <script>
+        function filterColors(query) {
+            const searchTerm = query.toLowerCase().trim();
+            const tiles = document.querySelectorAll('.color-tile');
+            const noResults = document.getElementById('noResults');
+
+            let totalVisible = 0;
+
+            tiles.forEach(tile => {
+                const name = tile.dataset.name || '';
+                const nameDe = tile.dataset.nameDe || '';
+                const number = tile.dataset.number || '';
+
+                const matches = searchTerm === '' ||
+                    name.includes(searchTerm) ||
+                    nameDe.includes(searchTerm) ||
+                    number.includes(searchTerm);
+
+                tile.style.display = matches ? '' : 'none';
+                if (matches) totalVisible++;
+            });
+
+            noResults.classList.toggle('hidden', !(totalVisible === 0 && searchTerm !== ''));
+        }
+    </script>
+}

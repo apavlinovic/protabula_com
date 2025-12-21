@@ -1,5 +1,18 @@
 {
   "HomeTitle": "Startseite",
-  "WelcomeHeading": "Willkommen",
-  "WelcomeBody": "Erfahren Sie mehr uber die Erstellung von Webanwendungen mit ASP.NET Core."
+  "WelcomeHeading": "Willkommen bei Pro Tabula",
+  "WelcomeBody": "Ihre Ressource für Farbreferenzen und Werkzeuge.",
+  "RalColorsHeading": "RAL-Farben",
+  "AllColors": "Alle RAL-Farben",
+  "AllColorsDesc": "Die komplette Sammlung von RAL Classic, Design System Plus und Effect Farben durchsuchen.",
+  "RalClassic": "RAL Classic",
+  "RalClassicDesc": "Die ursprünglichen 215 RAL-Farben, weltweit in Industrie und Handel verwendet.",
+  "RalDesignPlus": "RAL Design System Plus",
+  "RalDesignPlusDesc": "1.825 Farben systematisch geordnet für Architekten und Designer.",
+  "RalEffect": "RAL Effect",
+  "RalEffectDesc": "490 Metallic- und Unifarben für spezielle Beschichtungseffekte.",
+  "Converter": "Farbkonverter",
+  "ConverterDesc": "RAL-Farben in HEX, RGB, HSL und CMYK Formate umwandeln.",
+  "Compare": "Farbvergleich",
+  "CompareDesc": "Bis zu 8 RAL-Farben nebeneinander auf verschiedenen Hintergründen vergleichen."
 }
