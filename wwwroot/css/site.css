@@ -1,6 +1,7 @@
 :root {
     --text-primary: #222;
     --text-secondary: #666;
+    --accent: #0EA5E9;
 
     /* Root colors */
     --root-yellow: #FFFF00;
@@ -302,3 +303,53 @@ code {
 .py-md { padding-top: var(--padding-md); padding-bottom: var(--padding-md); }
 .py-lg { padding-top: var(--padding-lg); padding-bottom: var(--padding-lg); }
 .py-xl { padding-top: var(--padding-xl); padding-bottom: var(--padding-xl); }
+
+/* Search box */
+.search-box {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-box .search-icon {
+    position: absolute;
+    left: var(--padding-md);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 21px;
+    height: 21px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.search-box input {
+    width: 100%;
+    padding: var(--padding-md) var(--padding-md) var(--padding-md) calc(var(--padding-md) + 26px);
+    border: 2px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.search-box input::placeholder {
+    color: #999;
+}
+
+.search-box input:hover {
+    border-color: #ccc;
+    background-color: #fff;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+.search-box:focus-within .search-icon {
+    color: var(--accent);
+}

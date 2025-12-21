@@ -3,5 +3,7 @@
   "Intro": "Auf dieser Seite finden Sie die Farbnuancen aller drei RAL-Farbpaletten - RAL CLASSIC, RAL EFFECT und RAL DESIGN SYSTEM plus.",
   "CategoryClassic": "Klassisch",
   "CategoryDesignPlus": "Design Plus",
-  "CategoryEffect": "Effekt"
+  "CategoryEffect": "Effekt",
+  "SearchPlaceholder": "Nach Name oder Nummer suchen...",
+  "NoResults": "Keine Farben gefunden, die Ihrer Suche entsprechen."
 }

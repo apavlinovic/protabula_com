@@ -10,6 +10,14 @@
 <h1>@ViewData["Title"]</h1>
 <p>@Localizer["Intro"]</p>
 
+<div class="search-box mb-lg">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <input type="text" id="colorSearch" placeholder="@Localizer["SearchPlaceholder"]" oninput="filterColors(this.value)" />
+</div>
+
 @{
     var groups = Model.Colors
     .OrderBy(color => color.Category)
@@ -19,14 +27,17 @@
 @for (var index = 0; index < groups.Count; index++)
 {
     var group = groups[index];
-    <section>
+    <section class="color-section">
         <h2>@Localizer[$"Category{group.Key}"]</h2>
         <div class="color-grid">
             @foreach (var color in group)
             {
                 <a class="color-tile @(color.NeedsDarkText ? "dark" : "")" style="background-color: @color.Hex;"
                     asp-page="/ral-colors/Details" asp-route-culture="@RouteData.Values["culture"]"
-                    asp-route-colorIdentifier="@color.Slug">
+                    asp-route-colorIdentifier="@color.Slug"
+                    data-name="@color.Name?.ToLowerInvariant()"
+                    data-name-de="@color.NameDe?.ToLowerInvariant()"
+                    data-number="@color.Number.ToLowerInvariant()">
 
                     <span class="ral">RAL</span>
                     <h3 class="number">@color.Number</h3>
@@ -46,6 +57,54 @@
     </section>
     @if (index < groups.Count - 1)
     {
-        <hr />
+        <hr class="section-divider" />
     }
+}
+
+<p id="noResults" class="text-secondary" style="display: none;">@Localizer["NoResults"]</p>
+
+@section Scripts {
+    <script>
+        function filterColors(query) {
+            const searchTerm = query.toLowerCase().trim();
+            const tiles = document.querySelectorAll('.color-tile');
+            const sections = document.querySelectorAll('.color-section');
+            const dividers = document.querySelectorAll('.section-divider');
+            const noResults = document.getElementById('noResults');
+
+            let totalVisible = 0;
+
+            tiles.forEach(tile => {
+                const name = tile.dataset.name || '';
+                const nameDe = tile.dataset.nameDe || '';
+                const number = tile.dataset.number || '';
+
+                const matches = searchTerm === '' ||
+                    name.includes(searchTerm) ||
+                    nameDe.includes(searchTerm) ||
+                    number.includes(searchTerm);
+
+                tile.style.display = matches ? '' : 'none';
+                if (matches) totalVisible++;
+            });
+
+            // Hide sections with no visible items
+            sections.forEach(section => {
+                const visibleTiles = section.querySelectorAll('.color-tile[style=""], .color-tile:not([style])');
+                const hasVisible = Array.from(section.querySelectorAll('.color-tile')).some(t => t.style.display !== 'none');
+                section.style.display = hasVisible ? '' : 'none';
+            });
+
+            // Hide dividers between hidden sections
+            dividers.forEach(divider => {
+                const prevSection = divider.previousElementSibling;
+                const nextSection = divider.nextElementSibling;
+                const showDivider = prevSection?.style.display !== 'none' && nextSection?.style.display !== 'none';
+                divider.style.display = showDivider ? '' : 'none';
+            });
+
+            // Show no results message
+            noResults.style.display = totalVisible === 0 && searchTerm !== '' ? '' : 'none';
+        }
+    </script>
 }

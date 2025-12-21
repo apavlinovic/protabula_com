@@ -38,7 +38,46 @@
     }
 </p>
 
-<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;">
+<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
+     onclick="openColorPreview()" title="@Localizer["ClickToPreview"]">
+    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
+</div>
+
+<!-- Full-page color preview modal -->
+<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;" onclick="closeColorPreview(event)">
+    <div class="color-preview-content">
+        <button class="color-preview-close" onclick="closeColorPreview(event)">&times;</button>
+        <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;"></div>
+        <div class="color-preview-info @(Model.Color.NeedsDarkText ? "dark" : "")">
+            <span>RAL @Model.Color.Number</span>
+            @if (!string.IsNullOrEmpty(Model.Color.Name))
+            {
+                <span>@Model.Color.Name</span>
+            }
+        </div>
+    </div>
+    <div class="color-preview-controls">
+        <button class="bg-option active" data-bg="#FFFFFF" onclick="changePreviewBg('#FFFFFF', this)">
+            <span class="bg-option-swatch" style="background-color: #FFFFFF;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgWhite"]</span>
+        </button>
+        <button class="bg-option" data-bg="#E0E0E0" onclick="changePreviewBg('#E0E0E0', this)">
+            <span class="bg-option-swatch" style="background-color: #E0E0E0;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgLightGrey"]</span>
+        </button>
+        <button class="bg-option" data-bg="#9E9E9E" onclick="changePreviewBg('#9E9E9E', this)">
+            <span class="bg-option-swatch" style="background-color: #9E9E9E;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgGrey"]</span>
+        </button>
+        <button class="bg-option" data-bg="#424242" onclick="changePreviewBg('#424242', this)">
+            <span class="bg-option-swatch" style="background-color: #424242;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgDarkGrey"]</span>
+        </button>
+        <button class="bg-option" data-bg="#000000" onclick="changePreviewBg('#000000', this)">
+            <span class="bg-option-swatch" style="background-color: #000000;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgBlack"]</span>
+        </button>
+    </div>
 </div>
 
 <table class="color-details mb-xl">
@@ -168,4 +207,35 @@
             </div>
         }
     </section>
+}
+
+@section Scripts {
+    <script>
+        function openColorPreview() {
+            document.getElementById('colorPreview').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeColorPreview(event) {
+            if (event.target.classList.contains('color-preview-overlay') ||
+                event.target.classList.contains('color-preview-close')) {
+                document.getElementById('colorPreview').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function changePreviewBg(color, button) {
+            document.getElementById('colorPreview').style.backgroundColor = color;
+            document.querySelectorAll('.bg-option').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            event.stopPropagation();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('colorPreview').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
 }

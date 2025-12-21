@@ -3,5 +3,7 @@
   "Intro": "On this page you will find the colour shades of all three RAL colour palettes - RAL CLASSIC, RAL EFFECT and RAL DESIGN SYSTEM plus.",
   "CategoryClassic": "Classic",
   "CategoryDesignPlus": "Design Plus",
-  "CategoryEffect": "Effect"
+  "CategoryEffect": "Effect",
+  "SearchPlaceholder": "Search by name or number...",
+  "NoResults": "No colors found matching your search."
 }

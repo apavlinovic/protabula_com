@@ -15,6 +15,7 @@
   "IntroWithName": "RAL {0} {1} is a color from the {2} palette with hex value {3}.",
   "IntroWithRoot": "RAL {0} is a {1} color from the {2} palette with hex value {3}.",
   "IntroBasic": "RAL {0} is a color from the {1} palette with hex value {2}.",
+  "ClickToPreview": "Click to open full-screen preview",
   "ContrastComparison": "Contrast Comparison",
   "BgWhite": "White",
   "BgLightGrey": "Light Grey",
