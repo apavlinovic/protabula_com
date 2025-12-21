@@ -61,7 +61,7 @@
     }
 }
 
-<p id="noResults" class="text-secondary" style="display: none;">@Localizer["NoResults"]</p>
+<p id="noResults" class="text-secondary hidden">@Localizer["NoResults"]</p>
 
 @section Scripts {
     <script>
@@ -104,7 +104,7 @@
             });
 
             // Show no results message
-            noResults.style.display = totalVisible === 0 && searchTerm !== '' ? '' : 'none';
+            noResults.classList.toggle('hidden', !(totalVisible === 0 && searchTerm !== ''));
         }
     </script>
 }

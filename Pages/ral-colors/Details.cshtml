@@ -39,14 +39,19 @@
 </p>
 
 <div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
-     onclick="openColorPreview()" title="@Localizer["ClickToPreview"]">
+     role="button" tabindex="0"
+     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
+     title="@Localizer["ClickToPreview"]">
     <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
 </div>
 
 <!-- Full-page color preview modal -->
-<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;" onclick="closeColorPreview(event)">
+<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;"
+     role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"
+     onclick="closeColorPreview(event)">
     <div class="color-preview-content">
-        <button class="color-preview-close" onclick="closeColorPreview(event)">&times;</button>
+        <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
+        <button class="color-preview-close" onclick="closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
         <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;">
             @* <div class="color-preview-info @(Model.Color.NeedsDarkText ? "dark" : "")"> *@
             @*     <span>RAL @Model.Color.Number</span> *@
@@ -114,23 +119,33 @@
 <section class="contrast-section mt-2xl">
     <h2>@Localizer["ContrastComparison"]</h2>
     <div class="contrast-grid">
-        <div class="contrast-bg" style="background-color: #FFFFFF;" onclick="openColorPreviewWithBg('#FFFFFF')">
+        <div class="contrast-bg" style="background-color: #FFFFFF;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#FFFFFF')" onkeydown="handleContrastKeydown(event, '#FFFFFF')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgWhite"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #E0E0E0;" onclick="openColorPreviewWithBg('#E0E0E0')">
+        <div class="contrast-bg" style="background-color: #E0E0E0;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#E0E0E0')" onkeydown="handleContrastKeydown(event, '#E0E0E0')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgLightGrey"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #9E9E9E;" onclick="openColorPreviewWithBg('#9E9E9E')">
+        <div class="contrast-bg" style="background-color: #9E9E9E;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#9E9E9E')" onkeydown="handleContrastKeydown(event, '#9E9E9E')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgGrey"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #424242;" onclick="openColorPreviewWithBg('#424242')">
+        <div class="contrast-bg" style="background-color: #424242;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#424242')" onkeydown="handleContrastKeydown(event, '#424242')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgDarkGrey"]</span>
         </div>
-        <div class="contrast-bg" style="background-color: #000000;" onclick="openColorPreviewWithBg('#000000')">
+        <div class="contrast-bg" style="background-color: #000000;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#000000')" onkeydown="handleContrastKeydown(event, '#000000')">
             <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
             <span class="contrast-label">@Localizer["BgBlack"]</span>
         </div>
@@ -150,18 +165,7 @@
             <div class="similar-grid">
                 @foreach (var similar in Model.SimilarColors.Classic)
                 {
-                    <a class="color-tile @(similar.Color.NeedsDarkText ? "dark" : "")"
-                       style="background-color: @similar.Color.Hex;"
-                       asp-page="/ral-colors/Details"
-                       asp-route-culture="@RouteData.Values["culture"]"
-                       asp-route-colorIdentifier="@similar.Color.Slug">
-                        <span class="ral">RAL</span> 
-                        <span class="number">@similar.Color.Number</span>
-                        @if (!string.IsNullOrEmpty(similar.Color.Name))
-                        {
-                            <span class="name">@similar.Color.Name</span>
-                        }
-                    </a>
+                    <partial name="_ColorTile" model="similar.Color" />
                 }
             </div>
         }
@@ -172,18 +176,7 @@
             <div class="similar-grid">
                 @foreach (var similar in Model.SimilarColors.DesignPlus)
                 {
-                    <a class="color-tile @(similar.Color.NeedsDarkText ? "dark" : "")"
-                       style="background-color: @similar.Color.Hex;"
-                       asp-page="/ral-colors/Details"
-                       asp-route-culture="@RouteData.Values["culture"]"
-                       asp-route-colorIdentifier="@similar.Color.Slug">
-                        <span class="ral">RAL</span>
-                        <span class="number">@similar.Color.Number</span>
-                        @if (!string.IsNullOrEmpty(similar.Color.Name))
-                        {
-                            <span class="name">@similar.Color.Name</span>
-                        }
-                    </a>
+                    <partial name="_ColorTile" model="similar.Color" />
                 }
             </div>
         }
@@ -194,18 +187,7 @@
             <div class="similar-grid">
                 @foreach (var similar in Model.SimilarColors.Effect)
                 {
-                    <a class="color-tile @(similar.Color.NeedsDarkText ? "dark" : "")"
-                       style="background-color: @similar.Color.Hex;"
-                       asp-page="/ral-colors/Details"
-                       asp-route-culture="@RouteData.Values["culture"]"
-                       asp-route-colorIdentifier="@similar.Color.Slug">
-                        <span class="ral">RAL</span>
-                        <span class="number">@similar.Color.Number</span>
-                        @if (!string.IsNullOrEmpty(similar.Color.Name))
-                        {
-                            <span class="name">@similar.Color.Name</span>
-                        }
-                    </a>
+                    <partial name="_ColorTile" model="similar.Color" />
                 }
             </div>
         }
@@ -214,9 +196,15 @@
 
 @section Scripts {
     <script>
+        let lastFocusedElement = null;
+
         function openColorPreview() {
-            document.getElementById('colorPreview').classList.add('active');
+            lastFocusedElement = document.activeElement;
+            const modal = document.getElementById('colorPreview');
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            // Focus the close button
+            modal.querySelector('.color-preview-close').focus();
         }
 
         function openColorPreviewWithBg(bgColor) {
@@ -232,7 +220,14 @@
                 event.target.classList.contains('color-preview-close')) {
                 document.getElementById('colorPreview').classList.remove('active');
                 document.body.style.overflow = '';
+                if (lastFocusedElement) lastFocusedElement.focus();
             }
+        }
+
+        function closeModal() {
+            document.getElementById('colorPreview').classList.remove('active');
+            document.body.style.overflow = '';
+            if (lastFocusedElement) lastFocusedElement.focus();
         }
 
         function changePreviewBg(color, button) {
@@ -242,10 +237,40 @@
             event.stopPropagation();
         }
 
+        function handleColorKeydown(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openColorPreview();
+            }
+        }
+
+        function handleContrastKeydown(event, bgColor) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openColorPreviewWithBg(bgColor);
+            }
+        }
+
+        // Focus trap for modal
+        document.getElementById('colorPreview').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                const focusable = this.querySelectorAll('button');
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                document.getElementById('colorPreview').classList.remove('active');
-                document.body.style.overflow = '';
+                closeModal();
             }
         });
     </script>

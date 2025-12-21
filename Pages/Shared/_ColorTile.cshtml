@@ -1,0 +1,15 @@
+@using protabula_com.Models
+@model RalColor
+
+<a class="color-tile @(Model.NeedsDarkText ? "dark" : "")"
+   style="background-color: @Model.Hex;"
+   asp-page="/ral-colors/Details"
+   asp-route-culture="@ViewContext.RouteData.Values["culture"]"
+   asp-route-colorIdentifier="@Model.Slug">
+    <span class="ral">RAL</span>
+    <span class="number">@Model.Number</span>
+    @if (!string.IsNullOrEmpty(Model.Name))
+    {
+        <span class="name">@Model.Name</span>
+    }
+</a>

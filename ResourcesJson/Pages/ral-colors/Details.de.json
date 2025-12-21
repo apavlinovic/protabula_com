@@ -33,5 +33,7 @@
   "RootColorWhite": "Weiß",
   "RootColorBlack": "Schwarz",
   "RootColorPink": "Pink",
-  "RootColorRose": "Rosa"
+  "RootColorRose": "Rosa",
+  "ColorPreviewTitle": "Farbvorschau",
+  "Close": "Schließen"
 }
