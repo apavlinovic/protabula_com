@@ -12,5 +12,5 @@ for details on configuring this project to bundle and minify static web assets. 
 .wrapper {
     max-width: var(--wrapper-max-width);
     margin: 0 auto;
-    padding: var(--padding-lg);
+    padding: var(--spacing-lg);
 }

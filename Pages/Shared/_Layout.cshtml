@@ -30,7 +30,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - protabula_com</title>
+    <title>@ViewData["Title"] | Protabula</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
@@ -47,13 +47,7 @@
                     <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
                 </div>
                 <div>
-                    <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["Home"]</a>
-                    <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
-                </div>
-                <div>
-                    <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
-                    <span>|</span>
-                    <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
+                    <a asp-area="" asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["RalColors"]</a>
                 </div>
             </nav>
         </header>
@@ -64,9 +58,17 @@
         </div>
 
         <footer>
-            <div>
-                &copy; 2025 - @Localizer["SiteName"] - <a asp-area="" asp-page="/Privacy"
-                    asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+            <div class="footer-links">
+                <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["Home"]</a>
+                <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+            </div>
+            <div class="footer-language">
+                <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
+                <span>|</span>
+                <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2025 @Localizer["SiteName"]
             </div>
         </footer>
 
