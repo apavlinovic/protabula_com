@@ -140,18 +140,10 @@
 <div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;"
      role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"
      onclick="closeColorPreview(event)">
+    <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
+    <button class="color-preview-close" onclick="closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
     <div class="color-preview-content">
-        <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
-        <button class="color-preview-close" onclick="closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
-        <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;">
-            @* <div class="color-preview-info @(Model.Color.NeedsDarkText ? "dark" : "")"> *@
-            @*     <span>RAL @Model.Color.Number</span> *@
-            @*     @if (!string.IsNullOrEmpty(Model.Color.Name)) *@
-            @*     { *@
-            @*         <span>@Model.Color.Name</span> *@
-            @*     } *@
-            @* </div> *@
-        </div>
+        <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;"></div>
     </div>
     <div class="color-preview-controls">
         <button class="bg-option active" data-bg="#FFFFFF" onclick="changePreviewBg('#FFFFFF', this)">
@@ -175,6 +167,8 @@
             <span class="bg-option-label">@Localizer["BgBlack"]</span>
         </button>
     </div>
+    <!-- Fullscreen mode: color fills entire overlay -->
+    <div class="color-preview-fullscreen" style="background-color: @Model.Color.Hex;"></div>
 </div>
 
 <table class="color-details mb-xl">
@@ -317,31 +311,35 @@
         function openColorPreview() {
             lastFocusedElement = document.activeElement;
             const modal = document.getElementById('colorPreview');
-            modal.classList.add('active');
+            modal.classList.add('active', 'fullscreen');
             document.body.style.overflow = 'hidden';
-            // Focus the close button
             modal.querySelector('.color-preview-close').focus();
         }
 
         function openColorPreviewWithBg(bgColor) {
-            document.getElementById('colorPreview').style.backgroundColor = bgColor;
+            const modal = document.getElementById('colorPreview');
+            modal.style.backgroundColor = bgColor;
             document.querySelectorAll('.bg-option').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.bg === bgColor);
             });
-            openColorPreview();
+            lastFocusedElement = document.activeElement;
+            modal.classList.add('active');
+            modal.classList.remove('fullscreen');
+            document.body.style.overflow = 'hidden';
+            modal.querySelector('.color-preview-close').focus();
         }
 
         function closeColorPreview(event) {
             if (event.target.classList.contains('color-preview-overlay') ||
+                event.target.classList.contains('color-preview-fullscreen') ||
                 event.target.classList.contains('color-preview-close')) {
-                document.getElementById('colorPreview').classList.remove('active');
-                document.body.style.overflow = '';
-                if (lastFocusedElement) lastFocusedElement.focus();
+                closeModal();
             }
         }
 
         function closeModal() {
-            document.getElementById('colorPreview').classList.remove('active');
+            const modal = document.getElementById('colorPreview');
+            modal.classList.remove('active', 'fullscreen');
             document.body.style.overflow = '';
             if (lastFocusedElement) lastFocusedElement.focus();
         }
@@ -370,7 +368,7 @@
         // Focus trap for modal
         document.getElementById('colorPreview').addEventListener('keydown', function(e) {
             if (e.key === 'Tab') {
-                const focusable = this.querySelectorAll('button');
+                const focusable = this.querySelectorAll('button:not([style*="display: none"])');
                 const first = focusable[0];
                 const last = focusable[focusable.length - 1];
 
