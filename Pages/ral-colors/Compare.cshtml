@@ -113,11 +113,16 @@
             updateUrl(colors, bg);
         }
 
-        // Focus the search input
+        // Focus the search input and show dropdown
         function focusSearch() {
             const input = document.querySelector('#colorSearch .autocomplete-input');
-            if (input) {
-                input.focus();
+            const dropdown = document.querySelector('#colorSearch .autocomplete-dropdown');
+            if (input && dropdown) {
+                // Use setTimeout to run after the click event finishes bubbling
+                setTimeout(() => {
+                    input.focus();
+                    dropdown.classList.add('active');
+                }, 0);
             }
         }
 

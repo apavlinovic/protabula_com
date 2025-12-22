@@ -48,11 +48,37 @@
     <div class="lato-protabula_com">
         <header>
             <nav>
-                <div>
-                    <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
-                </div>
-                <div>
-                    <a asp-area="" asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["RalColors"]</a>
+                <a class="nav-logo" asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
+
+                <button class="nav-hamburger" aria-label="@Localizer["MenuToggle"]" aria-expanded="false" aria-controls="nav-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <div class="nav-menu" id="nav-menu">
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-toggle" aria-expanded="false" aria-controls="ral-dropdown">
+                            @Localizer["RalColors"]
+                            <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m6 9 6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu" id="ral-dropdown">
+                            <div class="dropdown-section">
+                                <span class="dropdown-section-title">@Localizer["Categories"]</span>
+                                <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["AllColors"]</a>
+                                <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@currentCulture">@Localizer["RalClassic"]</a>
+                                <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@currentCulture">@Localizer["RalDesignPlus"]</a>
+                                <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@currentCulture">@Localizer["RalEffect"]</a>
+                            </div>
+                            <div class="dropdown-section">
+                                <span class="dropdown-section-title">@Localizer["Tools"]</span>
+                                <a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["Converter"]</a>
+                                <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["Compare"]</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </nav>
         </header>
@@ -77,6 +103,7 @@
             </div>
         </footer>
 
+        <script src="~/js/nav.js" asp-append-version="true"></script>
         @await RenderSectionAsync("Scripts", required: false)
     </div>
 </body>

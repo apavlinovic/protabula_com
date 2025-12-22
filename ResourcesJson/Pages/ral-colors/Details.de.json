@@ -1,6 +1,9 @@
 {
   "BackToColors": "Zurück zu allen Farben",
   "SimilarColors": "Ähnliche Farben",
+  "ScenePreview": "Vorschau am Gebäude",
+  "ScenePreviewDesc": "Sehen Sie, wie diese Farbe an einer modernen Hausfassade aussieht.",
+  "ScenePreviewAlt": "Hausfassade mit angewandter Farbe",
   "LabelName": "Name",
   "LabelNameDe": "Deutscher Name",
   "LabelRootColor": "Grundfarbe",

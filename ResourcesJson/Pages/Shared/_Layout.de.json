@@ -2,5 +2,14 @@
   "SiteName": "Protabula",
   "Home": "Startseite",
   "Privacy": "Datenschutz",
-  "RalColors": "RAL-Farben"
+  "RalColors": "RAL-Farben",
+  "MenuToggle": "Menü umschalten",
+  "Categories": "Kategorien",
+  "Tools": "Werkzeuge",
+  "AllColors": "Alle Farben",
+  "RalClassic": "RAL Classic",
+  "RalDesignPlus": "RAL Design Plus",
+  "RalEffect": "RAL Effect",
+  "Converter": "Farbkonverter",
+  "Compare": "Farbvergleich"
 }

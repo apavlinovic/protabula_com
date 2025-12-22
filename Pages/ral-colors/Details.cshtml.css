@@ -204,6 +204,35 @@
     font-size: 0.65rem;
 }
 
+/* Scene preview */
+.scene-preview-section h2 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.scene-preview {
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    line-height: 0;
+}
+
+.scene-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.scene-color-overlay {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: multiply;
+    mask-image: url('/house-scenes/front/mask.png');
+    mask-repeat: no-repeat;
+    -webkit-mask-image: url('/house-scenes/front/mask.png');
+    -webkit-mask-repeat: no-repeat;
+    pointer-events: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .color {

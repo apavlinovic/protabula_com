@@ -1,6 +1,9 @@
 {
   "BackToColors": "Back to all colors",
   "SimilarColors": "Similar Colors",
+  "ScenePreview": "Preview on Building",
+  "ScenePreviewDesc": "See how this color looks on a modern house facade.",
+  "ScenePreviewAlt": "House facade with color applied",
   "LabelName": "Name",
   "LabelNameDe": "German Name",
   "LabelRootColor": "Root Color",
