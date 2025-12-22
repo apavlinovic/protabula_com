@@ -1,0 +1,13 @@
+{
+  "NotFoundTitle": "Seite nicht gefunden",
+  "NotFoundDescription": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+  "NotFoundHeading": "Seite nicht gefunden",
+  "NotFoundMessage": "Die gesuchte Seite existiert leider nicht oder wurde verschoben.",
+  "SuggestionsHeading": "Hier sind einige hilfreiche Links:",
+  "GoHome": "Zur Startseite",
+  "BrowseColors": "RAL-Farben durchsuchen",
+  "ErrorTitle": "Fehler",
+  "ErrorDescription": "Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten.",
+  "ErrorHeading": "Etwas ist schief gelaufen",
+  "ErrorMessage": "Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+}

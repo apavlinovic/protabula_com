@@ -224,6 +224,16 @@
     border-radius: var(--border-radius);
     overflow: hidden;
     line-height: 0;
+    margin: 0;
+}
+
+.scene-preview figcaption {
+    line-height: 1.4;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-align: center;
+    background: var(--bg-subtle);
 }
 
 ::deep .scene-image {

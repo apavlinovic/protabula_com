@@ -1,11 +1,42 @@
 @page "/ral-colors"
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
 @using protabula_com.Models
 @inject IViewLocalizer Localizer
 @model RalColorsModel
 @{
-    ViewData["Title"] = Localizer["Title"];
-    ViewData["MetaDescription"] = Localizer["MetaDescription"];
+    ViewData["Title"] = Localizer["Title"].Value;
+    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["Title"].Value, null, null)
+    };
+
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "CollectionPage",
+        "name": "@Localizer["Title"].Value",
+        "description": "@Localizer["MetaDescription"].Value",
+        "url": "@baseUrl/@currentCulture/ral-colors",
+        "isPartOf": {
+            "@@type": "WebSite",
+            "name": "Protabula",
+            "url": "@baseUrl"
+        },
+        "about": {
+            "@@type": "Thing",
+            "name": "RAL Colors"
+        },
+        "numberOfItems": @Model.Colors.Count
+    }
+    </script>
 }
 
 <h1>@ViewData["Title"]</h1>

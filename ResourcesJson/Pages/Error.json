@@ -1,0 +1,13 @@
+{
+  "NotFoundTitle": "Page Not Found",
+  "NotFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+  "NotFoundHeading": "Page Not Found",
+  "NotFoundMessage": "Sorry, the page you're looking for doesn't exist or has been moved.",
+  "SuggestionsHeading": "Here are some helpful links:",
+  "GoHome": "Go to Homepage",
+  "BrowseColors": "Browse RAL Colors",
+  "ErrorTitle": "Error",
+  "ErrorDescription": "An error occurred while processing your request.",
+  "ErrorHeading": "Something went wrong",
+  "ErrorMessage": "An error occurred while processing your request. Please try again later."
+}

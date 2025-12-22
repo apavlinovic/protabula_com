@@ -3,7 +3,12 @@
 @inject IViewLocalizer Localizer
 @model PrivacyModel
 @{
-    ViewData["Title"] = Localizer["PrivacyTitle"];
+    ViewData["Title"] = Localizer["PrivacyTitle"].Value;
+    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["PrivacyTitle"].Value, null, null)
+    };
 }
 <h1>@ViewData["Title"]</h1>
 

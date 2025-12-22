@@ -1,10 +1,43 @@
 @page
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
 @inject IViewLocalizer Localizer
 @model IndexModel
 @{
-    ViewData["Title"] = Localizer["HomeTitle"];
+    ViewData["Title"] = Localizer["HomeTitle"].Value;
     ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "WebSite",
+        "name": "Protabula",
+        "alternateName": "Pro Tabula",
+        "url": "@baseUrl",
+        "description": "@Localizer["MetaDescription"].Value",
+        "inLanguage": ["en", "de"],
+        "potentialAction": {
+            "@@type": "SearchAction",
+            "target": "@baseUrl/@currentCulture/ral-colors?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Organization",
+        "name": "Protabula",
+        "url": "@baseUrl",
+        "logo": "@baseUrl/images/og-default.png"
+    }
+    </script>
 }
 
 <h1>@Localizer["WelcomeHeading"]</h1>

@@ -1,0 +1,32 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var breadcrumbs = ViewData["Breadcrumbs"] as List<(string Label, string? Page, object? RouteValues)>;
+    var culture = ViewContext.RouteData.Values["culture"]?.ToString() ?? "en";
+}
+
+@if (breadcrumbs != null && breadcrumbs.Count > 0)
+{
+    <nav class="breadcrumbs" aria-label="@Localizer["BreadcrumbLabel"]">
+        <ol>
+            <li>
+                <a asp-page="/Index" asp-route-culture="@culture">@Localizer["Home"]</a>
+            </li>
+            @for (var i = 0; i < breadcrumbs.Count; i++)
+            {
+                var crumb = breadcrumbs[i];
+                var isLast = i == breadcrumbs.Count - 1;
+                <li>
+                    @if (isLast || crumb.Page == null)
+                    {
+                        <span aria-current="page">@crumb.Label</span>
+                    }
+                    else
+                    {
+                        <a asp-page="@crumb.Page" asp-all-route-data="@(crumb.RouteValues as IDictionary<string, string> ?? new Dictionary<string, string> { ["culture"] = culture })">@crumb.Label</a>
+                    }
+                </li>
+            }
+        </ol>
+    </nav>
+}

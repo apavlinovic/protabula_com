@@ -63,6 +63,17 @@
     <meta name="description" content="@metaDescription" />
     <title>@fullTitle</title>
 
+    <!-- Favicon and theme -->
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/png" href="/app-icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/app-icons/favicon.svg" />
+    <link rel="shortcut icon" href="/app-icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/app-icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="MyWebSite" />
+    <link rel="manifest" href="/app-icons/site.webmanifest" />
+
     <!-- Canonical and hreflang -->
     <link rel="canonical" href="@canonicalUrl" />
     <link rel="alternate" hreflang="en" href="@enUrl" />
@@ -84,6 +95,7 @@
     <meta name="twitter:title" content="@fullTitle" />
     <meta name="twitter:description" content="@metaDescription" />
     <meta name="twitter:image" content="@ogImage" />
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,6 +145,7 @@
             </nav>
         </header>
         <div class="wrapper">
+            <partial name="_Breadcrumbs" />
             <main role="main">
                 @RenderBody()
             </main>

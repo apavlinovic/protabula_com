@@ -3,9 +3,16 @@
 @using protabula_com.Models
 @model CompareModel
 @inject IViewLocalizer Localizer
+@using System.Globalization
 @{
-    ViewData["Title"] = Localizer["Title"];
-    ViewData["MetaDescription"] = Localizer["MetaDescription"];
+    var culture = CultureInfo.CurrentUICulture.Name;
+    ViewData["Title"] = Localizer["Title"].Value;
+    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = culture }),
+        (Localizer["Title"].Value, null, null)
+    };
 
     var autocompleteModel = new ColorAutocompleteModel(
         "colorSearch",

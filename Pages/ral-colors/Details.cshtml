@@ -23,6 +23,23 @@
     var request = ViewContext.HttpContext.Request;
     var baseUrl = $"{request.Scheme}://{request.Host}";
     var currentUrl = $"{baseUrl}/{currentCulture}/ral-colors/{Model.Color.Slug}";
+
+    // Breadcrumbs - include category
+    var categorySlug = Model.Color.Category switch
+    {
+        RalCategory.Classic => "classic",
+        RalCategory.DesignPlus => "design-plus",
+        RalCategory.Effect => "effect",
+        _ => "classic"
+    };
+    var categoryName = Localizer[$"Category{Model.Color.Category}"].Value;
+
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = currentCulture }),
+        (categoryName, "/ral-colors/Category", new Dictionary<string, string> { ["culture"] = currentCulture, ["category"] = categorySlug }),
+        (colorTitle, null, null)
+    };
 }
 
 @section Head {
@@ -230,22 +247,26 @@
     <h2>@Localizer["ScenePreview"]</h2>
     <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
     <div class="scene-grid">
-        <div class="scene-preview scene-front">
-            <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+        <figure class="scene-preview scene-front">
+            <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
             <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-        </div>
-        <div class="scene-preview scene-side">
-            <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview scene-side">
+            <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
             <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-        </div>
-        <div class="scene-preview scene-terrace">
-            <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview scene-terrace">
+            <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
             <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-        </div>
-        <div class="scene-preview scene-window">
-            <img src="~/house-scenes/window/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview scene-window">
+            <img src="~/house-scenes/window/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
             <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-        </div>
+            <figcaption>@Localizer["SceneWindow", Model.Color.Number]</figcaption>
+        </figure>
     </div>
 </section>
 

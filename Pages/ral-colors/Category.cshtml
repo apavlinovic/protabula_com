@@ -1,12 +1,52 @@
 @page "/ral-colors/{category:regex(^(classic|design-plus|effect)$)}"
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
 @using protabula_com.Models
 @inject IViewLocalizer Localizer
 @model CategoryModel
 @{
     var categoryKey = Model.Category?.ToString() ?? "";
-    ViewData["Title"] = Localizer[$"Title{categoryKey}"];
-    ViewData["MetaDescription"] = Localizer[$"MetaDescription{categoryKey}"];
+    var culture = CultureInfo.CurrentUICulture.Name;
+    ViewData["Title"] = Localizer[$"Title{categoryKey}"].Value;
+    ViewData["MetaDescription"] = Localizer[$"MetaDescription{categoryKey}"].Value;
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = culture }),
+        (Localizer[$"Title{categoryKey}"].Value, null, null)
+    };
+
+    var currentCulture = culture;
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+    var categorySlug = Model.Category switch
+    {
+        RalCategory.Classic => "classic",
+        RalCategory.DesignPlus => "design-plus",
+        RalCategory.Effect => "effect",
+        _ => ""
+    };
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "CollectionPage",
+        "name": "@Localizer[$"Title{categoryKey}"].Value",
+        "description": "@Localizer[$"MetaDescription{categoryKey}"].Value",
+        "url": "@baseUrl/@currentCulture/ral-colors/@categorySlug",
+        "isPartOf": {
+            "@@type": "WebSite",
+            "name": "Protabula",
+            "url": "@baseUrl"
+        },
+        "about": {
+            "@@type": "Thing",
+            "name": "RAL @categoryKey Colors"
+        },
+        "numberOfItems": @Model.Colors.Count
+    }
+    </script>
 }
 
 <h1>@ViewData["Title"]</h1>

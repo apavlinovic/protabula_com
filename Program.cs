@@ -9,6 +9,11 @@ using protabula_com.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
 builder.Services.AddLocalization(options => options.ResourcesPath = "ResourcesJson");
 builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
 builder.Services.AddSingleton<IRootColorClassifier, RootColorClassifier>();
@@ -37,14 +42,32 @@ builder.Services.AddRazorPages(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/en/Error");
+    app.UseStatusCodePagesWithReExecute("/en/Error", "?statusCode={0}");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseResponseCompression();
+
+// Security headers
+app.Use(async (context, next) =>
+{
+    var headers = context.Response.Headers;
+    headers["X-Content-Type-Options"] = "nosniff";
+    headers["X-Frame-Options"] = "DENY";
+    headers["X-XSS-Protection"] = "1; mode=block";
+    headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
+
+    await next();
+});
 
 var supportedCultures = new[] { "en", "de" }
     .Select(c => new CultureInfo(c))
