@@ -209,6 +209,16 @@
     margin-bottom: var(--spacing-sm);
 }
 
+.scene-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.scene-grid .scene-preview:first-child {
+    grid-column: 1 / -1;
+}
+
 .scene-preview {
     position: relative;
     border-radius: var(--border-radius);
@@ -225,14 +235,33 @@
 .scene-color-overlay {
     position: absolute;
     inset: 0;
+    opacity: 0.95;
     mix-blend-mode: multiply;
-    mask-image: url('/house-scenes/front/mask.png');
     mask-repeat: no-repeat;
-    mask-size: 100% 100%;
-    -webkit-mask-image: url('/house-scenes/front/mask.png');
+    mask-size: 100% auto;
     -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
+    -webkit-mask-size: 100% auto;
     pointer-events: none;
+}
+
+.scene-color-overlay.dark {
+    opacity: 0.95;
+}
+
+/* Scene-specific masks */
+.scene-front .scene-color-overlay {
+    mask-image: url('/house-scenes/front/mask.png');
+    -webkit-mask-image: url('/house-scenes/front/mask.png');
+}
+
+.scene-side .scene-color-overlay {
+    mask-image: url('/house-scenes/side/mask.png');
+    -webkit-mask-image: url('/house-scenes/side/mask.png');
+}
+
+.scene-terrace .scene-color-overlay {
+    mask-image: url('/house-scenes/terrace/mask.png');
+    -webkit-mask-image: url('/house-scenes/terrace/mask.png');
 }
 
 /* Responsive */
@@ -247,6 +276,10 @@
 
     ::deep .similar-grid .color-tile {
         width: calc(50% - var(--spacing-sm));
+    }
+
+    .scene-grid {
+        grid-template-columns: 1fr;
     }
 
     .color-preview-swatch {

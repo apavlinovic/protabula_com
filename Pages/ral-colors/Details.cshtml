@@ -229,13 +229,21 @@
 <section class="scene-preview-section mt-2xl">
     <h2>@Localizer["ScenePreview"]</h2>
     <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
-    <div class="scene-preview">
-        <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
-        <div class="scene-color-overlay" style="background-color: @Model.Color.Hex;"></div>
+    <div class="scene-grid">
+        <div class="scene-preview scene-front">
+            <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"></div>
+        </div>
+        <div class="scene-preview scene-side">
+            <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"></div>
+        </div>
+        <div class="scene-preview scene-terrace">
+            <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"></div>
+        </div>
     </div>
 </section>
-
-<hr />
 
 @if (Model.SimilarColors.Classic.Any() || Model.SimilarColors.DesignPlus.Any() || Model.SimilarColors.Effect.Any())
 {
