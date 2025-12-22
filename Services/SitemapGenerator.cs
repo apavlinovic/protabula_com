@@ -24,13 +24,14 @@ public sealed class SitemapGenerator : ISitemapGenerator
     public async Task<string> GenerateAsync(string baseUrl, CancellationToken cancellationToken = default)
     {
         var colors = await _colorLoader.LoadAsync(cancellationToken);
-        var sb = new StringBuilder();
 
-        using var writer = XmlWriter.Create(sb, new XmlWriterSettings
+        using var stream = new MemoryStream();
+        using var writer = XmlWriter.Create(stream, new XmlWriterSettings
         {
             Indent = true,
-            Encoding = Encoding.UTF8,
-            OmitXmlDeclaration = false
+            Encoding = new UTF8Encoding(false), // UTF-8 without BOM
+            OmitXmlDeclaration = false,
+            Async = true
         });
 
         writer.WriteStartDocument();
@@ -58,9 +59,9 @@ public sealed class SitemapGenerator : ISitemapGenerator
 
         writer.WriteEndElement(); // urlset
         writer.WriteEndDocument();
-        writer.Flush();
+        await writer.FlushAsync();
 
-        return sb.ToString();
+        return Encoding.UTF8.GetString(stream.ToArray());
     }
 
     private static void WriteUrlWithAlternates(XmlWriter writer, string baseUrl, string path)
