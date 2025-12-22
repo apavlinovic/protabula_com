@@ -14,6 +14,7 @@ builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactor
 builder.Services.AddSingleton<IRootColorClassifier, RootColorClassifier>();
 builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 builder.Services.AddSingleton<ISimilarColorFinder, SimilarColorFinder>();
+builder.Services.AddSingleton<ISitemapGenerator, SitemapGenerator>();
 
 builder.Services.AddRazorPages(options =>
 {
@@ -80,5 +81,26 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+
+// Sitemap endpoint
+app.MapGet("/sitemap.xml", async (HttpContext context, ISitemapGenerator sitemapGenerator) =>
+{
+    var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
+    var sitemap = await sitemapGenerator.GenerateAsync(baseUrl, context.RequestAborted);
+    return Results.Content(sitemap, "application/xml");
+});
+
+// Robots.txt endpoint
+app.MapGet("/robots.txt", (HttpContext context) =>
+{
+    var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
+    var robotsTxt = $"""
+        User-agent: *
+        Allow: /
+
+        Sitemap: {baseUrl}/sitemap.xml
+        """;
+    return Results.Content(robotsTxt, "text/plain");
+});
 
 app.Run();

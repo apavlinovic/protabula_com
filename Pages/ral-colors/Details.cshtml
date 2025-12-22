@@ -232,15 +232,19 @@
     <div class="scene-grid">
         <div class="scene-preview scene-front">
             <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
         </div>
         <div class="scene-preview scene-side">
             <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
         </div>
         <div class="scene-preview scene-terrace">
             <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+        </div>
+        <div class="scene-preview scene-window">
+            <img src="~/house-scenes/window/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
         </div>
     </div>
 </section>

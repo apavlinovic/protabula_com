@@ -475,35 +475,87 @@ hr {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid;
-    gap: var(--spacing-md);
 }
 
-.page-list li a {
-    display: block;
-    padding: var(--spacing-lg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+.page-list > li {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-list > li:last-child {
+    border-bottom: none;
+}
+
+.page-list li > a {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) 0;
     text-decoration: none;
     color: inherit;
     transition: all var(--transition);
 }
 
-.page-list li a:hover {
-    border-color: var(--accent);
-    background: var(--bg-subtle);
+.page-list li > a:hover {
+    color: var(--accent);
+}
+
+.page-list li > a:hover .page-icon {
+    color: var(--accent);
+}
+
+.page-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: color var(--transition);
+}
+
+.page-content {
+    flex: 1;
 }
 
 .page-list li a strong {
     display: block;
-    font-size: 1.1rem;
-    color: var(--accent);
+    font-size: 1rem;
+    color: var(--text-primary);
     margin-bottom: var(--spacing-xs);
+    transition: color var(--transition);
+}
+
+.page-list li a:hover strong {
+    color: var(--accent);
 }
 
 .page-list li a span {
     color: var(--text-secondary);
     font-size: 0.9rem;
+}
+
+/* Nested page list */
+.page-list-nested {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding-left: calc(24px + var(--spacing-md));
+    border-top: 1px solid var(--border-color);
+}
+
+.page-list-nested li {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-list-nested li:last-child {
+    border-bottom: none;
+}
+
+.page-list-nested li > a {
+    padding: var(--spacing-md) 0;
+}
+
+.page-list-nested .page-icon {
+    width: 20px;
+    height: 20px;
 }
 
 /* Header */

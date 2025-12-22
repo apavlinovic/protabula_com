@@ -235,7 +235,7 @@
 .scene-color-overlay {
     position: absolute;
     inset: 0;
-    opacity: 0.95;
+    opacity: 0.85;
     mix-blend-mode: multiply;
     mask-repeat: no-repeat;
     mask-size: 100% auto;
@@ -244,8 +244,8 @@
     pointer-events: none;
 }
 
-.scene-color-overlay.dark {
-    opacity: 0.95;
+.scene-color-overlay.light-color {
+    opacity: 1;
 }
 
 /* Scene-specific masks */
@@ -262,6 +262,11 @@
 .scene-terrace .scene-color-overlay {
     mask-image: url('/house-scenes/terrace/mask.png');
     -webkit-mask-image: url('/house-scenes/terrace/mask.png');
+}
+
+.scene-window .scene-color-overlay {
+    mask-image: url('/house-scenes/window/mask.png');
+    -webkit-mask-image: url('/house-scenes/window/mask.png');
 }
 
 /* Responsive */

@@ -7,6 +7,7 @@
     var queryString = Context.Request.QueryString.Value ?? string.Empty;
     var segments = requestPath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
     var hasCultureSegment = segments.Length > 0 && (segments[0] == "en" || segments[0] == "de");
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
 
     string BuildCulturePath(string culture)
     {
@@ -17,12 +18,41 @@
 
         if (hasCultureSegment)
         {
-            segments[0] = culture;
-            return "/" + string.Join('/', segments) + queryString;
+            var newSegments = segments.ToArray();
+            newSegments[0] = culture;
+            return "/" + string.Join('/', newSegments) + queryString;
         }
 
         return "/" + culture + "/" + string.Join('/', segments) + queryString;
     }
+
+    // Build path without query string for canonical URL
+    string BuildCanonicalPath(string culture)
+    {
+        if (segments.Length == 0)
+        {
+            return "/" + culture;
+        }
+
+        if (hasCultureSegment)
+        {
+            var newSegments = segments.ToArray();
+            newSegments[0] = culture;
+            return "/" + string.Join('/', newSegments);
+        }
+
+        return "/" + culture + "/" + string.Join('/', segments);
+    }
+
+    var canonicalUrl = baseUrl + BuildCanonicalPath(currentCulture);
+    var enUrl = baseUrl + BuildCanonicalPath("en");
+    var deUrl = baseUrl + BuildCanonicalPath("de");
+
+    // Page title and description for OG tags
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Protabula";
+    var fullTitle = $"{pageTitle} | Protabula";
+    var metaDescription = ViewData["MetaDescription"]?.ToString() ?? Localizer["DefaultMetaDescription"].Value;
+    var ogImage = ViewData["OgImage"]?.ToString() ?? $"{baseUrl}/images/og-default.png";
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -30,11 +60,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @if (ViewData["MetaDescription"] != null)
-    {
-        <meta name="description" content="@ViewData["MetaDescription"]" />
-    }
-    <title>@ViewData["Title"] | Protabula</title>
+    <meta name="description" content="@metaDescription" />
+    <title>@fullTitle</title>
+
+    <!-- Canonical and hreflang -->
+    <link rel="canonical" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="en" href="@enUrl" />
+    <link rel="alternate" hreflang="de" href="@deUrl" />
+    <link rel="alternate" hreflang="x-default" href="@enUrl" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@fullTitle" />
+    <meta property="og:description" content="@metaDescription" />
+    <meta property="og:url" content="@canonicalUrl" />
+    <meta property="og:image" content="@ogImage" />
+    <meta property="og:locale" content="@(currentCulture == "de" ? "de_DE" : "en_US")" />
+    <meta property="og:locale:alternate" content="@(currentCulture == "de" ? "en_US" : "de_DE")" />
+    <meta property="og:site_name" content="Protabula" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@fullTitle" />
+    <meta name="twitter:description" content="@metaDescription" />
+    <meta name="twitter:image" content="@ogImage" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
