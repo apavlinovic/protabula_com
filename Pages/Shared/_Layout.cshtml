@@ -110,7 +110,9 @@
     <div class="lato-protabula_com">
         <header>
             <nav>
-                <a class="nav-logo" asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["SiteName"]</a>
+                <a class="nav-logo" asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">
+                    <img src="~/logo.svg" alt="@Localizer["SiteName"]" height="28" />
+                </a>
 
                 <button class="nav-hamburger" aria-label="@Localizer["MenuToggle"]" aria-expanded="false" aria-controls="nav-menu">
                     <span></span>
