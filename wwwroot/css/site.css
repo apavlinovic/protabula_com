@@ -1,4 +1,6 @@
 :root {
+    --body-bg: #ededed;
+    
     --text-primary: #222;
     --text-secondary: #666;
     --text-muted: #999;
@@ -51,6 +53,7 @@ body {
         helvetica, arial, sans-serif;
     margin: 0;
 
+    background-color: var(--body-bg);
     color: var(--text-primary);
     font-size: 18px;
 }
