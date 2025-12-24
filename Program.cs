@@ -138,7 +138,7 @@ app.MapGet("/images/ral-scenes/{filename}.jpg", async (
     HttpContext context) =>
 {
     // Parse filename to extract slug and scene (e.g., "ral-1000-green-beige-front" -> slug + "front")
-    var validScenes = new[] { "front", "side", "terrace", "window", "front-door" };
+    var validScenes = new[] { "front", "side", "terrace", "window", "front-door", "living-room" };
     string? scene = null;
     string? slug = null;
 

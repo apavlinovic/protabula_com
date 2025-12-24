@@ -16,7 +16,7 @@ public class ColorImageService : IColorImageService
     private readonly IWebHostEnvironment _env;
     private readonly string _cacheFolder;
     private readonly string _scenesFolder;
-    private static readonly string[] ValidScenes = ["front", "side", "terrace", "window", "front-door"];
+    private static readonly string[] ValidScenes = ["front", "side", "terrace", "window", "front-door", "living-room"];
 
     public ColorImageService(IWebHostEnvironment env)
     {
