@@ -84,10 +84,12 @@ public class ColorImageService : IColorImageService
             maskImage.Mutate(x => x.Resize(baseImage.Width, baseImage.Height));
         }
 
-        // Apply color using Multiply + Soft Light combination
-        // Multiply gives strong color, soft light adds some luminosity back
-        const float multiplyWeight = 0.85f;
-        const float softLightWeight = 0.15f;
+        // Luminosity-preserving colorization
+        // Remaps render grayscale range to natural lighting on colored surface
+        const float minLuma = 0.65f;  // #A6A6A6 shadow
+        const float maxLuma = 0.94f;  // #F0F0F0 highlight
+        const float shadowOutput = 0.65f;  // darkest output (65%)
+        const float highlightOutput = 1.0f; // brightest output (100%)
 
         baseImage.ProcessPixelRows(maskImage, (baseAccessor, maskAccessor) =>
         {
@@ -111,20 +113,25 @@ public class ColorImageService : IColorImageService
                         float blendG = targetRgb.G / 255f;
                         float blendB = targetRgb.B / 255f;
 
-                        // Multiply blend
-                        float mulR = baseR * blendR;
-                        float mulG = baseG * blendG;
-                        float mulB = baseB * blendB;
+                        // Calculate perceived luminosity from base grayscale
+                        float luma = 0.299f * baseR + 0.587f * baseG + 0.114f * baseB;
 
-                        // Soft light blend
-                        float slR = (float)SoftLight(baseR, blendR);
-                        float slG = (float)SoftLight(baseG, blendG);
-                        float slB = (float)SoftLight(baseB, blendB);
+                        // Remap from render range to output range
+                        float normalized = (luma - minLuma) / (maxLuma - minLuma);
+                        normalized = Math.Clamp(normalized, 0f, 1f);
+                        float finalLuma = shadowOutput + normalized * (highlightOutput - shadowOutput);
 
-                        // Combine multiply and soft light
-                        float newR = mulR * multiplyWeight + slR * softLightWeight;
-                        float newG = mulG * multiplyWeight + slG * softLightWeight;
-                        float newB = mulB * multiplyWeight + slB * softLightWeight;
+                        // Apply target color modulated by luminosity
+                        float newR = blendR * finalLuma;
+                        float newG = blendG * finalLuma;
+                        float newB = blendB * finalLuma;
+
+                        // Boost saturation by pushing colors away from gray
+                        const float saturationBoost = 1.15f;  // 15% more saturation
+                        float gray = (newR + newG + newB) / 3f;
+                        newR = gray + (newR - gray) * saturationBoost;
+                        newG = gray + (newG - gray) * saturationBoost;
+                        newB = gray + (newB - gray) * saturationBoost;
 
                         // Blend based on mask intensity
                         pixel.R = (byte)Math.Clamp((pixel.R * (1 - maskValue) + newR * 255 * maskValue), 0, 255);
@@ -169,9 +176,4 @@ public class ColorImageService : IColorImageService
         return new Rgba32(r, g, b);
     }
 
-    // Soft Light blend mode (Pegtop formula)
-    private static double SoftLight(double baseVal, double blendVal)
-    {
-        return (1 - 2 * blendVal) * baseVal * baseVal + 2 * blendVal * baseVal;
-    }
 }
