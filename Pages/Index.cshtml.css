@@ -1,0 +1,137 @@
+.home-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-xl);
+}
+
+@media (max-width: 900px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.home-section h2 {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Palette Cards */
+.palette-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+@media (max-width: 600px) {
+    .palette-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+::deep .palette-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+::deep .palette-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+::deep .palette-preview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 80px;
+}
+
+.palette-preview span {
+    display: block;
+}
+
+.palette-info {
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.palette-info strong {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.palette-info span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* All Colors card - no preview, just info */
+::deep .palette-card-all {
+    justify-content: center;
+    min-height: 120px;
+}
+
+.palette-card-all .palette-info {
+    padding: var(--spacing-xl);
+    text-align: center;
+    align-items: center;
+}
+
+/* Tool List */
+.tool-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+::deep .tool-list li a {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: inherit;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+::deep .tool-list li a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tool-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    color: var(--accent);
+}
+
+.tool-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tool-content strong {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.tool-content span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}

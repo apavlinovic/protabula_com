@@ -43,85 +43,96 @@
 <h1>@Localizer["WelcomeHeading"]</h1>
 <p>@Localizer["WelcomeBody"]</p>
 
-<section class="mt-xl">
-    <h2>@Localizer["RalColorsHeading"]</h2>
-    <ul class="page-list">
-        <li>
-            <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]">
-                <svg class="page-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="7" height="7" rx="1"/>
-                    <rect x="14" y="3" width="7" height="7" rx="1"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1"/>
-                    <rect x="14" y="14" width="7" height="7" rx="1"/>
-                </svg>
-                <div class="page-content">
+<div class="home-grid mt-xl">
+    <section class="home-section">
+        <h2>@Localizer["RalColorsHeading"]</h2>
+        <div class="palette-cards">
+            <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@RouteData.Values["culture"]" class="palette-card">
+                <div class="palette-preview">
+                    <span style="background:#F3DA0B"></span>
+                    <span style="background:#CB2C30"></span>
+                    <span style="background:#F67828"></span>
+                    <span style="background:#1E5F4D"></span>
+                    <span style="background:#1B4B9A"></span>
+                    <span style="background:#6C6E70"></span>
+                    <span style="background:#826644"></span>
+                    <span style="background:#F4F4F4"></span>
+                </div>
+                <div class="palette-info">
+                    <strong>@Localizer["RalClassic"]</strong>
+                    <span>@Localizer["RalClassicDesc"]</span>
+                </div>
+            </a>
+            <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@RouteData.Values["culture"]" class="palette-card">
+                <div class="palette-preview">
+                    <span style="background:#9A8B7A"></span>
+                    <span style="background:#8D9A82"></span>
+                    <span style="background:#BEB1A2"></span>
+                    <span style="background:#6E8285"></span>
+                    <span style="background:#A89C8F"></span>
+                    <span style="background:#7D9EB0"></span>
+                    <span style="background:#B8A99A"></span>
+                    <span style="background:#94A0A6"></span>
+                </div>
+                <div class="palette-info">
+                    <strong>@Localizer["RalDesignPlus"]</strong>
+                    <span>@Localizer["RalDesignPlusDesc"]</span>
+                </div>
+            </a>
+            <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@RouteData.Values["culture"]" class="palette-card">
+                <div class="palette-preview">
+                    <span style="background:#8B8C7A"></span>
+                    <span style="background:#7A8B7D"></span>
+                    <span style="background:#6F7B6D"></span>
+                    <span style="background:#8E9283"></span>
+                    <span style="background:#A09B8B"></span>
+                    <span style="background:#7C8285"></span>
+                    <span style="background:#98A098"></span>
+                    <span style="background:#8A9190"></span>
+                </div>
+                <div class="palette-info">
+                    <strong>@Localizer["RalEffect"]</strong>
+                    <span>@Localizer["RalEffectDesc"]</span>
+                </div>
+            </a>
+            <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" class="palette-card palette-card-all">
+                <div class="palette-info">
                     <strong>@Localizer["AllColors"]</strong>
                     <span>@Localizer["AllColorsDesc"]</span>
                 </div>
             </a>
-            <ul class="page-list-nested">
-                <li>
-                    <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@RouteData.Values["culture"]">
-                        <svg class="page-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                        </svg>
-                        <div class="page-content">
-                            <strong>@Localizer["RalClassic"]</strong>
-                            <span>@Localizer["RalClassicDesc"]</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@RouteData.Values["culture"]">
-                        <svg class="page-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 8v8"/>
-                            <path d="M8 12h8"/>
-                        </svg>
-                        <div class="page-content">
-                            <strong>@Localizer["RalDesignPlus"]</strong>
-                            <span>@Localizer["RalDesignPlusDesc"]</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@RouteData.Values["culture"]">
-                        <svg class="page-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                        </svg>
-                        <div class="page-content">
-                            <strong>@Localizer["RalEffect"]</strong>
-                            <span>@Localizer["RalEffectDesc"]</span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <a asp-page="/ral-colors/Converter" asp-route-culture="@RouteData.Values["culture"]">
-                <svg class="page-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                    <path d="M3 3v5h5"/>
-                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
-                    <path d="M16 16h5v5"/>
-                </svg>
-                <div class="page-content">
-                    <strong>@Localizer["Converter"]</strong>
-                    <span>@Localizer["ConverterDesc"]</span>
-                </div>
-            </a>
-        </li>
-        <li>
-            <a asp-page="/ral-colors/Compare" asp-route-culture="@RouteData.Values["culture"]">
-                <svg class="page-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="8" height="18" rx="1"/>
-                    <rect x="13" y="3" width="8" height="18" rx="1"/>
-                </svg>
-                <div class="page-content">
-                    <strong>@Localizer["Compare"]</strong>
-                    <span>@Localizer["CompareDesc"]</span>
-                </div>
-            </a>
-        </li>
-    </ul>
-</section>
+        </div>
+    </section>
+
+    <section class="home-section">
+        <h2>@Localizer["ToolsHeading"]</h2>
+        <ul class="tool-list">
+            <li>
+                <a asp-page="/ral-colors/Converter" asp-route-culture="@RouteData.Values["culture"]">
+                    <svg class="tool-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                        <path d="M16 16h5v5"/>
+                    </svg>
+                    <div class="tool-content">
+                        <strong>@Localizer["Converter"]</strong>
+                        <span>@Localizer["ConverterDesc"]</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a asp-page="/ral-colors/Compare" asp-route-culture="@RouteData.Values["culture"]">
+                    <svg class="tool-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="8" height="18" rx="1"/>
+                        <rect x="13" y="3" width="8" height="18" rx="1"/>
+                    </svg>
+                    <div class="tool-content">
+                        <strong>@Localizer["Compare"]</strong>
+                        <span>@Localizer["CompareDesc"]</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </section>
+</div>
