@@ -325,42 +325,6 @@ h2 {
     display: block;
 }
 
-.scene-color-overlay {
-    position: absolute;
-    inset: 0;
-    opacity: 0.85;
-    mix-blend-mode: multiply;
-    mask-repeat: no-repeat;
-    mask-size: 100% auto;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 100% auto;
-    pointer-events: none;
-}
-
-.scene-color-overlay.light-color {
-    opacity: 1;
-}
-
-/* Scene-specific masks */
-.scene-front .scene-color-overlay {
-    mask-image: url('/house-scenes/front/mask.png');
-    -webkit-mask-image: url('/house-scenes/front/mask.png');
-}
-
-.scene-side .scene-color-overlay {
-    mask-image: url('/house-scenes/side/mask.png');
-    -webkit-mask-image: url('/house-scenes/side/mask.png');
-}
-
-.scene-terrace .scene-color-overlay {
-    mask-image: url('/house-scenes/terrace/mask.png');
-    -webkit-mask-image: url('/house-scenes/terrace/mask.png');
-}
-
-.scene-window .scene-color-overlay {
-    mask-image: url('/house-scenes/window/mask.png');
-    -webkit-mask-image: url('/house-scenes/window/mask.png');
-}
 
 /* Responsive */
 @media (max-width: 768px) {

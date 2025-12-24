@@ -22,6 +22,7 @@ builder.Services.AddSingleton<IRootColorClassifier, RootColorClassifier>();
 builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 builder.Services.AddSingleton<ISimilarColorFinder, SimilarColorFinder>();
 builder.Services.AddSingleton<ISitemapGenerator, SitemapGenerator>();
+builder.Services.AddSingleton<IColorImageService, ColorImageService>();
 
 builder.Services.AddRazorPages(options =>
 {
@@ -126,6 +127,43 @@ app.MapGet("/robots.txt", (HttpContext context) =>
         Sitemap: {baseUrl}/sitemap.xml
         """;
     return Results.Content(robotsTxt, "text/plain");
+});
+
+// Scene image endpoint - generates color preview images on demand
+app.MapGet("/images/ral-scenes/{slug}/{scene}.jpg", async (
+    string slug,
+    string scene,
+    IRalColorLoader colorLoader,
+    IColorImageService imageService,
+    HttpContext context) =>
+{
+    // Parse slug to get color number
+    var colorNumber = protabula_com.Models.RalColor.FromSlug(slug);
+    var colors = await colorLoader.LoadAsync();
+    var color = colors.FirstOrDefault(c => c.Number == colorNumber);
+
+    if (color == null)
+    {
+        return Results.NotFound();
+    }
+
+    try
+    {
+        var imagePath = await imageService.GetOrGenerateSceneImageAsync(color.Slug, color.Hex, scene);
+
+        // Set cache headers (cache for 1 year since images don't change)
+        context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+
+        return Results.File(imagePath, "image/jpeg");
+    }
+    catch (ArgumentException)
+    {
+        return Results.NotFound();
+    }
+    catch (FileNotFoundException)
+    {
+        return Results.NotFound();
+    }
 });
 
 // Development-only: Generate color preview images

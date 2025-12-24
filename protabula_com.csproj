@@ -1316,6 +1316,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\ral-colors\" />
+    <Folder Include="wwwroot\images\ral-scenes\" />
   </ItemGroup>
 
 </Project>

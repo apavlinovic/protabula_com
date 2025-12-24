@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Generated scene images (created on-demand by ColorImageService)
+wwwroot/images/ral-scenes/

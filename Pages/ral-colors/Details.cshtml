@@ -142,24 +142,20 @@
     <h2>@Localizer["ScenePreview", Model.Color.Number]</h2>
     <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
     <div class="scene-grid">
-        <figure class="scene-preview scene-front">
-            <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+        <figure class="scene-preview">
+            <img src="/images/ral-scenes/@(Model.Color.Slug)/front.jpg" alt="@Localizer["SceneFrontAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
             <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
         </figure>
-        <figure class="scene-preview scene-side">
-            <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+        <figure class="scene-preview">
+            <img src="/images/ral-scenes/@(Model.Color.Slug)/side.jpg" alt="@Localizer["SceneSideAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
             <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
         </figure>
-        <figure class="scene-preview scene-terrace">
-            <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+        <figure class="scene-preview">
+            <img src="/images/ral-scenes/@(Model.Color.Slug)/terrace.jpg" alt="@Localizer["SceneTerraceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
             <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption>
         </figure>
-        <figure class="scene-preview scene-window">
-            <img src="~/house-scenes/window/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+        <figure class="scene-preview">
+            <img src="/images/ral-scenes/@(Model.Color.Slug)/window.jpg" alt="@Localizer["SceneWindowAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
             <figcaption>@Localizer["SceneWindow", Model.Color.Number]</figcaption>
         </figure>
     </div>
