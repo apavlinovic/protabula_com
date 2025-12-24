@@ -29,5 +29,9 @@
   "BreadcrumbHome": "Home",
   "BreadcrumbColors": "RAL Colors",
   "CompareWith": "Compare with similar colors",
-  "ShareImageCaption": "Share this color"
+  "ColorImageTitle": "RAL {0} Color Swatch for Download",
+  "CopyImageUrl": "Copy image URL",
+  "CopiedToClipboard": "Copied!",
+  "ImageAltWithName": "RAL {0} {1} color swatch - {2} hex code for design, paint, and coating reference",
+  "ImageAltBasic": "RAL {0} color swatch - {1} hex code for design, paint, and coating reference"
 }

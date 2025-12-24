@@ -210,7 +210,28 @@
 </section>
 
 
-<section class="contrast-section mt-2xl">
+<section class="color-share-section mt-2xl">
+    <h2>@Localizer["ColorImageTitle", Model.Color.Number]</h2>
+    <figure class="color-share-image">
+        <img src="/images/ral-colors/@(Model.Color.Slug).jpg"
+             alt="@(string.IsNullOrEmpty(Model.Color.Name)
+                      ? Localizer["ImageAltBasic", Model.Color.Number, Model.Color.Hex].Value
+                      : Localizer["ImageAltWithName", Model.Color.Number, Model.Color.Name, Model.Color.Hex].Value)"
+             width="1200"
+             height="630"
+             loading="lazy" />
+        <figcaption>
+            <button class="btn btn-sm btn-secondary copy-url-btn"
+                    data-url="@baseUrl/images/ral-colors/@(Model.Color.Slug).jpg"
+                    data-copied-text="@Localizer["CopiedToClipboard"]"
+                    onclick="copyImageUrl(this)">
+                @Localizer["CopyImageUrl"]
+            </button>
+        </figcaption>
+    </figure>
+</section>
+
+<section class="contrast-section mt-4xl">
     <h2>@Localizer["ContrastComparison"]</h2>
     <div class="contrast-grid">
         <div class="contrast-bg" style="background-color: #FFFFFF;"
@@ -258,7 +279,7 @@
 
 @if (allSimilar.Any())
 {
-    <section class="compare-links mt-2xl">
+    <section class="compare-links mt-4xl">
         <h2>@Localizer["CompareWith"]</h2>
         <div class="compare-links-grid">
             @foreach (var similar in allSimilar)
@@ -278,7 +299,7 @@
 
 @if (Model.SimilarColors.Classic.Any() || Model.SimilarColors.DesignPlus.Any() || Model.SimilarColors.Effect.Any())
 {
-    <section class="similar-colors mt-2xl">
+    <section class="similar-colors mt-4xl">
         <h2>@Localizer["SimilarColors"]</h2>
 
         @if (Model.SimilarColors.Classic.Any())
@@ -316,14 +337,6 @@
     </section>
 }
 
-<figure class="color-share-image mt-xl">
-    <img src="/images/ral-colors/@(Model.Color.Slug).jpg"
-         alt="RAL @Model.Color.Number @Model.Color.Name"
-         width="1200"
-         height="630"
-         loading="lazy" />
-    <figcaption>@Localizer["ShareImageCaption"]</figcaption>
-</figure>
 
 <a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]
@@ -412,6 +425,22 @@
                 closeModal();
             }
         });
+
+        // Copy image URL to clipboard
+        function copyImageUrl(button) {
+            const url = button.dataset.url;
+            const originalText = button.textContent;
+            const copiedText = button.dataset.copiedText;
+
+            navigator.clipboard.writeText(url).then(function() {
+                button.textContent = copiedText;
+                button.disabled = true;
+                setTimeout(function() {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }, 2000);
+            });
+        }
     </script>
 }
 

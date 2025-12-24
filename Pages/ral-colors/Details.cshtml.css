@@ -409,11 +409,16 @@
 }
 
 /* Color share image */
+.color-share-section h2 {
+    margin-bottom: var(--spacing-md);
+}
+
 .color-share-image {
     margin: 0;
     border-radius: var(--border-radius);
     overflow: hidden;
     background: var(--bg-subtle);
+    max-width: 600px;
 }
 
 .color-share-image img {
@@ -426,5 +431,4 @@
     padding: var(--spacing-sm) var(--spacing-md);
     font-size: 0.85rem;
     color: var(--text-secondary);
-    text-align: center;
 }
