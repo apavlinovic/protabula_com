@@ -2,6 +2,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Localization;
 using protabula_com.Localization;
 using protabula_com.Services;
@@ -16,6 +17,7 @@ builder.Services.AddResponseCompression(options =>
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "ResourcesJson");
 builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+builder.Services.AddSingleton<IHtmlLocalizerFactory, JsonHtmlLocalizerFactory>();
 builder.Services.AddSingleton<IRootColorClassifier, RootColorClassifier>();
 builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 builder.Services.AddSingleton<ISimilarColorFinder, SimilarColorFinder>();
