@@ -37,6 +37,7 @@ public sealed class SitemapGenerator : ISitemapGenerator
         writer.WriteStartDocument();
         writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
         writer.WriteAttributeString("xmlns", "xhtml", null, "http://www.w3.org/1999/xhtml");
+        writer.WriteAttributeString("xmlns", "image", null, "http://www.google.com/schemas/sitemap-image/1.1");
 
         // Static pages
         foreach (var page in StaticPages)
@@ -50,11 +51,17 @@ public sealed class SitemapGenerator : ISitemapGenerator
             WriteUrlWithAlternates(writer, baseUrl, page);
         }
 
-        // Color detail pages
+        // Color detail pages with images
         foreach (var color in colors)
         {
             var path = $"ral-colors/{color.Slug}";
-            WriteUrlWithAlternates(writer, baseUrl, path);
+            var imageUrl = $"{baseUrl}/images/ral-colors/{color.Slug}.jpg";
+            var imageTitle = string.IsNullOrEmpty(color.Name)
+                ? $"RAL {color.Number}"
+                : $"RAL {color.Number} {color.Name}";
+            var imageCaption = $"RAL {color.Number} color swatch - {color.Hex} hex code";
+
+            WriteUrlWithAlternates(writer, baseUrl, path, imageUrl, imageTitle, imageCaption);
         }
 
         writer.WriteEndElement(); // urlset
@@ -64,7 +71,13 @@ public sealed class SitemapGenerator : ISitemapGenerator
         return Encoding.UTF8.GetString(stream.ToArray());
     }
 
-    private static void WriteUrlWithAlternates(XmlWriter writer, string baseUrl, string path)
+    private static void WriteUrlWithAlternates(
+        XmlWriter writer,
+        string baseUrl,
+        string path,
+        string? imageUrl = null,
+        string? imageTitle = null,
+        string? imageCaption = null)
     {
         foreach (var culture in SupportedCultures)
         {
@@ -100,6 +113,22 @@ public sealed class SitemapGenerator : ISitemapGenerator
             writer.WriteAttributeString("hreflang", "x-default");
             writer.WriteAttributeString("href", defaultUrl);
             writer.WriteEndElement();
+
+            // Add image if provided
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                writer.WriteStartElement("image", "image", "http://www.google.com/schemas/sitemap-image/1.1");
+                writer.WriteElementString("image", "loc", "http://www.google.com/schemas/sitemap-image/1.1", imageUrl);
+                if (!string.IsNullOrEmpty(imageTitle))
+                {
+                    writer.WriteElementString("image", "title", "http://www.google.com/schemas/sitemap-image/1.1", imageTitle);
+                }
+                if (!string.IsNullOrEmpty(imageCaption))
+                {
+                    writer.WriteElementString("image", "caption", "http://www.google.com/schemas/sitemap-image/1.1", imageCaption);
+                }
+                writer.WriteEndElement(); // image:image
+            }
 
             writer.WriteEndElement(); // url
         }
