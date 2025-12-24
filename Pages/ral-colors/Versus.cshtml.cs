@@ -1,0 +1,67 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using protabula_com.Models;
+using protabula_com.Services;
+
+public class VersusModel : PageModel
+{
+    private readonly IRalColorLoader _loader;
+
+    public VersusModel(IRalColorLoader loader)
+    {
+        _loader = loader;
+        Color1 = RalColor.Empty;
+        Color2 = RalColor.Empty;
+    }
+
+    public RalColor Color1 { get; set; }
+    public RalColor Color2 { get; set; }
+    public ColorFormats? Formats1 { get; private set; }
+    public ColorFormats? Formats2 { get; private set; }
+
+    public async Task<IActionResult> OnGetAsync(string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            return NotFound();
+        }
+
+        // Parse "7016-vs-7035" or "000_15_00-vs-7016"
+        var parts = slug.Split("-vs-", StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 2)
+        {
+            return NotFound();
+        }
+
+        // Convert URL slugs (underscores) back to color number format (spaces)
+        var colorNumber1 = parts[0].Replace('_', ' ');
+        var colorNumber2 = parts[1].Replace('_', ' ');
+
+        Color1 = await _loader.LoadSingleAsync(colorNumber1) ?? RalColor.Empty;
+        Color2 = await _loader.LoadSingleAsync(colorNumber2) ?? RalColor.Empty;
+
+        if (Color1 == RalColor.Empty || Color2 == RalColor.Empty)
+        {
+            return NotFound();
+        }
+
+        Formats1 = ColorFormats.FromHex(Color1.Hex);
+        Formats2 = ColorFormats.FromHex(Color2.Hex);
+
+        return Page();
+    }
+
+    public string GetColor1Title()
+    {
+        return string.IsNullOrEmpty(Color1.Name)
+            ? $"RAL {Color1.Number}"
+            : $"RAL {Color1.Number} {Color1.Name}";
+    }
+
+    public string GetColor2Title()
+    {
+        return string.IsNullOrEmpty(Color2.Name)
+            ? $"RAL {Color2.Number}"
+            : $"RAL {Color2.Number} {Color2.Name}";
+    }
+}

@@ -1,0 +1,159 @@
+@page "/ral-colors/{slug:regex(.*-vs-.*)}"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
+@model VersusModel
+@inject IViewLocalizer Localizer
+@{
+    var color1Title = Model.GetColor1Title();
+    var color2Title = Model.GetColor2Title();
+
+    // SEO-optimized title targeting "ral X vs Y" queries
+    ViewData["Title"] = $"{color1Title} vs {color2Title} - {Localizer["TitleSuffix"].Value}";
+
+    // Meta description with color codes
+    var rgb1 = Model.Formats1?.Rgb ?? (byte.MinValue, byte.MinValue, byte.MinValue);
+    var rgb2 = Model.Formats2?.Rgb ?? (byte.MinValue, byte.MinValue, byte.MinValue);
+    ViewData["MetaDescription"] = Localizer["MetaDescription",
+        Model.Color1.Number, Model.Color1.Name ?? "",
+        Model.Color2.Number, Model.Color2.Name ?? "",
+        Model.Color1.Hex, Model.Color2.Hex].Value;
+
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = currentCulture }),
+        ($"{color1Title} vs {color2Title}", null, null)
+    };
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@@type": "ListItem",
+                "position": 1,
+                "name": "@Localizer["BreadcrumbHome"].Value",
+                "item": "@baseUrl/@currentCulture"
+            },
+            {
+                "@@type": "ListItem",
+                "position": 2,
+                "name": "@Localizer["BreadcrumbColors"].Value",
+                "item": "@baseUrl/@currentCulture/ral-colors"
+            },
+            {
+                "@@type": "ListItem",
+                "position": 3,
+                "name": "@color1Title vs @color2Title"
+            }
+        ]
+    }
+    </script>
+}
+
+<h1>@color1Title vs @color2Title</h1>
+
+<p class="text-secondary mb-lg">
+    @Localizer["Intro", Model.Color1.Number, Model.Color2.Number]
+</p>
+
+<div class="versus-swatches">
+    <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color1.Slug"
+       class="versus-swatch @(Model.Color1.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color1.Hex;">
+        <span class="versus-swatch-number">RAL @Model.Color1.Number</span>
+        @if (!string.IsNullOrEmpty(Model.Color1.Name))
+        {
+            <span class="versus-swatch-name">@Model.Color1.Name</span>
+        }
+    </a>
+    <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color2.Slug"
+       class="versus-swatch @(Model.Color2.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color2.Hex;">
+        <span class="versus-swatch-number">RAL @Model.Color2.Number</span>
+        @if (!string.IsNullOrEmpty(Model.Color2.Name))
+        {
+            <span class="versus-swatch-name">@Model.Color2.Name</span>
+        }
+    </a>
+</div>
+
+<section class="versus-details mt-xl">
+    <h2>@Localizer["ColorCodes"]</h2>
+    <div class="versus-tables">
+        <table class="color-details">
+            <caption>@color1Title</caption>
+            <tr>
+                <th>HEX</th>
+                <td><code>@Model.Color1.Hex</code></td>
+            </tr>
+            <tr>
+                <th>@Localizer["RgbCode"]</th>
+                <td><code>@Model.Formats1?.RgbString</code></td>
+            </tr>
+            <tr>
+                <th>@Localizer["RgbValues"]</th>
+                <td><code>@Model.Formats1?.Rgb.R, @Model.Formats1?.Rgb.G, @Model.Formats1?.Rgb.B</code></td>
+            </tr>
+            <tr>
+                <th>CMYK</th>
+                <td><code>@Model.Formats1?.CmykString</code></td>
+            </tr>
+            <tr>
+                <th>HSL</th>
+                <td><code>@Model.Formats1?.HslString</code></td>
+            </tr>
+        </table>
+
+        <table class="color-details">
+            <caption>@color2Title</caption>
+            <tr>
+                <th>HEX</th>
+                <td><code>@Model.Color2.Hex</code></td>
+            </tr>
+            <tr>
+                <th>@Localizer["RgbCode"]</th>
+                <td><code>@Model.Formats2?.RgbString</code></td>
+            </tr>
+            <tr>
+                <th>@Localizer["RgbValues"]</th>
+                <td><code>@Model.Formats2?.Rgb.R, @Model.Formats2?.Rgb.G, @Model.Formats2?.Rgb.B</code></td>
+            </tr>
+            <tr>
+                <th>CMYK</th>
+                <td><code>@Model.Formats2?.CmykString</code></td>
+            </tr>
+            <tr>
+                <th>HSL</th>
+                <td><code>@Model.Formats2?.HslString</code></td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+<section class="versus-links mt-xl">
+    <h2>@Localizer["ViewDetails"]</h2>
+    <div class="versus-link-buttons">
+        <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color1.Slug" class="btn btn-secondary btn-with-swatch">
+            <span class="btn-swatch" style="background-color: @Model.Color1.Hex;"></span>
+            @Localizer["ViewColor", Model.Color1.Number]
+        </a>
+        <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color2.Slug" class="btn btn-secondary btn-with-swatch">
+            <span class="btn-swatch" style="background-color: @Model.Color2.Hex;"></span>
+            @Localizer["ViewColor", Model.Color2.Number]
+        </a>
+    </div>
+    <p class="mt-md">
+        <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture" class="text-link">
+            @Localizer["CompareMore"] &rarr;
+        </a>
+    </p>
+</section>
+
+<a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
+    &larr; @Localizer["BackToColors"]
+</a>

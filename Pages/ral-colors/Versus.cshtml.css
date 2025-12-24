@@ -1,0 +1,100 @@
+/* Large side-by-side color swatches */
+.versus-swatches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+::deep .versus-swatch {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    min-height: 300px;
+    color: #fff;
+    text-decoration: none;
+    transition: box-shadow var(--transition);
+}
+
+::deep .versus-swatch:hover {
+    box-shadow: 0 0 0 3px var(--accent);
+}
+
+.versus-swatch.dark {
+    color: #000;
+}
+
+.versus-swatch-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.versus-swatch-name {
+    font-size: 1.125rem;
+    opacity: 0.9;
+}
+
+/* Comparison tables side by side */
+.versus-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.versus-tables .color-details {
+    margin-bottom: 0;
+}
+
+.versus-tables .color-details caption {
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.125rem;
+    padding-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+/* Link buttons */
+.versus-link-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+::deep .btn-with-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+::deep .btn-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .versus-swatches {
+        grid-template-columns: 1fr;
+    }
+
+    .versus-swatch {
+        min-height: 200px;
+    }
+
+    .versus-tables {
+        grid-template-columns: 1fr;
+    }
+
+    .versus-link-buttons {
+        flex-direction: column;
+    }
+
+    .versus-link-buttons .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

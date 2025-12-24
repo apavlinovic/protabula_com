@@ -1,0 +1,14 @@
+{
+  "TitleSuffix": "Color Comparison",
+  "MetaDescription": "Compare RAL {0} {1} with RAL {2} {3}. Side-by-side color comparison with HEX ({4} vs {5}), RGB, and CMYK values.",
+  "BackToColors": "Back to all colors",
+  "BreadcrumbHome": "Home",
+  "BreadcrumbColors": "RAL Colors",
+  "Intro": "Side-by-side comparison of RAL {0} and RAL {1}. Click on a color to view its full details page.",
+  "ColorCodes": "Color Codes",
+  "RgbCode": "RGB Code",
+  "RgbValues": "RGB Values",
+  "ViewDetails": "View Full Details",
+  "ViewColor": "View RAL {0}",
+  "CompareMore": "Compare more colors"
+}

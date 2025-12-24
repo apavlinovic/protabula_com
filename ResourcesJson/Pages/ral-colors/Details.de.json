@@ -11,6 +11,10 @@
   "LabelNameDe": "Deutscher Name",
   "LabelRootColor": "Grundfarbe",
   "LabelHex": "Hex-Wert",
+  "LabelRgbCode": "RGB-Code",
+  "LabelRgbValues": "RGB-Äquivalent",
+  "LabelCmyk": "CMYK",
+  "LabelHsl": "HSL",
   "IntroWithNameAndRoot": "RAL {0} {1} ist eine {2} Farbe aus der {3}-Palette mit dem Hex-Wert {4}.",
   "IntroWithName": "RAL {0} {1} ist eine Farbe aus der {2}-Palette mit dem Hex-Wert {3}.",
   "IntroWithRoot": "RAL {0} ist eine {1} Farbe aus der {2}-Palette mit dem Hex-Wert {3}.",
@@ -19,9 +23,10 @@
   "ContrastComparison": "Kontrastvergleich",
   "ColorPreviewTitle": "Farbvorschau",
   "Close": "Schließen",
-  "MetaDescriptionWithName": "RAL {0} {1} - HEX {2}, RGB({3},{4},{5}). Farbcodes, Kontrastvergleich und ähnliche RAL-Farben ansehen.",
-  "MetaDescriptionBasic": "RAL {0} - HEX {1}, RGB({2},{3},{4}). Farbcodes, Kontrastvergleich und ähnliche RAL-Farben ansehen.",
-  "TitleSuffix": "HEX, RGB Farbcode",
+  "MetaDescriptionWithName": "RAL {0} {1} - HEX {2}, RGB({3},{4},{5}), CMYK({6}%,{7}%,{8}%,{9}%). Farbcodes, Kontrastvergleich und ähnliche RAL-Farben ansehen.",
+  "MetaDescriptionBasic": "RAL {0} - HEX {1}, RGB({2},{3},{4}), CMYK({5}%,{6}%,{7}%,{8}%). Farbcodes, Kontrastvergleich und ähnliche RAL-Farben ansehen.",
+  "TitleSuffix": "HEX, RGB, CMYK Farbcodes",
   "BreadcrumbHome": "Startseite",
-  "BreadcrumbColors": "RAL-Farben"
+  "BreadcrumbColors": "RAL-Farben",
+  "CompareWith": "Mit ähnlichen Farben vergleichen"
 }

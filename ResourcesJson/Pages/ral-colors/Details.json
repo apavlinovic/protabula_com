@@ -11,6 +11,10 @@
   "LabelNameDe": "German Name",
   "LabelRootColor": "Root Color",
   "LabelHex": "Hex Value",
+  "LabelRgbCode": "RGB Code",
+  "LabelRgbValues": "RGB Equivalent",
+  "LabelCmyk": "CMYK",
+  "LabelHsl": "HSL",
   "IntroWithNameAndRoot": "RAL {0} {1} is a {2} color from the {3} palette with hex value {4}.",
   "IntroWithName": "RAL {0} {1} is a color from the {2} palette with hex value {3}.",
   "IntroWithRoot": "RAL {0} is a {1} color from the {2} palette with hex value {3}.",
@@ -19,9 +23,10 @@
   "ContrastComparison": "Contrast Comparison",
   "ColorPreviewTitle": "Color Preview",
   "Close": "Close",
-  "MetaDescriptionWithName": "RAL {0} {1} - HEX {2}, RGB({3},{4},{5}). View color codes, contrast comparison, and similar RAL colors.",
-  "MetaDescriptionBasic": "RAL {0} - HEX {1}, RGB({2},{3},{4}). View color codes, contrast comparison, and similar RAL colors.",
-  "TitleSuffix": "HEX, RGB Color Code",
+  "MetaDescriptionWithName": "RAL {0} {1} - HEX {2}, RGB({3},{4},{5}), CMYK({6}%,{7}%,{8}%,{9}%). View color codes, contrast comparison, and similar RAL colors.",
+  "MetaDescriptionBasic": "RAL {0} - HEX {1}, RGB({2},{3},{4}), CMYK({5}%,{6}%,{7}%,{8}%). View color codes, contrast comparison, and similar RAL colors.",
+  "TitleSuffix": "HEX, RGB, CMYK Color Codes",
   "BreadcrumbHome": "Home",
-  "BreadcrumbColors": "RAL Colors"
+  "BreadcrumbColors": "RAL Colors",
+  "CompareWith": "Compare with similar colors"
 }

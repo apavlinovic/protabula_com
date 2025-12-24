@@ -1,0 +1,854 @@
+[
+  {
+    "ral": "RAL 1000",
+    "description": "A soft, earthy neutral with a distinct olive undertone; this shade appears more olive-toned in bright sunlight while deepening into a muted tan in the dark, and it is frequently used for camouflaging industrial structures in natural landscapes."
+  },
+  {
+    "ral": "RAL 1001",
+    "description": "A classic, warm sandy tone widely used for interior finishes; in the sun, this warm beige glows with a sandy brilliance, but it can look like a flat taupe in shadow, making it a standard choice for laboratory furniture and wall panels."
+  },
+  {
+    "ral": "RAL 1002",
+    "description": "A muted yellow with a heavy tan influence resembling desert dunes; direct light brings out the yellow warmth of this shade while low light emphasizes its brownish base, often seen on agricultural machinery and construction equipment."
+  },
+  {
+    "ral": "RAL 1003",
+    "description": "A bright, saturated yellow designed for high visibility on machinery; this shade remains extremely bright even in overcast conditions but may cast a slight orange hue at sunset, making it the go-to color for heavy-duty cranes."
+  },
+  {
+    "ral": "RAL 1004",
+    "description": "A rich, deep yellow with a warm amber glow; the sun reveals a honeyed luster in this gold-yellow which shifts to a deep ochre in the dark, making it popular for corporate branding and decorative metalwork."
+  },
+  {
+    "ral": "RAL 1005",
+    "description": "A darker, viscous-looking yellow with a slight orange lean; high UV exposure highlights its warm amber notes, whereas dim lighting makes it appear closer to a light brown, commonly found on traditional cabinetry and antique-style machinery."
+  },
+  {
+    "ral": "RAL 1006",
+    "description": "A vibrant and warm yellow inspired by the color of ripe corn; in bright light, this shade takes on a saturated vibrance while it maintains its warmth in shadows, making it widely used for agricultural branding and commercial signage."
+  },
+  {
+    "ral": "RAL 1007",
+    "description": "A sunny, cheerful yellow that mimics the spring flower's petals; the sun emphasizes its floral yellow tones, though it can appear slightly orange in low-light environments, making it a favorite for playground equipment and garden furniture."
+  },
+  {
+    "ral": "RAL 1011",
+    "description": "A darkened beige that serves as a versatile transitional shade between tan and brown; direct sunlight reveals a tan-like warmth, while the dark pulls out a dusty grey-brown character, frequently used for military vehicle coatings."
+  },
+  {
+    "ral": "RAL 1012",
+    "description": "A sharp, citrus-inspired yellow with a cooling green tint; this citrus yellow glows with a sharp, cool brilliance in the sun but can look slightly greenish in the dark, often utilized for chemical hazard labels and sports equipment."
+  },
+  {
+    "ral": "RAL 1013",
+    "description": "A sophisticated off-white with a creamy, warm grey base; under bright light, this appears as a crisp, warm white, but it reveals a subtle grey-cream undertone in the shade, serving as the standard for high-end window frames."
+  },
+  {
+    "ral": "RAL 1014",
+    "description": "A classic, elegant pale cream often used for vintage appliances; direct sun gives this a rich, buttery appearance, while dim lighting makes it look like a pale, solid tan, commonly used for interior trim and domestic machines."
+  },
+  {
+    "ral": "RAL 1015",
+    "description": "A bright, clean ivory that is the standard for European taxi cabs; this light ivory remains very bright in the sun without being clinical, though it softens significantly in low light, making it the global standard for commercial shelving."
+  },
+  {
+    "ral": "RAL 1016",
+    "description": "A highly luminous, almost neon yellow with a pale green cast; in sunlight, this becomes an eye-straining neon-adjacent yellow, while it retains a ghostly greenish glow in the dark, used strictly for high-visibility emergency vehicles."
+  },
+  {
+    "ral": "RAL 1017",
+    "description": "A warm, spice-inspired yellow with a soft orange saturation; direct sun pulls out a spice-like orange warmth, while in shadow it settles into a deep, muted gold, often found in decorative architecture and hospitality interiors."
+  },
+  {
+    "ral": "RAL 1018",
+    "description": "A vivid, pure yellow commonly used for industrial safety markings; this pure yellow reflects a high amount of light in the sun, making it look almost white-hot, but it turns flat and solid in the shade for technical markings."
+  },
+  {
+    "ral": "RAL 1019",
+    "description": "A neutral taupe that balances cool grey and warm beige perfectly; the sun brings out the beige warmth, whereas moonlight or low light highlights its cool grey base, making it a popular choice for cladding and modern facade panels."
+  },
+  {
+    "ral": "RAL 1020",
+    "description": "A darker, desaturated yellow with heavy greenish-grey undertones; in bright light, the olive tones become quite prominent, while in the dark it can be mistaken for a muddy brown, often used for industrial piping and protective coatings."
+  },
+  {
+    "ral": "RAL 1021",
+    "description": "A bold, punchy yellow frequently used for commercial branding and signage; direct sunlight makes this yellow incredibly punchy and vivid, though it darkens to a rich mustard in the shade, a global standard for oil pipeline markings."
+  },
+  {
+    "ral": "RAL 1023",
+    "description": "A standard safety yellow used globally for road signs and hazard warnings; this shade maintains a high chroma even under intense sun, remaining distinctly yellow in the dark, used worldwide for traffic signals and hazardous areas."
+  },
+  {
+    "ral": "RAL 1024",
+    "description": "A traditional, earthy yellow-brown reminiscent of natural clay pigments; the sun brings out a metallic-like clay warmth, while in shadow it appears more like a dark tan, common in rural architectural elements and agricultural tools."
+  },
+  {
+    "ral": "RAL 1026",
+    "description": "A fluorescent, high-visibility yellow used for extreme safety requirements; designed to fluoresce, it appears brilliantly luminous in daylight but can look somewhat dull or greyish in the dark, used strictly for safety warnings."
+  },
+  {
+    "ral": "RAL 1027",
+    "description": "A dense, brownish-yellow with a deep mustard-like character; in the sun, this looks like a rich, spicy mustard, while in low light it deepens into an earthy brownish-green, often used for traditional industrial machinery."
+  },
+  {
+    "ral": "RAL 1028",
+    "description": "A bright, fruity yellow with a strong leaning toward orange; direct sun makes this lean heavily toward orange, while in the shade it returns to a deep golden yellow, used for high-impact commercial branding and school buses."
+  },
+  {
+    "ral": "RAL 1032",
+    "description": "A dense, rich yellow that sits between gold and mustard; bright light reveals a dense, opaque yellow, while in the dark it maintains a very heavy, solid presence, frequently used for public transport vehicles and barriers."
+  },
+  {
+    "ral": "RAL 1033",
+    "description": "A warm, glowing yellow with a soft floral orange tint; the sun highlights its soft peach-yellow glow, while in low light it looks more like a deep apricot, used for decorative interior finishes and retail displays."
+  },
+  {
+    "ral": "RAL 1034",
+    "description": "A soft, creamy yellow that is desaturated for a gentle appearance; direct sunlight lightens this to a creamy pale orange, but it becomes a soft, warm tan in the dark, commonly applied to nursery furniture and cosmetic packaging."
+  },
+  {
+    "ral": "RAL 1035",
+    "description": "A metallic, shimmering beige with a soft iridescent finish; the metallic flakes sparkle brilliantly in direct sun, while in the shade it becomes a flat, sophisticated bronze-grey, popular for high-end automotive trim and electronics."
+  },
+  {
+    "ral": "RAL 1036",
+    "description": "A metallic gold finish that provides a luxurious, reflective sheen; in the sun, this appears as a gleaming gold, but it can look like a dull brown in very low light, used for luxury hardware and decorative metal coatings."
+  },
+  {
+    "ral": "RAL 1037",
+    "description": "A deep, radiant yellow that borders on light orange; direct light brings out a radiant, sun-drenched orange, while in the dark it appears as a heavy yellow, used for aviation markings and high-visibility clothing."
+  },
+  {
+    "ral": "RAL 2000",
+    "description": "A bright, citrusy orange with a strong yellow foundation; sunlight gives this a bright, citrus-like pop, whereas low light pulls out its heavier yellow undertones, often used for construction machinery and safety gates."
+  },
+  {
+    "ral": "RAL 2001",
+    "description": "A fiery, intense orange that leans heavily toward red; in bright light, it shifts toward a fiery vermilion, while in the dark it appears as a dark, earthy rust, a standard color for industrial valves and agricultural parts."
+  },
+  {
+    "ral": "RAL 2002",
+    "description": "A classic, high-intensity orange-red frequently used in traditional art; the sun makes this red-orange appear extremely vibrant, while in the dark it deepens into a solid blood-red, used for fire protection and maritime signals."
+  },
+  {
+    "ral": "RAL 2003",
+    "description": "A lighter, softer orange with a creamy, desaturated quality; direct sunlight softens this to a peach-like tone, but in the dark it looks like a flat, creamy orange, used for light-duty warning signs and commercial plastic parts."
+  },
+  {
+    "ral": "RAL 2004",
+    "description": "A standard, saturated orange used for high-visibility industrial applications; this orange remains stable and saturated in the sun, appearing blackish-orange in deep shadow, used as the classic color for traffic cones and safety vests."
+  },
+  {
+    "ral": "RAL 2005",
+    "description": "A fluorescent orange designed for maximum visibility in daylight; daylight activates its fluorescent pigments for an intense glow, but it loses all vibrance in the dark, used for specialized high-hazard warning labels."
+  },
+  {
+    "ral": "RAL 2007",
+    "description": "An even more intense, glowing version of fluorescent orange; in the sun, this looks almost white with orange-hot intensity, becoming a dull peach in the shade, used primarily for emergency response markings."
+  },
+  {
+    "ral": "RAL 2008",
+    "description": "A glowing, vibrant orange with a significant red component; bright sunlight pulls out a glowing red quality, while in low light it settles into a deep tangerine, often used for race car accents and modern industrial design."
+  },
+  {
+    "ral": "RAL 2009",
+    "description": "A standard orange used for road safety cones and traffic management; this shade is designed to be visible from a distance in the sun, though it can appear brownish at night, used for highway maintenance vehicles and roadwork barriers."
+  },
+  {
+    "ral": "RAL 2010",
+    "description": "A bold orange intended for visual signals and safety warnings; direct light emphasizes its bold, opaque character, while it appears as a dark terracotta in shadow, used for signaling equipment on railways and docks."
+  },
+  {
+    "ral": "RAL 2011",
+    "description": "A heavy, saturated orange with a strong visual presence; in the sun, this appears as a rich, deep citrus, while it becomes a heavy reddish-tan in the dark, common in large-scale agricultural machinery and tractors."
+  },
+  {
+    "ral": "RAL 2012",
+    "description": "A soft, pinkish-orange that mimics the color of salmon flesh; direct sun brings out the pinkish-salmon notes, making it look lighter, while in the dark it looks like a muted orange, used in decorative arts and specialized electronics."
+  },
+  {
+    "ral": "RAL 2013",
+    "description": "A metallic orange with a pearlescent, shimmering surface; the pearlescent finish catches the sun to create a multi-dimensional orange glow, turning into a flat copper in the dark, used for luxury finishes and custom automotive parts."
+  },
+  {
+    "ral": "RAL 3000",
+    "description": "The quintessential red used for fire safety and industrial warning; the sun gives this a fiery, energetic brilliance, while in low light it remains a powerful, recognizable red, used for fire extinguishers and hydrants."
+  },
+  {
+    "ral": "RAL 3001",
+    "description": "A bright, attention-grabbing red used for emergency controls; bright light highlights its pure red pigment, whereas in shadow it looks deep and serious, used for emergency stop buttons and safety-critical controls."
+  },
+  {
+    "ral": "RAL 3002",
+    "description": "A deep, slightly cool-toned red with a rich intensity; in the sun, it appears as a rich, deep carmine, while in the dark it can look almost purple-brown, often used for automotive parts and high-end industrial tools."
+  },
+  {
+    "ral": "RAL 3003",
+    "description": "A dark, elegant red reminiscent of the precious gemstone; direct sunlight makes the ruby tones sparkle with depth, while in low light it appears as a dark, elegant wine, popular for luxury cars and high-end storefronts."
+  },
+  {
+    "ral": "RAL 3004",
+    "description": "A deep, sophisticated red with significant violet undertones; bright light reveals its purple undertones, while in the dark it appears as a near-black burgundy, common on historical rail cars and traditional door frames."
+  },
+  {
+    "ral": "RAL 3005",
+    "description": "A dark, burgundy-like red that evokes the color of aged red wine; in the sun, this looks like a bright glass of red wine, but it becomes a heavy black-red in the shade, frequently used for luxury estate gates and retail branding."
+  },
+  {
+    "ral": "RAL 3007",
+    "description": "An extremely dark red that appears almost black in low light; direct sunlight is required to see the red tint in this shade, as it looks completely black in low light, used for sophisticated architectural accents and heavy machinery."
+  },
+  {
+    "ral": "RAL 3009",
+    "description": "A brownish-red often used for protective industrial primers; the sun brings out the rusty iron-oxide warmth, while the dark makes it look like a flat brown-red, used primarily for industrial primers and steel protection."
+  },
+  {
+    "ral": "RAL 3011",
+    "description": "A rustic red with strong brown tones, similar to terracotta; in bright light, it takes on a terracotta-like glow, but it shifts to a muddy dark red in shadow, used for roof tiles and agricultural buildings."
+  },
+  {
+    "ral": "RAL 3012",
+    "description": "A soft, fleshy pinkish-red that is highly desaturated; direct sunlight makes this look like a pale, warm tan-pink, while in the dark it looks like a flat beige, used for dolls, prosthetics, and soft-touch plastics."
+  },
+  {
+    "ral": "RAL 3013",
+    "description": "A warm, organic red with a slight orange-brown influence; bright light highlights its organic, tomato-red warmth, while it darkens significantly in the shade, common in the food industry and for traditional exterior shutters."
+  },
+  {
+    "ral": "RAL 3014",
+    "description": "A muted, dusty rose color with a vintage appeal; the sun gives this a dusty, romantic rose glow, while it can look somewhat greyish in the dark, used for medical equipment and interior design accents."
+  },
+  {
+    "ral": "RAL 3015",
+    "description": "A pale, gentle pink often used for soft decorative accents; in direct light, this is a very bright, sugary pink, but it becomes a soft pastel in low light, used for healthcare environments and nursery decor."
+  },
+  {
+    "ral": "RAL 3016",
+    "description": "A vibrant, warm red with a distinct tropical coral tint; sunlight brings out a vibrant orange-red coral tone, while in the dark it looks like a warm clay, popular in Mediterranean-style architecture and swimming pool areas."
+  },
+  {
+    "ral": "RAL 3017",
+    "description": "A bright, lively pink with a balanced floral character; bright light emphasizes its floral pink vibrance, while it settles into a deep rose in the shade, used for high-impact commercial packaging and fashion-related branding."
+  },
+  {
+    "ral": "RAL 3018",
+    "description": "A juicy, vibrant red with a subtle pinkish undertone; in the sun, this looks like a glowing, juicy red-pink, while in the dark it appears as a solid magenta, often used for sports equipment and plastic consumer goods."
+  },
+  {
+    "ral": "RAL 3020",
+    "description": "The standard red for stop signs and regulatory traffic markings; direct sunlight makes this red pop with incredible clarity, and it remains highly visible in low light, the international standard for traffic stops and danger signs."
+  },
+  {
+    "ral": "RAL 3022",
+    "description": "A warm, orange-leaning pink with a soft, natural look; the sun reveals a warm, fleshy pinkish-orange, while in the dark it looks like a muted salmon, used for safety gear in maritime environments and life jackets."
+  },
+  {
+    "ral": "RAL 3024",
+    "description": "A fluorescent red that glows under natural daylight for safety; designed for maximum daylight fluorescence, it glows intensely in the sun but turns into a dull red-brown at night, used for mountain rescue and high-visibility vehicles."
+  },
+  {
+    "ral": "RAL 3026",
+    "description": "The most intense fluorescent red in the classic collection; in direct sun, it is the most intense red available, appearing almost white with heat, but it fades in the dark, used for specialized aviation and marine safety."
+  },
+  {
+    "ral": "RAL 3027",
+    "description": "A cool-toned, deep pinkish-red resembling ripe raspberries; bright light pulls out the cool raspberry tones, while in the dark it looks like a deep, saturated pink, used for cosmetic branding and retail store interiors."
+  },
+  {
+    "ral": "RAL 3028",
+    "description": "A vivid, high-saturation red without secondary undertones; this red remains very 'pure' and stable in bright sun, refusing to lean toward orange or purple, used for modern industrial robots and precision tools."
+  },
+  {
+    "ral": "RAL 3031",
+    "description": "A deep, exotic red with a slightly dark, warm character; sunlight reveals an exotic, deep red character, while in the dark it appears as a heavy, dark burgundy, often used in cultural architecture and high-end automotive trim."
+  },
+  {
+    "ral": "RAL 3032",
+    "description": "A metallic version of ruby red with a luxurious shimmering effect; the metallic pearl finish creates a shimmering red luster in the sun, turning into a flat maroon in the dark, a premium choice for automotive paint."
+  },
+  {
+    "ral": "RAL 3033",
+    "description": "A pearlescent, metallic pink with a soft reflective sheen; bright light makes the pearlescent pink surface sparkle, while low light makes it look like a smooth metallic salmon, used for decorative cladding and luxury appliances."
+  },
+  {
+    "ral": "RAL 4001",
+    "description": "A warm, reddish-purple that is bright and floral; in the sun, this appears as a bright, floral lilac, while in the dark it looks more like a dark grey-purple, used for boutique store fronts and garden machinery."
+  },
+  {
+    "ral": "RAL 4002",
+    "description": "A deep, magenta-like purple with a strong red base; direct sunlight brings out the red-magenta tones, whereas the dark makes it look like a deep eggplant, common in textile manufacturing and high-end plastics."
+  },
+  {
+    "ral": "RAL 4003",
+    "description": "A bright, cheerful pink-purple reminiscent of heather flowers; bright light highlights its playful pink-purple energy, while it becomes a soft violet in the shade, used for toys, healthcare signage, and cosmetic branding."
+  },
+  {
+    "ral": "RAL 4004",
+    "description": "A very dark, royal purple with a deep wine-colored influence; the sun reveals a deep, royal claret tint, while in the dark it is nearly indistinguishable from black, a classic choice for executive office doors and hotels."
+  },
+  {
+    "ral": "RAL 4005",
+    "description": "A soft purple with a distinct cooling blue undertone; direct light makes this appear as a cool, sky-adjacent lilac, while in the dark it looks like a muted blue-grey, used for laboratory branding and technical instruments."
+  },
+  {
+    "ral": "RAL 4006",
+    "description": "A vibrant, saturated purple used for clear visual distinction; in the sun, this purple is incredibly saturated and electric, while in low light it remains a powerful violet, used for public transport branding and signs."
+  },
+  {
+    "ral": "RAL 4007",
+    "description": "A dark, moody purple that sits near the end of the violet spectrum; bright light pulls out its deep violet roots, while in the dark it looks like a cold black, used for sophisticated exterior cladding and automotive accents."
+  },
+  {
+    "ral": "RAL 4008",
+    "description": "A bright, clear purple designed for signaling and branding; direct sunlight emphasizes its clean, bright purple pigment, while in shadow it becomes a rich grape color, used for corporate identity and industrial signaling."
+  },
+  {
+    "ral": "RAL 4009",
+    "description": "A muted, greyish-lavender that is soft and understated; in the sun, it looks like a soft, dusty lavender, but in the dark it can look like a light grey, used for tranquil interior spaces and hospital decor."
+  },
+  {
+    "ral": "RAL 4010",
+    "description": "A vivid, high-saturation pink often used in telecommunications branding; this magenta glows with high intensity in the sun and maintains its 'hot' pink look even in shadow, the signature color of major telecom companies."
+  },
+  {
+    "ral": "RAL 4011",
+    "description": "A metallic purple with a shimmering, pearl-like finish; direct light makes the metallic purple surface shimmer, while in the dark it looks like a flat, dark violet, used for specialty electronics and luxury packaging."
+  },
+  {
+    "ral": "RAL 4012",
+    "description": "A dark metallic purple with a deep, iridescent sheen; in the sun, it shows off a deep, blackberry metallic depth, but looks like a dark grey in low light, a premium color for high-end household appliances."
+  },
+  {
+    "ral": "RAL 5000",
+    "description": "A dark blue with a noticeable purple tint; bright light reveals its purple-blue complexity, while it looks like a standard dark blue in the shade, used for historical restorations and steel structures."
+  },
+  {
+    "ral": "RAL 5001",
+    "description": "A deep, teal-like blue with a strong green influence; the sun brings out a deep teal-green quality, while the dark makes it look like a dark navy, used for industrial water tanks and maritime containers."
+  },
+  {
+    "ral": "RAL 5002",
+    "description": "The iconic, deep blue used in everything from art to industry; direct sunlight makes this blue appear incredibly rich and deep, while it remains a solid blue in shadow, the standard for technical drawings and luxury branding."
+  },
+  {
+    "ral": "RAL 5003",
+    "description": "A very dark, jewel-toned blue with a professional character; in the sun, it has a jewel-like sapphire glow, but in the dark it is an almost-black navy, popular for office furniture and industrial enclosures."
+  },
+  {
+    "ral": "RAL 5004",
+    "description": "A blue so dark it appears black except under direct light; this color requires direct sun to see any blue tint, as it looks completely jet-black in normal lighting, used for architectural accents and luxury cars."
+  },
+  {
+    "ral": "RAL 5005",
+    "description": "A bright, mid-tone blue used for informational signs; bright light makes this blue pop with industrial clarity, while it stays a medium blue in the shade, the universal color for information signs and public services."
+  },
+  {
+    "ral": "RAL 5007",
+    "description": "A balanced, medium blue with a classic nautical feel; in the sun, it appears as a bright nautical blue, while in the dark it looks like a dusty grey-blue, commonly used for maritime equipment and garage doors."
+  },
+  {
+    "ral": "RAL 5008",
+    "description": "A muted, desaturated blue with a heavy grey overcast; the sun brings out the blue-grey slate character, while in the dark it appears as a cold, dark neutral, used for modern building facades and roofing."
+  },
+  {
+    "ral": "RAL 5009",
+    "description": "A soft, greenish-blue reminiscent of a clear coastal sky; bright light reveals a cooling azure tone, while in low light it looks more like a dark teal, often used for chemical processing plants and large storage bins."
+  },
+  {
+    "ral": "RAL 5010",
+    "description": "A rich, classic blue named after the alpine flower; direct sun makes this classic blue glow with saturation, while in the dark it remains deep and professional, the standard for machinery and industrial equipment."
+  },
+  {
+    "ral": "RAL 5011",
+    "description": "A very dark, cold blue used frequently in industrial coatings; in the sun, this looks like a deep, cold steel, while in the dark it is a heavy navy, used for official vehicles and industrial security gates."
+  },
+  {
+    "ral": "RAL 5012",
+    "description": "A bright, airy blue that is clean and highly visible; bright sunlight makes this look like a clean, summery blue, but it can look a bit icy in the shade, used for swimming pool equipment and air conditioning units."
+  },
+  {
+    "ral": "RAL 5013",
+    "description": "A traditional, deep blue used in high-quality ceramics and glass; in the sun, the cobalt depth is truly visible and rich, but it appears as a blackish-blue in the dark, used for high-quality ceramics and glass industry tools."
+  },
+  {
+    "ral": "RAL 5014",
+    "description": "A soft, grey-toned blue with a dusty, vintage quality; direct sunlight highlights its dusty pigeon-grey-blue character, making it look lighter, while in the dark it looks more grey, used for residential shutters and windows."
+  },
+  {
+    "ral": "RAL 5015",
+    "description": "A vibrant, cheerful blue that mimics a bright summer sky; the sun gives this a vibrant, clear sky appearance, and it stays bright even in low light, used for gas pipes and water distribution networks."
+  },
+  {
+    "ral": "RAL 5017",
+    "description": "A standard blue used for traffic directions and corporate identity; in bright light, this is a very 'clean' and visible blue, appearing dark but solid in the shade, used for waste containers and traffic direction signs."
+  },
+  {
+    "ral": "RAL 5018",
+    "description": "A bright, balanced mix of blue and green; direct sun brings out the green-turquoise warmth, while the dark makes it look like a deep ocean blue, common in pool areas and tropical-themed design."
+  },
+  {
+    "ral": "RAL 5019",
+    "description": "A deep, mediterranean blue with a slight turquoise leaning; in the sun, it has a bright Mediterranean depth, while in the dark it stays a deep blue, used for industrial machinery and commercial shelving."
+  },
+  {
+    "ral": "RAL 5020",
+    "description": "A dark, moody teal-blue that feels deep and oceanic; direct sunlight reveals a dark, moody teal, while in the dark it looks like a near-black green-blue, used for heavy-duty industrial coatings and floor paints."
+  },
+  {
+    "ral": "RAL 5021",
+    "description": "A medium-toned teal that evokes the color of deep lagoon water; the sun highlights its bright lagoon-water tone, while in the dark it appears as a muted teal-grey, used for environmental signage and water treatment."
+  },
+  {
+    "ral": "RAL 5022",
+    "description": "An extremely dark blue representing the midnight sky; in the sun, this is a very deep midnight blue, but in the dark it looks like a soft black, used for luxury branding and automotive finishes."
+  },
+  {
+    "ral": "RAL 5023",
+    "description": "A muted, atmospheric blue with a soft grey influence; direct light gives this an atmospheric, hazy blue glow, while in low light it looks like a flat medium-grey, used for large-scale steel structures and bridges."
+  },
+  {
+    "ral": "RAL 5024",
+    "description": "A soft, desaturated baby blue with a calming effect; bright sunlight lightens this to a soft baby blue, while in the dark it becomes a muted blue, common in medical environments and laundry rooms."
+  },
+  {
+    "ral": "RAL 5025",
+    "description": "A metallic blue with a reflective, pearlescent shimmer; the pearlescent finish catches the sun to create a deep blue shimmer, while in the dark it looks like a flat navy, used for premium architectural cladding."
+  },
+  {
+    "ral": "RAL 5026",
+    "description": "A dark metallic blue that sparkles like the night sky; in the sun, this metallic blue sparkles with deep intensity, looking like a dark grey-blue in low light, a popular choice for high-end electronics and appliances."
+  },
+  {
+    "ral": "RAL 6000",
+    "description": "A mid-tone green with a slightly aged, oxidized appearance; bright light highlights the oxidized patina look, while in the dark it appears as a solid medium-green, used for restoration work and traditional machinery."
+  },
+  {
+    "ral": "RAL 6001",
+    "description": "A rich, vibrant green resembling the classic gemstone; in the sun, this looks like a rich emerald, while in the dark it stays a deep, vibrant green, common on playground equipment and in park facilities."
+  },
+  {
+    "ral": "RAL 6002",
+    "description": "A natural, vivid green inspired by healthy foliage; direct sunlight makes this leaf-green appear very organic and bright, while it deepens to a forest green in the shade, used for landscaping equipment and tractors."
+  },
+  {
+    "ral": "RAL 6003",
+    "description": "A muted, brownish-green used widely in military applications; the sun brings out the brownish-olive warmth, whereas in the dark it looks like a dark neutral grey, used for military vehicles and outdoor camouflage."
+  },
+  {
+    "ral": "RAL 6004",
+    "description": "A very dark, moody green with a strong blue undertone; in bright light, it shows off a deep teal-green depth, but in low light it appears as a dark navy-green, used for high-end industrial design and modern kitchens."
+  },
+  {
+    "ral": "RAL 6005",
+    "description": "A dark, forest-like green that is deep and earthy; direct sunlight makes this look like a deep forest green, while in the dark it is a solid black-green, the industry standard for garden fences and park gates."
+  },
+  {
+    "ral": "RAL 6006",
+    "description": "A dark olive green with a heavy grey desaturation; in the sun, this appears as an earthy grey-green, while in the dark it looks like a dark umber, used for camouflaged utility boxes and rural infrastructure."
+  },
+  {
+    "ral": "RAL 6007",
+    "description": "A classic dark green reminiscent of vintage glass bottles; direct light reveals a deep glass-green tint, while in the dark it appears almost completely black, used for historical garden architecture and bottle glass machinery."
+  },
+  {
+    "ral": "RAL 6008",
+    "description": "A very dark green that leans heavily into muddy brown tones; in the sun, this looks like a muddy greenish-brown, while in the dark it is a heavy dark neutral, used for military applications and rugged outdoor tools."
+  },
+  {
+    "ral": "RAL 6009",
+    "description": "A dark, cool green inspired by evergreen forest needles; bright sunlight pulls out the cool fir-needle tones, while the dark makes it look like a deep blackish-green, the classic color for traditional doors and train cars."
+  },
+  {
+    "ral": "RAL 6010",
+    "description": "A bright, lively green typical of a well-maintained lawn; direct sun makes this grass-green look incredibly vibrant, though it can look slightly darker in low light, used for garden machinery and agricultural branding."
+  },
+  {
+    "ral": "RAL 6011",
+    "description": "A classic industrial green often found on old machinery; in bright light, this appears as a classic, soft sage-green, while in the dark it looks like a muted grey-green, the iconic color for vintage industrial machine tools."
+  },
+  {
+    "ral": "RAL 6012",
+    "description": "The darkest green in the range, appearing almost black; this requires direct sun to see the green hue, as it looks black in almost any other light, used for architectural accents and executive office trim."
+  },
+  {
+    "ral": "RAL 6013",
+    "description": "A pale, desaturated green with a khaki or straw-like feel; the sun highlights its light, straw-like khaki character, while in the dark it looks more like a greyish-tan, common in agricultural equipment and military transport."
+  },
+  {
+    "ral": "RAL 6014",
+    "description": "A dark, camouflage-style green with a yellow-brown base; in bright light, this appears as a dark, yellowish olive, while the dark makes it look like a muddy brown, used for camouflage and heavy industrial parts."
+  },
+  {
+    "ral": "RAL 6015",
+    "description": "A nearly black shade with a faint olive-green tint; direct sunlight reveals a faint olive-green tint in what otherwise looks like a deep black, used for military electronics and rugged outdoor enclosures."
+  },
+  {
+    "ral": "RAL 6016",
+    "description": "A vibrant green with a clear and cooling blue influence; the sun makes this turquoise-green look very bright and clean, while it stays a deep teal in the shade, used for swimming pool equipment and chemical tanks."
+  },
+  {
+    "ral": "RAL 6017",
+    "description": "A bright, spring-like green that is fresh and energetic; direct light emphasizes its fresh brilliance, while it becomes a soft leaf-green in the shade, used for garden products and modern retail interiors."
+  },
+  {
+    "ral": "RAL 6018",
+    "description": "A vivid, lime-adjacent green that is highly noticeable; this yellow-green is eye-poppingly bright in the sun and stays highly visible even in low light, the signature color for major agricultural brands and machinery."
+  },
+  {
+    "ral": "RAL 6019",
+    "description": "A very pale, minty green that is soft and soothing; bright sunlight lightens this to a pale, minty cream, while in the dark it looks like a soft grey, used for laboratory walls and medical equipment."
+  },
+  {
+    "ral": "RAL 6020",
+    "description": "A dark, traditional green with a slightly warm, earthy base; in the sun, this looks like a traditional chrome green, while in the dark it appears as a solid forest green, common on historical railway bridges and fences."
+  },
+  {
+    "ral": "RAL 6021",
+    "description": "A muted, desaturated sage green with a vintage character; direct light pulls out a dusty, vintage sage quality, while in low light it looks like a muted grey-green, used for restoration work and high-end household appliances."
+  },
+  {
+    "ral": "RAL 6022",
+    "description": "A very dark, brownish-green commonly used for rugged equipment; in bright light, it shows off a dark, olive-brown warmth, but in the dark it looks like a very dark grey, used for rugged camouflage and industrial pipes."
+  },
+  {
+    "ral": "RAL 6024",
+    "description": "A standard, bright green used for safety and directional signs; direct sun makes this green look incredibly sharp and visible, while it stays a medium green in the dark, the standard for traffic signals and safety signs."
+  },
+  {
+    "ral": "RAL 6025",
+    "description": "A natural, medium green with a slight yellow-brown warmth; bright sunlight highlights its warm fern-green tones, whereas in the dark it looks like a muted moss, often used for park benches and playground equipment."
+  },
+  {
+    "ral": "RAL 6026",
+    "description": "A deep, slightly bluish-green with a rich, saturated finish; in the sun, it shows a rich, deep teal-green depth, while in the dark it remains a dark green, common in maritime environments and for metal cladding."
+  },
+  {
+    "ral": "RAL 6027",
+    "description": "A bright, cheerful mint green that is highly desaturated; direct sunlight makes this look like a bright, icy mint, while in the dark it looks like a pale blue-grey, used for medical interiors and modern kitchenware."
+  },
+  {
+    "ral": "RAL 6028",
+    "description": "A dark, cool-toned green reminiscent of pine needles; the sun highlights its cool pine-like green, while in the dark it becomes a heavy black-green, used for forest-area fencing and industrial buildings."
+  },
+  {
+    "ral": "RAL 6029",
+    "description": "A vibrant, pure green with a cool and refreshing appearance; bright sunlight gives this a vibrant, refreshing mint pop, while it stays a bright green in the shade, used for food industry machinery and pharmacy branding."
+  },
+  {
+    "ral": "RAL 6032",
+    "description": "A bold green used to indicate 'go' or safety in signaling; in the sun, this green is very 'clean' and visible, appearing solid and dark in the shade, used for 'safe' signaling and emergency exit signs."
+  },
+  {
+    "ral": "RAL 6033",
+    "description": "A balanced, soft blend of mint green and sky blue; direct light brings out the blue-turquoise notes, while in the dark it looks like a deep teal-grey, used for decorative panels and modern office furniture."
+  },
+  {
+    "ral": "RAL 6034",
+    "description": "A pale, icy blue-green that is light and airy; bright sunlight lightens this to a pale, icy turquoise, while in the dark it looks more like a soft grey-blue, used for spa interiors and electronics."
+  },
+  {
+    "ral": "RAL 6035",
+    "description": "A metallic, shimmering green with a deep forest depth; the metallic finish catches the sun to create a deep forest sparkle, turning into a flat dark green in the dark, a premium color for architectural facades."
+  },
+  {
+    "ral": "RAL 6036",
+    "description": "A pearlescent green-blue with an iridescent, shifting finish; in the sun, the pearlescent finish shifts between green and blue, while in the dark it looks like a flat dark teal, used for high-end automotive and design projects."
+  },
+  {
+    "ral": "RAL 6037",
+    "description": "A high-chroma, vivid green without secondary undertones; this green remains incredibly pure and stable in bright sun without shifting towards yellow, used for modern industrial robots and precision tools."
+  },
+  {
+    "ral": "RAL 6038",
+    "description": "A fluorescent green designed for maximum visibility; designed for maximum daylight fluorescence, it glows with high intensity in the sun but loses its pop at night, used strictly for high-risk safety warnings."
+  },
+  {
+    "ral": "RAL 7000",
+    "description": "A medium grey with a soft blue-violet undertone; direct sunlight highlights its soft blue-violet undertone, while the dark makes it look like a standard medium grey, common on naval vessels and large steel structures."
+  },
+  {
+    "ral": "RAL 7001",
+    "description": "A clean, cool grey often used for metal surfaces; in the sun, this appears as a bright, clean silver-grey, while in the dark it looks like a flat neutral grey, the industry standard for metal machinery and tools."
+  },
+  {
+    "ral": "RAL 7002",
+    "description": "A medium grey with a distinct brownish-green tint; bright light pulls out the brownish-green olive tint, while in the dark it looks like a warm tan-grey, used for agricultural equipment and military transport."
+  },
+  {
+    "ral": "RAL 7003",
+    "description": "A muted grey with a subtle greenish, earthy character; direct sunlight reveals an earthy moss tint, while in the dark it looks like a muted, dark grey, frequently used for camouflage and outdoor utility cabinets."
+  },
+  {
+    "ral": "RAL 7004",
+    "description": "A neutral, mid-tone grey used for clarity and consistency; in the sun, this is a very neutral, clear grey, while in the dark it stays a solid medium-grey, used for signal indicators and commercial interior fixtures."
+  },
+  {
+    "ral": "RAL 7005",
+    "description": "A balanced, medium-dark grey with no strong undertones; bright light makes this look like a perfectly balanced mouse grey, while in the dark it deepens significantly, used for laboratory benches and industrial shelving."
+  },
+  {
+    "ral": "RAL 7006",
+    "description": "A warm grey that leans heavily into brown or tan territory; direct sunlight brings out the warm beige notes, making it look almost tan, while in the dark it looks like a dark grey, popular for modern facade cladding."
+  },
+  {
+    "ral": "RAL 7008",
+    "description": "A grey-brown shade with a mustard-like warmth; in the sun, this appears as a warm, mustard-grey, while in the dark it looks like a muddy brown-grey, used for specialized industrial machinery and tankers."
+  },
+  {
+    "ral": "RAL 7009",
+    "description": "A dark, industrial grey with a subtle green influence; bright light highlights its green-industrial character, while in the dark it looks like a solid dark grey, used for military electronics and heavy-duty toolboxes."
+  },
+  {
+    "ral": "RAL 7010",
+    "description": "A dark, rugged grey typical of industrial heavy-duty covers; direct sunlight brings out its rugged, tarpaulin-like texture and depth, while in the dark it looks nearly black, used for heavy-duty covers and industrial doors."
+  },
+  {
+    "ral": "RAL 7011",
+    "description": "A dark, cool grey reminiscent of heavy forged metal; in the sun, it shows off a cold, bluish iron depth, but in the dark it looks like a deep navy-grey, used for structural steel and maritime equipment."
+  },
+  {
+    "ral": "RAL 7012",
+    "description": "A medium-dark grey inspired by volcanic rock; bright light pulls out the basalt-stone character, while in the dark it appears as a dark, clean grey, the standard color for high-end window frames and roofing."
+  },
+  {
+    "ral": "RAL 7013",
+    "description": "A dark, earthy grey that is often used for camouflage; in the sun, this appears as an earthy, brownish-grey, while in the dark it looks like a solid dark neutral, used for military camouflage and outdoor utility housing."
+  },
+  {
+    "ral": "RAL 7015",
+    "description": "A dark, blue-leaning grey that mimics natural slate stone; direct sunlight highlights its blue-slate character, while in the dark it looks like a very dark, cold grey, used for modern architectural accents and garage doors."
+  },
+  {
+    "ral": "RAL 7016",
+    "description": "A very dark, popular grey used in modern architectural design; in the sun, this reveals a deep, sophisticated anthracite glow, while in the dark it is nearly black, the most popular choice for modern windows and doors."
+  },
+  {
+    "ral": "RAL 7021",
+    "description": "A grey so dark it borders on off-black with a cool base; this requires direct light to see the blue-grey tint, otherwise appearing as a soft black, used for high-contrast architectural elements and technical furniture."
+  },
+  {
+    "ral": "RAL 7022",
+    "description": "A dark, warm grey with a slight brownish-red undertone; direct sunlight brings out the warm brownish-red umber notes, while in the dark it looks like a dark charcoal, used for machinery and modern building facades."
+  },
+  {
+    "ral": "RAL 7023",
+    "description": "A medium grey that perfectly mimics the look of raw concrete; in the sun, this perfectly mimics the look of raw concrete, appearing as a solid medium-grey in the shade, used for industrial flooring and urban infrastructure."
+  },
+  {
+    "ral": "RAL 7024",
+    "description": "A dark, sophisticated grey with a slight metallic lead feel; bright light reveals a slight metallic lead-like depth, while in the dark it looks like a deep, clean grey, popular for household appliances and roofing."
+  },
+  {
+    "ral": "RAL 7026",
+    "description": "A dark, cool grey with a mottled, stony appearance; in the sun, the stony granite character is visible, while in the dark it looks like a cold, near-black grey, used for high-end architectural trim and cladding."
+  },
+  {
+    "ral": "RAL 7030",
+    "description": "A warm, medium-light grey often used for masonry finishes; direct sunlight highlights its warm stone character, while in the dark it looks like a soft medium-grey, common on historical masonry and industrial cabinets."
+  },
+  {
+    "ral": "RAL 7031",
+    "description": "A classic industrial grey with a very strong blue influence; in the sun, it has a very strong blue-industrial presence, while in the dark it looks like a cold dark grey, the standard for mechanical engineering and machine tools."
+  },
+  {
+    "ral": "RAL 7032",
+    "description": "A light, warm grey that is very popular for office equipment; bright light makes this look like a very pale, warm pebble grey, while in the dark it looks like a light tan, used for control panels and electrical switchboards."
+  },
+  {
+    "ral": "RAL 7033",
+    "description": "A muted grey-green that mimics dried cement; direct sunlight brings out its muted grey-green cement character, while in the dark it looks like a soft grey, used for laboratory floors and industrial walls."
+  },
+  {
+    "ral": "RAL 7034",
+    "description": "A light grey with a noticeable yellowish or tan warmth; in the sun, this appears as a yellowish light-grey, while in the dark it looks like a muted tan, used for agricultural buildings and utility storage."
+  },
+  {
+    "ral": "RAL 7035",
+    "description": "A bright, clean grey used extensively for electronics and enclosures; this light grey remains very bright and clean in the sun, turning into a soft neutral grey in the shade, the global standard for server racks and electronics."
+  },
+  {
+    "ral": "RAL 7036",
+    "description": "A medium grey with a smooth, almost metallic visual quality; bright sunlight gives this a smooth platinum-like sheen, while in the dark it looks like a standard medium-grey, popular for automotive parts and high-end tools."
+  },
+  {
+    "ral": "RAL 7037",
+    "description": "A balanced, soft grey that works well for large surfaces; in the sun, this is a very balanced, dusty grey, while in the dark it remains deep and solid, used for large-scale steel structures and highway infrastructure."
+  },
+  {
+    "ral": "RAL 7038",
+    "description": "A very light grey with a slightly cool, stony character; direct sunlight lightens this to a pale, stony grey, while in the dark it looks like a soft neutral, used for industrial machinery and commercial interiors."
+  },
+  {
+    "ral": "RAL 7039",
+    "description": "A warm, brownish-grey that feels natural and dense; in the sun, it shows off a warm quartz-brown depth, while in the dark it looks like a dark, dense grey, popular for modern architectural panels and windows."
+  },
+  {
+    "ral": "RAL 7040",
+    "description": "A standard light-medium grey used for metal window frames; bright sunlight highlights its clean metallic character, while in the dark it stays a medium grey, the standard for metal window frames and residential garage doors."
+  },
+  {
+    "ral": "RAL 7042",
+    "description": "A neutral, medium grey designed for road infrastructure; in the sun, this is a very neutral and visible grey, appearing solid in the shade, used for traffic signal poles and road infrastructure."
+  },
+  {
+    "ral": "RAL 7043",
+    "description": "A darker, more saturated version of traffic grey for contrast; direct light reveals its saturated dark grey depth, while in the dark it is almost black, used for industrial machinery and modern residential accents."
+  },
+  {
+    "ral": "RAL 7044",
+    "description": "A very light, warm grey with a soft, delicate appearance; bright sunlight gives this a soft, silky white-grey glow, while in the dark it looks like a pale tan, popular for high-end interior furniture and office systems."
+  },
+  {
+    "ral": "RAL 7045",
+    "description": "A medium grey designed for telecommunications equipment; in the sun, this is a clear, technical grey, while in the dark it looks like a solid neutral, used for telecommunications towers and electronic housings."
+  },
+  {
+    "ral": "RAL 7046",
+    "description": "A slightly lighter and bluer version of Telegrey 1; direct sunlight pulls out a slight blue-grey tint, making it look cooler, while in the dark it is a soft medium grey, used for consumer electronics and appliances."
+  },
+  {
+    "ral": "RAL 7047",
+    "description": "A very pale grey used for clean, modern electronic housing; bright sunlight lightens this to an almost white-grey, while in the dark it looks like a clean, soft neutral, used for high-end laboratory and medical equipment."
+  },
+  {
+    "ral": "RAL 7048",
+    "description": "A metallic, shimmering grey with a soft pearlescent finish; the metallic pearl finish creates a shimmering grey luster in the sun, turning into a flat mouse grey in the dark, used for luxury finishes and automotive trim."
+  },
+  {
+    "ral": "RAL 8000",
+    "description": "A warm brown with a distinct olive-yellow undertone; in the sun, this appears as a warm, greenish-brown, while in the dark it looks like a muddy olive, often used for camouflage and traditional machinery."
+  },
+  {
+    "ral": "RAL 8001",
+    "description": "A bright, golden brown reminiscent of natural earth pigments; direct sunlight highlights its golden ochre brilliance, while in the dark it looks like a dark tan, popular for agricultural equipment and wooden-look metalwork."
+  },
+  {
+    "ral": "RAL 8002",
+    "description": "A medium brown used for clear identification and signaling; in bright light, it shows off a saturated signal-brown depth, while in the dark it remains a powerful brown, used for industrial piping and warning markings."
+  },
+  {
+    "ral": "RAL 8003",
+    "description": "A warm, reddish-brown that mimics baked terracotta; direct sunlight makes this look like a warm reddish clay, while in the dark it looks like a deep brown, used for terracotta restoration and agricultural tools."
+  },
+  {
+    "ral": "RAL 8004",
+    "description": "A vibrant brown with a strong orange and copper influence; bright light pulls out its vibrant orange-copper warmth, while in the dark it looks like a rusty brown, used for roof tiles and high-visibility industrial parts."
+  },
+  {
+    "ral": "RAL 8007",
+    "description": "A medium, natural brown resembling animal fur; in the sun, this appears as a warm fawn-brown, while in the dark it looks like a muted tan-grey, often used for residential gates and garden furniture."
+  },
+  {
+    "ral": "RAL 8008",
+    "description": "A dense brown with a heavy green-yellow tint; direct sunlight highlights its olive-yellow warmth, while in the dark it looks like a deep, muddy brown, used for military applications and rugged outdoor tools."
+  },
+  {
+    "ral": "RAL 8011",
+    "description": "A rich, classic brown inspired by the color of walnuts; in bright light, this shows off a rich nut-brown luster, while in the dark it remains deep and professional, the standard for high-end industrial machinery."
+  },
+  {
+    "ral": "RAL 8012",
+    "description": "A deep, rusty brown often used for protective coatings; direct sunlight pulls out the rusty red-brown warmth, while in the dark it looks like a heavy dark red, used for industrial primers and steel protection."
+  },
+  {
+    "ral": "RAL 8014",
+    "description": "A dark, traditional brown often seen in old photography; in the sun, this appears as a dark, traditional sepia, while in the dark it is nearly black, popular for historical restorations and window frames."
+  },
+  {
+    "ral": "RAL 8015",
+    "description": "A warm, deep brown with a slight reddish glow; bright sunlight highlights its chestnut-red glow, while in the dark it looks like a deep dark brown, used for luxury furniture and high-end storefronts."
+  },
+  {
+    "ral": "RAL 8016",
+    "description": "A dark, luxurious brown with a rich reddish undertone; in the sun, the mahogany-red depth is truly visible, while in the dark it looks like a blackish-brown, used for high-quality wood-effect metal coatings."
+  },
+  {
+    "ral": "RAL 8017",
+    "description": "A very dark, rich brown reminiscent of plain chocolate; direct sunlight makes this look like a rich dark chocolate, while in the dark it is nearly black, common on fences and industrial gates."
+  },
+  {
+    "ral": "RAL 8019",
+    "description": "A very dark, desaturated brown that borders on dark grey; bright sunlight reveals its deep grey-brown character, while in the dark it is a heavy dark neutral, used for modern architectural panels and roofing."
+  },
+  {
+    "ral": "RAL 8022",
+    "description": "The darkest brown in the range, appearing black in shadow; this requires direct sunlight to see the brown hue, otherwise appearing as a deep jet-black, used for high-end automotive accents and luxury hardware."
+  },
+  {
+    "ral": "RAL 8023",
+    "description": "A bright, warm brown with a very strong orange base; in the sun, this appears as a bright, warm orange-brown, while in the dark it looks like a muted rust, often used for agricultural branding and construction tools."
+  },
+  {
+    "ral": "RAL 8024",
+    "description": "A muted, medium brown with a tan-like softness; direct sunlight highlights its soft beige-brown warmth, while in the dark it looks like a muted tan, common in residential architecture and interior design."
+  },
+  {
+    "ral": "RAL 8025",
+    "description": "A soft, desaturated brown that is gentle and neutral; bright sunlight lightens this to a pale sandy brown, while in the dark it looks like a soft grey-brown, used for medical equipment and office furniture."
+  },
+  {
+    "ral": "RAL 8028",
+    "description": "A natural, soil-like brown that is deep and earthy; in the sun, the deep terra-brown earthiness is visible, while in the dark it looks like a solid dark brown, used for landscaping equipment and agricultural tools."
+  },
+  {
+    "ral": "RAL 8029",
+    "description": "A metallic brown with a bright, copper-like shimmer; the metallic copper finish catches the sun to create a bright shimmering glow, turning into a flat bronze in the dark, used for premium architectural trim."
+  },
+  {
+    "ral": "RAL 9001",
+    "description": "A classic, warm off-white used for traditional interiors; in the sun, this appears as a warm, inviting cream, while in the dark it looks like a soft off-white, the global standard for light switches and sockets."
+  },
+  {
+    "ral": "RAL 9002",
+    "description": "A pale off-white with a subtle grey cooling effect; bright light pulls out the subtle grey-white cooling effect, while in the dark it looks like a soft neutral white, used for electronic enclosures and cladding."
+  },
+  {
+    "ral": "RAL 9003",
+    "description": "A clean, bright white used for high-visibility signaling; direct sunlight makes this look like a crisp, surgical white, while in the dark it stays very clean, used for signal indicators and laboratory equipment."
+  },
+  {
+    "ral": "RAL 9004",
+    "description": "A deep black intended for clear, legible signage; in the sun, this reveals its deep signal-black character, while in the dark it is a solid matte black, used for highly legible text and architectural accents."
+  },
+  {
+    "ral": "RAL 9005",
+    "description": "The darkest, purest black in the RAL Classic collection; this jet black absorbs almost all light in the sun and remains a perfect black in the dark, the universal standard for machinery, frames, and high-contrast design."
+  },
+  {
+    "ral": "RAL 9006",
+    "description": "A classic metallic silver that mimics untreated aluminium; the metallic aluminium finish sparkles brilliantly in the sun, turning into a flat medium-grey in the shade, used for automotive parts and machinery."
+  },
+  {
+    "ral": "RAL 9007",
+    "description": "A darker metallic grey that resembles aged or coated metal; direct sunlight highlights its deep grey metallic depth, while in the dark it looks like a dark grey, used for industrial structures and large architectural panels."
+  },
+  {
+    "ral": "RAL 9010",
+    "description": "The industry standard white for most architectural coatings; in the sun, this appears as a very bright, pure white, while in the dark it remains extremely clean, the standard for architectural wall coatings and doors."
+  },
+  {
+    "ral": "RAL 9011",
+    "description": "A soft, dark black with a slight charcoal-like texture; bright sunlight reveals a soft charcoal-like texture in this black, while in the dark it is solid, popular for household appliances and modern furniture."
+  },
+  {
+    "ral": "RAL 9016",
+    "description": "A very bright, sterile white used for road markings and signs; in the sun, this is the brightest white available, appearing sterile and crisp even in the shade, used for road markings, medical environments, and modern facades."
+  },
+  {
+    "ral": "RAL 9017",
+    "description": "A standard black used for contrast on road signage; direct sunlight makes this look like a solid, deep traffic black, while it stays perfect in the dark, the standard for traffic signal frames and road signage."
+  },
+  {
+    "ral": "RAL 9018",
+    "description": "A pale, aged white with a soft greenish-grey tint; bright sunlight highlights its soft papyrus-white aged quality, while in the dark it looks more like a grey, used for historical restorations and high-end interiors."
+  },
+  {
+    "ral": "RAL 9022",
+    "description": "A light metallic grey with a pearlescent, reflective finish; the pearlescent finish catches the sun to create a bright light-grey shimmer, turning flat in the dark, a premium color for luxury consumer electronics."
+  },
+  {
+    "ral": "RAL 9023",
+    "description": "A deep metallic grey with a sophisticated shimmering sheen; in the sun, this metallic dark grey sparkles with sophisticated depth, looking like a dark neutral in the dark, used for high-end automotive and architectural trim."
+  }
+]
