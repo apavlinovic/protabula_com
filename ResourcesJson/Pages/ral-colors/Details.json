@@ -28,5 +28,6 @@
   "TitleSuffix": "HEX, RGB, CMYK Color Codes",
   "BreadcrumbHome": "Home",
   "BreadcrumbColors": "RAL Colors",
-  "CompareWith": "Compare with similar colors"
+  "CompareWith": "Compare with similar colors",
+  "ShareImageCaption": "Share this color"
 }

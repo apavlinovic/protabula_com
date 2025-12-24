@@ -126,4 +126,50 @@ app.MapGet("/robots.txt", (HttpContext context) =>
     return Results.Content(robotsTxt, "text/plain");
 });
 
+// Development-only: Generate color preview images
+if (app.Environment.IsDevelopment())
+{
+    // Generate a single color image for testing
+    app.MapGet("/dev/generate-image/{slug}", async (string slug, IRalColorLoader colorLoader, IWebHostEnvironment env) =>
+    {
+        var fontsDir = Path.Combine(env.WebRootPath, "fonts");
+        var outputDir = Path.Combine(env.WebRootPath, "images", "ral-colors");
+
+        var colors = await colorLoader.LoadAsync();
+        var colorNumber = protabula_com.Models.RalColor.FromSlug(slug);
+        var color = colors.FirstOrDefault(c => c.Number == colorNumber);
+
+        if (color == null)
+            return Results.NotFound($"Color {colorNumber} not found");
+
+        var generator = new ColorImageGenerator(fontsDir);
+        var outputPath = Path.Combine(outputDir, $"{color.Slug}.jpg");
+        generator.GenerateColorImage(color, outputPath);
+
+        return Results.Ok(new { message = $"Generated image for {color.Number}", path = outputPath });
+    });
+
+    // Generate all color images
+    app.MapGet("/dev/generate-images", async (IRalColorLoader colorLoader, IWebHostEnvironment env) =>
+    {
+        var fontsDir = Path.Combine(env.WebRootPath, "fonts");
+        var outputDir = Path.Combine(env.WebRootPath, "images", "ral-colors");
+
+        var generator = new ColorImageGenerator(fontsDir);
+        var colors = await colorLoader.LoadAsync();
+
+        var generated = 0;
+        await generator.GenerateAllColorImagesAsync(
+            colors,
+            outputDir,
+            "en",
+            new Progress<(int current, int total, string colorNumber)>(p =>
+            {
+                generated = p.current;
+            }));
+
+        return Results.Ok(new { message = $"Generated {generated} color images", outputDirectory = outputDir });
+    });
+}
+
 app.Run();

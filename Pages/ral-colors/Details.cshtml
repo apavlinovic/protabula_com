@@ -41,6 +41,9 @@
         (categoryName, "/ral-colors/Category", new Dictionary<string, string> { ["culture"] = currentCulture, ["category"] = categorySlug }),
         (colorTitle, null, null)
     };
+
+    // OG Image for social sharing
+    ViewData["OgImage"] = $"{baseUrl}/images/ral-colors/{Model.Color.Slug}.jpg";
 }
 
 @section Head {
@@ -102,6 +105,13 @@
     </script>
 }
 
+<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
+     role="button" tabindex="0"
+     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
+     title="@Localizer["ClickToPreview"]">
+    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
+</div>
+
 <h1>@colorTitle</h1>
 
 <p class="text-secondary mb-lg">
@@ -125,48 +135,6 @@
         @Localizer["IntroBasic", Model.Color.Number, paletteName, Model.Color.Hex]
     }
 </p>
-
-<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
-     role="button" tabindex="0"
-     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
-     title="@Localizer["ClickToPreview"]">
-    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
-</div>
-
-<!-- Full-page color preview modal -->
-<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;"
-     role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"
-     onclick="closeColorPreview(event)">
-    <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
-    <button class="color-preview-close" onclick="closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
-    <div class="color-preview-content">
-        <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;"></div>
-    </div>
-    <div class="color-preview-controls">
-        <button class="bg-option active" data-bg="#FFFFFF" onclick="changePreviewBg('#FFFFFF', this)">
-            <span class="bg-option-swatch" style="background-color: #FFFFFF;"><span style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgWhite"]</span>
-        </button>
-        <button class="bg-option" data-bg="#E0E0E0" onclick="changePreviewBg('#E0E0E0', this)">
-            <span class="bg-option-swatch" style="background-color: #E0E0E0;"><span style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgLightGrey"]</span>
-        </button>
-        <button class="bg-option" data-bg="#9E9E9E" onclick="changePreviewBg('#9E9E9E', this)">
-            <span class="bg-option-swatch" style="background-color: #9E9E9E;"><span style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgGrey"]</span>
-        </button>
-        <button class="bg-option" data-bg="#424242" onclick="changePreviewBg('#424242', this)">
-            <span class="bg-option-swatch" style="background-color: #424242;"><span style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgDarkGrey"]</span>
-        </button>
-        <button class="bg-option" data-bg="#000000" onclick="changePreviewBg('#000000', this)">
-            <span class="bg-option-swatch" style="background-color: #000000;"><span style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgBlack"]</span>
-        </button>
-    </div>
-    <!-- Fullscreen mode: color fills entire overlay -->
-    <div class="color-preview-fullscreen" style="background-color: @Model.Color.Hex;"></div>
-</div>
 
 <table class="color-details mb-xl">
     <tr>
@@ -214,6 +182,34 @@
     </tr>
 </table>
 
+<section class="scene-preview-section mt-2xl">
+    <h2>@Localizer["ScenePreview"]</h2>
+    <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
+    <div class="scene-grid">
+        <figure class="scene-preview scene-front">
+            <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview scene-side">
+            <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview scene-terrace">
+            <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview scene-window">
+            <img src="~/house-scenes/window/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
+            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
+            <figcaption>@Localizer["SceneWindow", Model.Color.Number]</figcaption>
+        </figure>
+    </div>
+</section>
+
+
 <section class="contrast-section mt-2xl">
     <h2>@Localizer["ContrastComparison"]</h2>
     <div class="contrast-grid">
@@ -250,32 +246,6 @@
     </div>
 </section>
 
-<section class="scene-preview-section mt-2xl">
-    <h2>@Localizer["ScenePreview"]</h2>
-    <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
-    <div class="scene-grid">
-        <figure class="scene-preview scene-front">
-            <img src="~/house-scenes/front/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview scene-side">
-            <img src="~/house-scenes/side/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview scene-terrace">
-            <img src="~/house-scenes/terrace/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-            <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview scene-window">
-            <img src="~/house-scenes/window/render.jpg" alt="@Localizer["ScenePreviewAlt"]" class="scene-image" loading="lazy" />
-            <div class="scene-color-overlay @(Model.Color.NeedsDarkText ? "light-color" : "")" style="background-color: @Model.Color.Hex;"></div>
-            <figcaption>@Localizer["SceneWindow", Model.Color.Number]</figcaption>
-        </figure>
-    </div>
-</section>
 
 @{
     // Collect all similar colors for comparison links
@@ -288,7 +258,7 @@
 
 @if (allSimilar.Any())
 {
-    <section class="compare-links mt-xl">
+    <section class="compare-links mt-2xl">
         <h2>@Localizer["CompareWith"]</h2>
         <div class="compare-links-grid">
             @foreach (var similar in allSimilar)
@@ -308,7 +278,7 @@
 
 @if (Model.SimilarColors.Classic.Any() || Model.SimilarColors.DesignPlus.Any() || Model.SimilarColors.Effect.Any())
 {
-    <section class="similar-colors mt-xl">
+    <section class="similar-colors mt-2xl">
         <h2>@Localizer["SimilarColors"]</h2>
 
         @if (Model.SimilarColors.Classic.Any())
@@ -345,6 +315,15 @@
         }
     </section>
 }
+
+<figure class="color-share-image mt-xl">
+    <img src="/images/ral-colors/@(Model.Color.Slug).jpg"
+         alt="RAL @Model.Color.Number @Model.Color.Name"
+         width="1200"
+         height="630"
+         loading="lazy" />
+    <figcaption>@Localizer["ShareImageCaption"]</figcaption>
+</figure>
 
 <a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]
@@ -435,3 +414,38 @@
         });
     </script>
 }
+
+<!-- Full-page color preview modal -->
+<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;"
+     role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"
+     onclick="closeColorPreview(event)">
+    <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
+    <button class="color-preview-close" onclick="closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
+    <div class="color-preview-content">
+        <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;"></div>
+    </div>
+    <div class="color-preview-controls">
+        <button class="bg-option active" data-bg="#FFFFFF" onclick="changePreviewBg('#FFFFFF', this)">
+            <span class="bg-option-swatch" style="background-color: #FFFFFF;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgWhite"]</span>
+        </button>
+        <button class="bg-option" data-bg="#E0E0E0" onclick="changePreviewBg('#E0E0E0', this)">
+            <span class="bg-option-swatch" style="background-color: #E0E0E0;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgLightGrey"]</span>
+        </button>
+        <button class="bg-option" data-bg="#9E9E9E" onclick="changePreviewBg('#9E9E9E', this)">
+            <span class="bg-option-swatch" style="background-color: #9E9E9E;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgGrey"]</span>
+        </button>
+        <button class="bg-option" data-bg="#424242" onclick="changePreviewBg('#424242', this)">
+            <span class="bg-option-swatch" style="background-color: #424242;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgDarkGrey"]</span>
+        </button>
+        <button class="bg-option" data-bg="#000000" onclick="changePreviewBg('#000000', this)">
+            <span class="bg-option-swatch" style="background-color: #000000;"><span style="background-color: @Model.Color.Hex;"></span></span>
+            <span class="bg-option-label">@Localizer["BgBlack"]</span>
+        </button>
+    </div>
+    <!-- Fullscreen mode: color fills entire overlay -->
+    <div class="color-preview-fullscreen" style="background-color: @Model.Color.Hex;"></div>
+</div>

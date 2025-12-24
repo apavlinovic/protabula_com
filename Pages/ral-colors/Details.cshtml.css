@@ -29,7 +29,6 @@
 
 
 .similar-colors {
-    margin-top: var(--spacing-lg);
 }
 
 .similar-colors h2 {
@@ -407,4 +406,25 @@
         width: 28px;
         height: 28px;
     }
+}
+
+/* Color share image */
+.color-share-image {
+    margin: 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: var(--bg-subtle);
+}
+
+.color-share-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.color-share-image figcaption {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
 }
