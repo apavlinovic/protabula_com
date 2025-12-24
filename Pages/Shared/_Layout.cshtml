@@ -154,17 +154,42 @@
         </div>
 
         <footer>
-            <div class="footer-links">
-                <a asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">@Localizer["Home"]</a>
-                <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+            <div class="footer-logo p-xl">
+                <a class="nav-logo" asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">
+                    <img src="~/logo.svg" alt="@Localizer["SiteName"]" height="28" />
+                </a>
+                
+                <div class="footer-language">
+                    <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
+                    <span>|</span>
+                    <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
+                </div>
             </div>
-            <div class="footer-language">
-                <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
-                <span>|</span>
-                <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
+            <div class="footer-grid p-xl">
+                <div class="footer-section">
+                    <strong>@Localizer["FooterRalColors"]</strong>
+                    <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["FooterAllColors"]</a>
+                    <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@currentCulture">@Localizer["FooterClassic"]</a>
+                    <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@currentCulture">@Localizer["FooterDesignPlus"]</a>
+                    <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@currentCulture">@Localizer["FooterEffect"]</a>
+                </div>
+                <div class="footer-section">
+                    <strong>@Localizer["FooterTools"]</strong>
+                    <a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["FooterConverter"]</a>
+                    <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["FooterCompare"]</a>
+                </div>
+                <div class="footer-section">
+                    <strong>@Localizer["FooterInfo"]</strong>
+                    <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
+                    <a href="/sitemap.xml">@Localizer["FooterSitemap"]</a>
+                </div>
             </div>
-            <div class="footer-copyright">
-                &copy; 2025 @Localizer["SiteName"]
+            <div class="footer-bottom p-xl">
+                <p class="footer-tagline">@Localizer["FooterTagline"]</p>
+
+                <div class="footer-copyright">
+                    &copy; 2025 @Localizer["SiteName"]
+                </div>
             </div>
         </footer>
 

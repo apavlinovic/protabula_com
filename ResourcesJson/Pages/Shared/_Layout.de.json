@@ -13,5 +13,16 @@
   "RalEffect": "RAL Effect",
   "Converter": "Farbkonverter",
   "Compare": "Farbvergleich",
-  "DefaultMetaDescription": "Entdecken Sie RAL-Farben mit Hex-Codes, RGB-Werten und Farbvergleichen. Finden Sie die perfekte RAL-Farbe für Ihr Projekt."
+  "DefaultMetaDescription": "Entdecken Sie RAL-Farben mit Hex-Codes, RGB-Werten und Farbvergleichen. Finden Sie die perfekte RAL-Farbe für Ihr Projekt.",
+  "FooterRalColors": "RAL-Farben",
+  "FooterAllColors": "Alle Farben",
+  "FooterClassic": "RAL Classic",
+  "FooterDesignPlus": "RAL Design Plus",
+  "FooterEffect": "RAL Effect",
+  "FooterTools": "Werkzeuge",
+  "FooterConverter": "Farbkonverter",
+  "FooterCompare": "Farbvergleich",
+  "FooterInfo": "Info",
+  "FooterSitemap": "Sitemap",
+  "FooterTagline": "RAL-Farbcodes mit HEX-, RGB- & CMYK-Werten für Designer und Profis"
 }
