@@ -25,16 +25,17 @@ public class CompareModel : PageModel
             Background = bg.ToLowerInvariant();
         }
 
-        // Parse colors (comma-separated)
+        // Parse colors (tilde-separated slugs)
         if (!string.IsNullOrWhiteSpace(colors))
         {
-            var colorNumbers = colors.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var colorSlugs = colors.Split('~', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            foreach (var number in colorNumbers.Take(8)) // Max 8 colors
+            foreach (var slug in colorSlugs.Take(8)) // Max 8 colors
             {
+                var colorNumber = RalColor.FromSlug(slug);
                 var color = AllColors.FirstOrDefault(c =>
-                    c.Number.Equals(number, StringComparison.OrdinalIgnoreCase) ||
-                    c.Slug.Equals(number, StringComparison.OrdinalIgnoreCase));
+                    c.Number.Equals(colorNumber, StringComparison.OrdinalIgnoreCase) ||
+                    c.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
                 if (color != null)
                 {

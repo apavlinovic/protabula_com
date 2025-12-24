@@ -49,9 +49,9 @@
         if (i < Model.SelectedColors.Count)
         {
             var color = Model.SelectedColors[i];
-            <div class="compare-swatch @(color.NeedsDarkText ? "dark" : "")"
+            <div class="compare-swatch"
                  style="background-color: @color.Hex;"
-                 data-number="@color.Number">
+                 data-slug="@color.Slug">
                 <div class="swatch-info">
                     <span class="swatch-title">RAL @color.Number</span>
                     @if (!string.IsNullOrEmpty(color.Name))
@@ -60,7 +60,7 @@
                     }
                     <span class="swatch-hex">@color.Hex</span>
                 </div>
-                <button class="swatch-remove" onclick="removeColor('@color.Number')" title="@Localizer["Remove"]">
+                <button class="swatch-remove" onclick="removeColor('@color.Slug')" title="@Localizer["Remove"]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 6 6 18"/>
                         <path d="m6 6 12 12"/>
@@ -82,18 +82,23 @@
     <script>
         const maxColors = 8;
 
-        // Get current colors from URL
+        // Convert color number to URL-friendly slug (spaces to underscores)
+        function toSlug(colorNumber) {
+            return colorNumber.replace(/ /g, '_');
+        }
+
+        // Get current color slugs from URL
         function getCurrentColors() {
             const params = new URLSearchParams(window.location.search);
             const colorsParam = params.get('colors');
-            return colorsParam ? colorsParam.split(',').filter(c => c) : [];
+            return colorsParam ? colorsParam.split('~').filter(c => c) : [];
         }
 
         // Update URL with new colors
         function updateUrl(colors, bg) {
             const url = new URL(window.location);
             if (colors.length > 0) {
-                url.searchParams.set('colors', colors.join(','));
+                url.searchParams.set('colors', colors.join('~'));
             } else {
                 url.searchParams.delete('colors');
             }
@@ -103,19 +108,20 @@
             window.location = url.toString();
         }
 
-        // Add a color
+        // Add a color (number will be converted to slug)
         function addColor(number) {
+            const slug = toSlug(number);
             const colors = getCurrentColors();
-            if (colors.length < maxColors && !colors.includes(number)) {
-                colors.push(number);
+            if (colors.length < maxColors && !colors.includes(slug)) {
+                colors.push(slug);
                 const bg = new URLSearchParams(window.location.search).get('bg');
                 updateUrl(colors, bg);
             }
         }
 
-        // Remove a color
-        function removeColor(number) {
-            const colors = getCurrentColors().filter(c => c !== number);
+        // Remove a color by slug
+        function removeColor(slug) {
+            const colors = getCurrentColors().filter(c => c !== slug);
             const bg = new URLSearchParams(window.location.search).get('bg');
             updateUrl(colors, bg);
         }
