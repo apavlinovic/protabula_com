@@ -34,8 +34,8 @@ public class VersusModel : PageModel
         }
 
         // Convert URL slugs (underscores) back to color number format (spaces)
-        var colorNumber1 = parts[0].Replace('_', ' ');
-        var colorNumber2 = parts[1].Replace('_', ' ');
+        var colorNumber1 = RalColor.FromSlug(parts[0]);
+        var colorNumber2 = RalColor.FromSlug(parts[1]);
 
         Color1 = await _loader.LoadSingleAsync(colorNumber1) ?? RalColor.Empty;
         Color2 = await _loader.LoadSingleAsync(colorNumber2) ?? RalColor.Empty;

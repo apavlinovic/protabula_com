@@ -32,7 +32,7 @@ public class RalColorDetailsModel : PageModel
         ColorIdentifier = colorIdentifier;
 
         // Convert URL slug (underscores) back to color number format (spaces)
-        var colorNumber = colorIdentifier.Replace('_', ' ');
+        var colorNumber = RalColor.FromSlug(colorIdentifier);
         Color = await _loader.LoadSingleAsync(colorNumber) ?? RalColor.Empty;
 
         if (Color != RalColor.Empty)

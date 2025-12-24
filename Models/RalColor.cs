@@ -62,7 +62,17 @@ public sealed class RalColor
     /// <summary>
     /// URL-friendly version of the color number (spaces replaced with underscores).
     /// </summary>
-    public string Slug => Number.Replace(' ', '_');
+    public string Slug => ToSlug(Number);
+
+    /// <summary>
+    /// Converts a color number to a URL-friendly slug (spaces to underscores).
+    /// </summary>
+    public static string ToSlug(string colorNumber) => colorNumber.Replace(' ', '_');
+
+    /// <summary>
+    /// Converts a URL slug back to a color number (underscores to spaces).
+    /// </summary>
+    public static string FromSlug(string slug) => slug.Replace('_', ' ');
 
     public static RalColor Empty { get; } = new RalColor(
         RalCategory.Classic,
