@@ -73,8 +73,7 @@ public class ColorImageService : IColorImageService
             throw new FileNotFoundException($"Scene files not found for {scene}");
         }
 
-        // Parse the hex color
-        var color = ParseHexColor(colorHex);
+        var targetRgb = ParseHexColor(colorHex);
 
         using var baseImage = await Image.LoadAsync<Rgba32>(basePath);
         using var maskImage = await Image.LoadAsync<L8>(maskPath);
@@ -85,7 +84,11 @@ public class ColorImageService : IColorImageService
             maskImage.Mutate(x => x.Resize(baseImage.Width, baseImage.Height));
         }
 
-        // Apply color with mask using multiply blend
+        // Apply color using Multiply + Soft Light combination
+        // Multiply gives strong color, soft light adds some luminosity back
+        const float multiplyWeight = 0.85f;
+        const float softLightWeight = 0.15f;
+
         baseImage.ProcessPixelRows(maskImage, (baseAccessor, maskAccessor) =>
         {
             for (int y = 0; y < baseAccessor.Height; y++)
@@ -101,14 +104,32 @@ public class ColorImageService : IColorImageService
                     {
                         ref var pixel = ref baseRow[x];
 
-                        // Multiply blend: result = base * color / 255
-                        var blendedR = (byte)((pixel.R * color.R / 255f) * maskValue + pixel.R * (1 - maskValue));
-                        var blendedG = (byte)((pixel.G * color.G / 255f) * maskValue + pixel.G * (1 - maskValue));
-                        var blendedB = (byte)((pixel.B * color.B / 255f) * maskValue + pixel.B * (1 - maskValue));
+                        float baseR = pixel.R / 255f;
+                        float baseG = pixel.G / 255f;
+                        float baseB = pixel.B / 255f;
+                        float blendR = targetRgb.R / 255f;
+                        float blendG = targetRgb.G / 255f;
+                        float blendB = targetRgb.B / 255f;
 
-                        pixel.R = blendedR;
-                        pixel.G = blendedG;
-                        pixel.B = blendedB;
+                        // Multiply blend
+                        float mulR = baseR * blendR;
+                        float mulG = baseG * blendG;
+                        float mulB = baseB * blendB;
+
+                        // Soft light blend
+                        float slR = (float)SoftLight(baseR, blendR);
+                        float slG = (float)SoftLight(baseG, blendG);
+                        float slB = (float)SoftLight(baseB, blendB);
+
+                        // Combine multiply and soft light
+                        float newR = mulR * multiplyWeight + slR * softLightWeight;
+                        float newG = mulG * multiplyWeight + slG * softLightWeight;
+                        float newB = mulB * multiplyWeight + slB * softLightWeight;
+
+                        // Blend based on mask intensity
+                        pixel.R = (byte)Math.Clamp((pixel.R * (1 - maskValue) + newR * 255 * maskValue), 0, 255);
+                        pixel.G = (byte)Math.Clamp((pixel.G * (1 - maskValue) + newG * 255 * maskValue), 0, 255);
+                        pixel.B = (byte)Math.Clamp((pixel.B * (1 - maskValue) + newB * 255 * maskValue), 0, 255);
                     }
                 }
             }
@@ -146,5 +167,11 @@ public class ColorImageService : IColorImageService
         var b = Convert.ToByte(hex[4..6], 16);
 
         return new Rgba32(r, g, b);
+    }
+
+    // Soft Light blend mode (Pegtop formula)
+    private static double SoftLight(double baseVal, double blendVal)
+    {
+        return (1 - 2 * blendVal) * baseVal * baseVal + 2 * blendVal * baseVal;
     }
 }

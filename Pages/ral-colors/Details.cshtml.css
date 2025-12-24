@@ -342,7 +342,7 @@ a.scene-image-wrapper:hover {
 /* Responsive */
 @media (max-width: 768px) {
     .color {
-        height: 250px;
+        height: 350px;
     }
 
     .contrast-grid {
