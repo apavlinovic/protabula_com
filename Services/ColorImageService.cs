@@ -16,7 +16,7 @@ public class ColorImageService : IColorImageService
     private readonly IWebHostEnvironment _env;
     private readonly string _cacheFolder;
     private readonly string _scenesFolder;
-    private static readonly string[] ValidScenes = ["front", "side", "terrace", "window"];
+    private static readonly string[] ValidScenes = ["front", "side", "terrace", "window", "front-door"];
 
     public ColorImageService(IWebHostEnvironment env)
     {
@@ -33,6 +33,11 @@ public class ColorImageService : IColorImageService
     public string GetCachedImagePath(string colorSlug, string scene)
     {
         return Path.Combine(_cacheFolder, $"{colorSlug}-{scene}.jpg");
+    }
+
+    public string GetImageFileName(string colorSlug, string scene)
+    {
+        return $"{colorSlug}-{scene}.jpg";
     }
 
     public bool ImageExists(string colorSlug, string scene)

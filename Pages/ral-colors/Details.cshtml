@@ -143,19 +143,27 @@
     <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
     <div class="scene-grid">
         <figure class="scene-preview">
-            <img src="/images/ral-scenes/@(Model.Color.Slug)/front.jpg" alt="@Localizer["SceneFrontAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-front.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-front.jpg" alt="@Localizer["SceneFrontAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
             <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
         </figure>
         <figure class="scene-preview">
-            <img src="/images/ral-scenes/@(Model.Color.Slug)/side.jpg" alt="@Localizer["SceneSideAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-side.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-side.jpg" alt="@Localizer["SceneSideAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
             <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
         </figure>
         <figure class="scene-preview">
-            <img src="/images/ral-scenes/@(Model.Color.Slug)/terrace.jpg" alt="@Localizer["SceneTerraceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-terrace.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-terrace.jpg" alt="@Localizer["SceneTerraceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
             <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption>
         </figure>
         <figure class="scene-preview">
-            <img src="/images/ral-scenes/@(Model.Color.Slug)/window.jpg" alt="@Localizer["SceneWindowAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-window.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-window.jpg" alt="@Localizer["SceneWindowAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
             <figcaption>@Localizer["SceneWindow", Model.Color.Number]</figcaption>
         </figure>
     </div>

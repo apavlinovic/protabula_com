@@ -316,12 +316,25 @@ h2 {
     font-size: 0.875rem;
     color: var(--text-secondary);
     text-align: center;
-    background: var(--bg-subtle);
+}
+
+a.scene-image-wrapper {
+    display: block;
+    aspect-ratio: 3 / 2;
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: opacity var(--transition);
+}
+
+a.scene-image-wrapper:hover {
+    opacity: 0.9;
 }
 
 ::deep .scene-image {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
 }
 

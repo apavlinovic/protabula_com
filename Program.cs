@@ -130,13 +130,33 @@ app.MapGet("/robots.txt", (HttpContext context) =>
 });
 
 // Scene image endpoint - generates color preview images on demand
-app.MapGet("/images/ral-scenes/{slug}/{scene}.jpg", async (
-    string slug,
-    string scene,
+// Format: /images/ral-scenes/{slug}-{scene}.jpg (e.g., ral-1000-green-beige-front.jpg)
+app.MapGet("/images/ral-scenes/{filename}.jpg", async (
+    string filename,
     IRalColorLoader colorLoader,
     IColorImageService imageService,
     HttpContext context) =>
 {
+    // Parse filename to extract slug and scene (e.g., "ral-1000-green-beige-front" -> slug + "front")
+    var validScenes = new[] { "front", "side", "terrace", "window", "front-door" };
+    string? scene = null;
+    string? slug = null;
+
+    foreach (var s in validScenes)
+    {
+        if (filename.EndsWith($"-{s}"))
+        {
+            scene = s;
+            slug = filename[..^(s.Length + 1)]; // Remove "-{scene}" from end
+            break;
+        }
+    }
+
+    if (scene == null || slug == null)
+    {
+        return Results.NotFound();
+    }
+
     // Parse slug to get color number
     var colorNumber = protabula_com.Models.RalColor.FromSlug(slug);
     var colors = await colorLoader.LoadAsync();
@@ -153,6 +173,10 @@ app.MapGet("/images/ral-scenes/{slug}/{scene}.jpg", async (
 
         // Set cache headers (cache for 1 year since images don't change)
         context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+
+        // Set Content-Disposition for better download filename
+        var downloadFilename = $"{color.Slug}-{scene}.jpg";
+        context.Response.Headers.ContentDisposition = $"inline; filename=\"{downloadFilename}\"";
 
         return Results.File(imagePath, "image/jpeg");
     }
