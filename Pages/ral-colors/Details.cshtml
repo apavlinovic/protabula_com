@@ -105,12 +105,6 @@
     </script>
 }
 
-<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
-     role="button" tabindex="0"
-     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
-     title="@Localizer["ClickToPreview"]">
-    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
-</div>
 
 <h1>@colorTitle</h1>
 
@@ -136,54 +130,16 @@
     }
 </p>
 
-<table class="color-details mb-xl">
-    <tr>
-        <th>@Localizer["LabelName"]</th>
-        <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelNameDe"]</th>
-        <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelRootColor"]</th>
-        <td>
-            @if (Model.Color.RootColor != RootColor.Unknown)
-            {
-                <span class="badge badge-@Model.Color.RootColor.ToString().ToLowerInvariant()">
-                    @Localizer[$"RootColor{Model.Color.RootColor}"]
-                </span>
-            }
-            else
-            {
-                <span>—</span>
-            }
-        </td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelHex"]</th>
-        <td><code>@Model.Color.Hex</code></td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelRgbCode"]</th>
-        <td><code>@Model.Formats?.RgbString</code></td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelRgbValues"]</th>
-        <td><code>@Model.Formats?.Rgb.R, @Model.Formats?.Rgb.G, @Model.Formats?.Rgb.B</code></td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelCmyk"]</th>
-        <td><code>@Model.Formats?.CmykString</code></td>
-    </tr>
-    <tr>
-        <th>@Localizer["LabelHsl"]</th>
-        <td><code>@Model.Formats?.HslString</code></td>
-    </tr>
-</table>
+
+<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
+     role="button" tabindex="0"
+     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
+     title="@Localizer["ClickToPreview"]">
+    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
+</div>
 
 <section class="scene-preview-section mt-2xl">
-    <h2>@Localizer["ScenePreview"]</h2>
+    <h2>@Localizer["ScenePreview", Model.Color.Number]</h2>
     <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
     <div class="scene-grid">
         <figure class="scene-preview scene-front">
@@ -232,7 +188,7 @@
 </section>
 
 <section class="contrast-section mt-4xl">
-    <h2>@Localizer["ContrastComparison"]</h2>
+    <h2>@Localizer["ContrastComparison", Model.Color.Number]</h2>
     <div class="contrast-grid">
         <div class="contrast-bg" style="background-color: #FFFFFF;"
              role="button" tabindex="0"
@@ -269,20 +225,23 @@
 
 
 @{
-    // Collect all similar colors for comparison links
-    var allSimilar = Model.SimilarColors.Classic
-        .Concat(Model.SimilarColors.DesignPlus)
-        .Concat(Model.SimilarColors.Effect)
-        .Take(5)
-        .ToList();
+    // Get similar colors from the same category/palette (up to 10)
+    var sameCategoryColors = Model.Color.Category switch
+    {
+        RalCategory.Classic => Model.SimilarColors.Classic,
+        RalCategory.DesignPlus => Model.SimilarColors.DesignPlus,
+        RalCategory.Effect => Model.SimilarColors.Effect,
+        _ => Model.SimilarColors.Classic
+    };
+    var compareColors = sameCategoryColors.Take(10).ToList();
 }
 
-@if (allSimilar.Any())
+@if (compareColors.Any())
 {
     <section class="compare-links mt-4xl">
-        <h2>@Localizer["CompareWith"]</h2>
+        <h2>@Localizer["CompareWith", Model.Color.Number, Model.Color.Name ?? ""]</h2>
         <div class="compare-links-grid">
-            @foreach (var similar in allSimilar)
+            @foreach (var similar in compareColors)
             {
                 <a asp-page="/ral-colors/Versus" asp-route-culture="@currentCulture"
                    asp-route-slug="@Model.Color.Slug-vs-@similar.Color.Slug" class="compare-link">
@@ -300,7 +259,7 @@
 @if (Model.SimilarColors.Classic.Any() || Model.SimilarColors.DesignPlus.Any() || Model.SimilarColors.Effect.Any())
 {
     <section class="similar-colors mt-4xl">
-        <h2>@Localizer["SimilarColors"]</h2>
+        <h2>@Localizer["SimilarColors", Model.Color.Number]</h2>
 
         @if (Model.SimilarColors.Classic.Any())
         {
@@ -337,6 +296,82 @@
     </section>
 }
 
+<section class="color-codes-section mt-4xl">
+    <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
+    <table class="color-details">
+        <tr>
+            <th>@Localizer["LabelName"]</th>
+            <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelNameDe"]</th>
+            <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelRootColor"]</th>
+            <td>
+                @if (Model.Color.RootColor != RootColor.Unknown)
+                {
+                    <span class="badge badge-@Model.Color.RootColor.ToString().ToLowerInvariant()">
+                        @Localizer[$"RootColor{Model.Color.RootColor}"]
+                    </span>
+                }
+                else
+                {
+                    <span>—</span>
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHex"]</th>
+            <td>@Model.Color.Hex</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelRgbValues"]</th>
+            <td>@Model.Formats?.Rgb.R, @Model.Formats?.Rgb.G, @Model.Formats?.Rgb.B</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelRgbPercent"]</th>
+            <td>@Model.Formats?.RgbPercentString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHsv"]</th>
+            <td>@Model.Formats?.HsvString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHsl"]</th>
+            <td>@Model.Formats?.HslString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelCmyk"]</th>
+            <td>@Model.Formats?.CmykString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelYiq"]</th>
+            <td>@Model.Formats?.YiqString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelXyz"]</th>
+            <td>@Model.Formats?.XyzString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelCieLab"]</th>
+            <td>@Model.Formats?.LabString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelCieLuv"]</th>
+            <td>@Model.Formats?.LuvString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelDecimal"]</th>
+            <td>@Model.Formats?.Decimal</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHunterLab"]</th>
+            <td>@Model.Formats?.HunterLabString</td>
+        </tr>
+    </table>
+</section>
 
 <a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]

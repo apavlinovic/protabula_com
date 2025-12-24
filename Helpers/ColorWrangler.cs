@@ -105,6 +105,146 @@ public static class ColorWrangler
         );
     }
 
+    /// <summary>
+    /// Convert a hex color to HSV (Hue 0-360, Saturation 0-100, Value 0-100).
+    /// </summary>
+    public static (int h, double s, double v) HexToHsv(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        return RgbToHsv(r, g, b);
+    }
+
+    /// <summary>
+    /// Convert RGB to HSV.
+    /// </summary>
+    public static (int h, double s, double v) RgbToHsv(byte r, byte g, byte b)
+    {
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        double max = Math.Max(rNorm, Math.Max(gNorm, bNorm));
+        double min = Math.Min(rNorm, Math.Min(gNorm, bNorm));
+        double delta = max - min;
+
+        double h = 0;
+        double s = max == 0 ? 0 : delta / max;
+        double v = max;
+
+        if (delta != 0)
+        {
+            if (max == rNorm)
+                h = ((gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0)) * 60;
+            else if (max == gNorm)
+                h = ((bNorm - rNorm) / delta + 2) * 60;
+            else
+                h = ((rNorm - gNorm) / delta + 4) * 60;
+        }
+
+        return ((int)Math.Round(h), Math.Round(s * 100, 2), Math.Round(v * 100, 2));
+    }
+
+    /// <summary>
+    /// Convert a hex color to RGB Percent (0-100% for each channel).
+    /// </summary>
+    public static (double r, double g, double b) HexToRgbPercent(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        return (
+            Math.Round(r / 255.0 * 100, 2),
+            Math.Round(g / 255.0 * 100, 2),
+            Math.Round(b / 255.0 * 100, 2)
+        );
+    }
+
+    /// <summary>
+    /// Convert a hex color to XYZ color space.
+    /// </summary>
+    public static (double x, double y, double z) HexToXyz(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
+
+        var converter = new ConverterBuilder()
+            .FromRGB(RGBWorkingSpaces.sRGB)
+            .ToXYZ(Illuminants.D50)
+            .Build();
+
+        var xyz = converter.Convert(rgb);
+        return (Math.Round(xyz.X * 100, 3), Math.Round(xyz.Y * 100, 3), Math.Round(xyz.Z * 100, 3));
+    }
+
+    /// <summary>
+    /// Convert a hex color to CIE Luv color space.
+    /// </summary>
+    public static (double l, double u, double v) HexToLuv(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
+
+        var converter = new ConverterBuilder()
+            .FromRGB(RGBWorkingSpaces.sRGB)
+            .ToLuv(Illuminants.D50)
+            .Build();
+
+        var luv = converter.Convert(rgb);
+        return (Math.Round(luv.L, 3), Math.Round(luv.u, 3), Math.Round(luv.v, 3));
+    }
+
+    /// <summary>
+    /// Convert a hex color to Hunter Lab color space.
+    /// </summary>
+    public static (double l, double a, double b) HexToHunterLab(string hex)
+    {
+        var (r, g, bl) = HexToRgb(hex);
+        var rgb = new RGBColor(r / 255.0, g / 255.0, bl / 255.0);
+
+        var converter = new ConverterBuilder()
+            .FromRGB(RGBWorkingSpaces.sRGB)
+            .ToHunterLab(Illuminants.D50)
+            .Build();
+
+        var hunterLab = converter.Convert(rgb);
+        return (Math.Round(hunterLab.L, 3), Math.Round(hunterLab.a, 3), Math.Round(hunterLab.b, 3));
+    }
+
+    /// <summary>
+    /// Convert a hex color to YIQ color space (NTSC).
+    /// </summary>
+    public static (double y, double i, double q) HexToYiq(string hex)
+    {
+        var (r, g, b) = HexToRgb(hex);
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+
+        // YIQ conversion matrix
+        double y = 0.299 * rNorm + 0.587 * gNorm + 0.114 * bNorm;
+        double i = 0.596 * rNorm - 0.274 * gNorm - 0.322 * bNorm;
+        double q = 0.211 * rNorm - 0.523 * gNorm + 0.312 * bNorm;
+
+        return (Math.Round(y * 255, 3), Math.Round(i * 255, 3), Math.Round(q * 255, 3));
+    }
+
+    /// <summary>
+    /// Convert a hex color to decimal (integer representation).
+    /// </summary>
+    public static int HexToDecimal(string hex)
+    {
+        var normalized = NormalizeHex(hex);
+        var hexValue = normalized.StartsWith("#") ? normalized[1..] : normalized;
+        return int.Parse(hexValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Get formatted CIE Lab values from hex.
+    /// </summary>
+    public static (double l, double a, double b) HexToLabValues(string hex)
+    {
+        var lab = HexToLab(hex);
+        return (Math.Round(lab.L, 3), Math.Round(lab.a, 3), Math.Round(lab.b, 3));
+    }
+
     // ---------- Internal helpers ----------
 
     public static string NormalizeHex(string hex)

@@ -1,3 +1,8 @@
+h2 {
+    border-top: 1px solid;
+    padding-top: var(--spacing-2xl);
+}
+
 .color {
     padding: var(--spacing-lg);
     border-radius: var(--border-radius);
@@ -7,7 +12,7 @@
     gap: var(--spacing-sm);
 
     color: #fff;
-    height: 400px;
+    height: 50vh;
     font-size: 21px;
     cursor: pointer;
     transition: box-shadow var(--transition);
@@ -295,10 +300,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-md);
-}
-
-.scene-grid .scene-preview:first-child {
-    grid-column: 1 / -1;
 }
 
 .scene-preview {

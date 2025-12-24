@@ -39,7 +39,7 @@ public class RalColorDetailsModel : PageModel
         {
             Formats = ColorFormats.FromHex(Color.Hex);
             var allColors = await _loader.LoadAsync();
-            SimilarColors = _similarColorFinder.FindSimilar(Color, allColors);
+            SimilarColors = _similarColorFinder.FindSimilar(Color, allColors, maxPerCategory: 10);
         }
     }
 }
