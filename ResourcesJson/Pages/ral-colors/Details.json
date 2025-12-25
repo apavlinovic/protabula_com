@@ -49,5 +49,12 @@
   "CopiedToClipboard": "Copied!",
   "ImageAltWithName": "RAL {0} {1} color swatch - {2} hex code for design, paint, and coating reference",
   "ImageAltBasic": "RAL {0} color swatch - {1} hex code for design, paint, and coating reference",
-  "ColorCodesTitle": "RAL {0} Color Codes"
+  "ColorCodesTitle": "RAL {0} Color Codes",
+  "LightingPreview": "RAL {0} {1} Throughout the Day",
+  "LightingPreviewDesc": "See how this color appears from morning to night as natural light changes.",
+  "DirectSunlight": "RAL {0} {1} in Direct Sunlight",
+  "DirectSunlightDesc": "How this color looks when hit by direct sunlight at different times of day.",
+  "SunlightMorning": "Morning Sun",
+  "SunlightMidday": "Midday Sun",
+  "SunlightGoldenHour": "Golden Hour"
 }

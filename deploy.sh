@@ -17,6 +17,9 @@ dotnet publish -c Release
 echo "📦 Syncing publish output"
 sudo rsync -a --delete "$BUILD_DIR/" "$PUBLISH_DIR/"
 
+echo "🧹 Clearing generated scene images"
+sudo rm -rf "$PUBLISH_DIR/wwwroot/images/ral-scenes/"*.jpg
+
 echo "🔁 Restarting service"
 sudo systemctl restart $APP_NAME
 

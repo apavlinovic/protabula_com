@@ -16,6 +16,7 @@ h2 {
     font-size: 21px;
     cursor: pointer;
     transition: box-shadow var(--transition);
+    box-shadow: var(--box-shadow);
 }
 
 .color:hover {
