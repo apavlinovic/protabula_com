@@ -83,7 +83,9 @@ public sealed class RalColorLoader : IRalColorLoader
                     brightness,
                     record.Number ?? string.Empty,
                     record.Name ?? string.Empty,
-                    record.NameDe ?? string.Empty));
+                    record.NameDe ?? string.Empty,
+                    record.DescriptionEn,
+                    record.DescriptionDe));
             }
 
             _cache = colors;
@@ -159,5 +161,7 @@ public sealed class RalColorLoader : IRalColorLoader
         [property: JsonPropertyName("brightness")] string? Brightness,
         [property: JsonPropertyName("number")] string? Number,
         [property: JsonPropertyName("name")] string? Name,
-        [property: JsonPropertyName("name_de")] string? NameDe);
+        [property: JsonPropertyName("name_de")] string? NameDe,
+        [property: JsonPropertyName("description_en")] string? DescriptionEn,
+        [property: JsonPropertyName("description_de")] string? DescriptionDe);
 }

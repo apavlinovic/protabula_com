@@ -108,28 +108,32 @@
 
 <h1>@colorTitle</h1>
 
-<p class="text-secondary mb-lg">
+<p>
     @{
         var paletteName = Localizer[$"Palette{Model.Color.Category}"].Value;
     }
     @if (!string.IsNullOrEmpty(Model.Color.Name) && Model.Color.RootColor != RootColor.Unknown)
     {
-        @Localizer["IntroWithNameAndRoot", Model.Color.Number, Model.Color.Name, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex]
+        @Localizer["IntroWithNameAndRoot", Model.Color.Number, Model.Color.Name, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
     }
     else if (!string.IsNullOrEmpty(Model.Color.Name))
     {
-        @Localizer["IntroWithName", Model.Color.Number, Model.Color.Name, paletteName, Model.Color.Hex]
+        @Localizer["IntroWithName", Model.Color.Number, Model.Color.Name, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
     }
     else if (Model.Color.RootColor != RootColor.Unknown)
     {
-        @Localizer["IntroWithRoot", Model.Color.Number, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex]
+        @Localizer["IntroWithRoot", Model.Color.Number, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
     }
     else
     {
-        @Localizer["IntroBasic", Model.Color.Number, paletteName, Model.Color.Hex]
+        @Localizer["IntroBasic", Model.Color.Number, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
     }
 </p>
 
+@if (Model.Color.HasDescription)
+{
+    <p class="color-description">@Model.Color.GetLocalizedDescription(currentCulture)</p>
+}
 
 <div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
      role="button" tabindex="0"
@@ -203,6 +207,85 @@
         </figcaption>
     </figure>
 </section>
+
+
+<section class="color-codes-section mt-4xl">
+    <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
+    <table class="color-details">
+        <tr>
+            <th>@Localizer["LabelName"]</th>
+            <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelNameDe"]</th>
+            <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelRootColor"]</th>
+            <td>
+                @if (Model.Color.RootColor != RootColor.Unknown)
+                {
+                    <span class="badge badge-@Model.Color.RootColor.ToString().ToLowerInvariant()">
+                        @Localizer[$"RootColor{Model.Color.RootColor}"]
+                    </span>
+                }
+                else
+                {
+                    <span>—</span>
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHex"]</th>
+            <td>@Model.Color.Hex</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelRgbValues"]</th>
+            <td>@Model.Formats?.Rgb.R, @Model.Formats?.Rgb.G, @Model.Formats?.Rgb.B</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelRgbPercent"]</th>
+            <td>@Model.Formats?.RgbPercentString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHsv"]</th>
+            <td>@Model.Formats?.HsvString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHsl"]</th>
+            <td>@Model.Formats?.HslString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelCmyk"]</th>
+            <td>@Model.Formats?.CmykString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelYiq"]</th>
+            <td>@Model.Formats?.YiqString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelXyz"]</th>
+            <td>@Model.Formats?.XyzString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelCieLab"]</th>
+            <td>@Model.Formats?.LabString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelCieLuv"]</th>
+            <td>@Model.Formats?.LuvString</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelDecimal"]</th>
+            <td>@Model.Formats?.Decimal</td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelHunterLab"]</th>
+            <td>@Model.Formats?.HunterLabString</td>
+        </tr>
+    </table>
+</section>
+
 
 <section class="contrast-section mt-4xl">
     <h2>@Localizer["ContrastComparison", Model.Color.Number]</h2>
@@ -312,83 +395,6 @@
         }
     </section>
 }
-
-<section class="color-codes-section mt-4xl">
-    <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
-    <table class="color-details">
-        <tr>
-            <th>@Localizer["LabelName"]</th>
-            <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelNameDe"]</th>
-            <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelRootColor"]</th>
-            <td>
-                @if (Model.Color.RootColor != RootColor.Unknown)
-                {
-                    <span class="badge badge-@Model.Color.RootColor.ToString().ToLowerInvariant()">
-                        @Localizer[$"RootColor{Model.Color.RootColor}"]
-                    </span>
-                }
-                else
-                {
-                    <span>—</span>
-                }
-            </td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelHex"]</th>
-            <td>@Model.Color.Hex</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelRgbValues"]</th>
-            <td>@Model.Formats?.Rgb.R, @Model.Formats?.Rgb.G, @Model.Formats?.Rgb.B</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelRgbPercent"]</th>
-            <td>@Model.Formats?.RgbPercentString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelHsv"]</th>
-            <td>@Model.Formats?.HsvString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelHsl"]</th>
-            <td>@Model.Formats?.HslString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelCmyk"]</th>
-            <td>@Model.Formats?.CmykString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelYiq"]</th>
-            <td>@Model.Formats?.YiqString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelXyz"]</th>
-            <td>@Model.Formats?.XyzString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelCieLab"]</th>
-            <td>@Model.Formats?.LabString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelCieLuv"]</th>
-            <td>@Model.Formats?.LuvString</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelDecimal"]</th>
-            <td>@Model.Formats?.Decimal</td>
-        </tr>
-        <tr>
-            <th>@Localizer["LabelHunterLab"]</th>
-            <td>@Model.Formats?.HunterLabString</td>
-        </tr>
-    </table>
-</section>
 
 <a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]

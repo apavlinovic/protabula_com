@@ -1,5 +1,11 @@
 @using protabula_com.Models
+@using System.Globalization
 @model RalColor
+
+@{
+    var culture = CultureInfo.CurrentUICulture.Name;
+    var localizedName = Model.GetLocalizedName(culture);
+}
 
 <a class="color-tile @(Model.NeedsDarkText ? "dark" : "")"
    style="background-color: @Model.Hex;"
@@ -8,8 +14,8 @@
    asp-route-colorIdentifier="@Model.Slug">
     <span class="ral">RAL</span>
     <span class="number">@Model.Number</span>
-    @if (!string.IsNullOrEmpty(Model.Name))
+    @if (!string.IsNullOrEmpty(localizedName))
     {
-        <span class="name">@Model.Name</span>
+        <span class="name">@localizedName</span>
     }
 </a>

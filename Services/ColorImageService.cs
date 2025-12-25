@@ -78,19 +78,12 @@ public class ColorImageService : IColorImageService
         using var baseImage = await Image.LoadAsync<Rgba32>(basePath);
         using var maskImage = await Image.LoadAsync<L8>(maskPath);
 
-        // Ensure mask is same size as base
         if (maskImage.Width != baseImage.Width || maskImage.Height != baseImage.Height)
         {
             maskImage.Mutate(x => x.Resize(baseImage.Width, baseImage.Height));
         }
 
-        // Luminosity-preserving colorization
-        // Remaps render grayscale range to natural lighting on colored surface
-        const float minLuma = 0.65f;  // #A6A6A6 shadow
-        const float maxLuma = 0.94f;  // #F0F0F0 highlight
-        const float shadowOutput = 0.65f;  // darkest output (65%)
-        const float highlightOutput = 1.0f; // brightest output (100%)
-
+        // Simple multiply blend
         baseImage.ProcessPixelRows(maskImage, (baseAccessor, maskAccessor) =>
         {
             for (int y = 0; y < baseAccessor.Height; y++)
@@ -113,25 +106,10 @@ public class ColorImageService : IColorImageService
                         float blendG = targetRgb.G / 255f;
                         float blendB = targetRgb.B / 255f;
 
-                        // Calculate perceived luminosity from base grayscale
-                        float luma = 0.299f * baseR + 0.587f * baseG + 0.114f * baseB;
-
-                        // Remap from render range to output range
-                        float normalized = (luma - minLuma) / (maxLuma - minLuma);
-                        normalized = Math.Clamp(normalized, 0f, 1f);
-                        float finalLuma = shadowOutput + normalized * (highlightOutput - shadowOutput);
-
-                        // Apply target color modulated by luminosity
-                        float newR = blendR * finalLuma;
-                        float newG = blendG * finalLuma;
-                        float newB = blendB * finalLuma;
-
-                        // Boost saturation by pushing colors away from gray
-                        const float saturationBoost = 1.15f;  // 15% more saturation
-                        float gray = (newR + newG + newB) / 3f;
-                        newR = gray + (newR - gray) * saturationBoost;
-                        newG = gray + (newG - gray) * saturationBoost;
-                        newB = gray + (newB - gray) * saturationBoost;
+                        // Multiply blend
+                        float newR = baseR * blendR;
+                        float newG = baseG * blendG;
+                        float newB = baseB * blendB;
 
                         // Blend based on mask intensity
                         pixel.R = (byte)Math.Clamp((pixel.R * (1 - maskValue) + newR * 255 * maskValue), 0, 255);
@@ -142,7 +120,6 @@ public class ColorImageService : IColorImageService
             }
         });
 
-        // Ensure output directory exists
         var outputDir = Path.GetDirectoryName(outputPath);
         if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
         {
@@ -175,5 +152,4 @@ public class ColorImageService : IColorImageService
 
         return new Rgba32(r, g, b);
     }
-
 }

@@ -73,14 +73,12 @@
             <span class="ral">RAL</span>
             <h3 class="number">@color.Number</h3>
 
-            @if (!string.IsNullOrEmpty(color.Name))
-            {
-                <span class="name">@color.Name</span>
+            @{
+                var localizedName = color.GetLocalizedName(currentCulture);
             }
-
-            @if (!string.IsNullOrEmpty(color.NameDe))
+            @if (!string.IsNullOrEmpty(localizedName))
             {
-                <span class="name">@color.NameDe</span>
+                <span class="name">@localizedName</span>
             }
         </a>
     }

@@ -35,7 +35,9 @@ public sealed class RalColor
         decimal brightness,
         string number,
         string name,
-        string nameDe)
+        string nameDe,
+        string? descriptionEn = null,
+        string? descriptionDe = null)
     {
         Category = category;
         RootColor = rootColor;
@@ -45,6 +47,8 @@ public sealed class RalColor
         Number = number;
         Name = name;
         NameDe = nameDe;
+        DescriptionEn = descriptionEn;
+        DescriptionDe = descriptionDe;
     }
 
     public RalCategory Category { get; }
@@ -58,6 +62,36 @@ public sealed class RalColor
     public string Number { get; }
     public string Name { get; }
     public string NameDe { get; }
+    public string? DescriptionEn { get; }
+    public string? DescriptionDe { get; }
+
+    /// <summary>
+    /// Returns true if the color has a description available.
+    /// </summary>
+    public bool HasDescription => !string.IsNullOrEmpty(DescriptionEn);
+
+    /// <summary>
+    /// Gets the localized color name for the specified culture.
+    /// Falls back to English if the requested language is not available.
+    /// </summary>
+    /// <param name="culture">Two-letter ISO language code (e.g., "en", "de")</param>
+    public string GetLocalizedName(string culture) => culture switch
+    {
+        "de" => !string.IsNullOrEmpty(NameDe) ? NameDe : Name,
+        _ => Name
+    };
+
+    /// <summary>
+    /// Gets the localized description for the specified culture.
+    /// Falls back to English if the requested language is not available.
+    /// Returns null if no description exists.
+    /// </summary>
+    /// <param name="culture">Two-letter ISO language code (e.g., "en", "de")</param>
+    public string? GetLocalizedDescription(string culture) => culture switch
+    {
+        "de" => !string.IsNullOrEmpty(DescriptionDe) ? DescriptionDe : DescriptionEn,
+        _ => DescriptionEn
+    };
 
     /// <summary>
     /// URL-friendly version of the color number (spaces replaced with underscores).
@@ -82,5 +116,7 @@ public sealed class RalColor
         0m,
         string.Empty,
         string.Empty,
-        string.Empty);
+        string.Empty,
+        null,
+        null);
 }
