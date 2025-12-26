@@ -1,9 +1,13 @@
 {
   "Title": "RAL Color Converter",
-  "MetaDescription": "Convert RAL colors to HEX, RGB, HSL, and CMYK formats. Free online RAL color code converter with copy-to-clipboard functionality.",
+  "TitleWithColor": "Convert RAL {0} {1} to HEX, RGB, CMYK, HSL",
+  "MetaDescription": "Convert RAL colors to HEX, RGB, HSL, CMYK, XYZ, Lab, and more formats. Free online RAL color code converter with copy-to-clipboard functionality.",
+  "MetaDescriptionWithColor": "Convert RAL {0} {1} to HEX, RGB, CMYK, HSL, HSV, XYZ, CIE Lab, CIE Luv, Hunter Lab, YIQ and Decimal. Get accurate color codes for RAL {0}.",
   "Intro": "Enter a RAL color number to convert it to different color formats.",
   "SearchPlaceholder": "Enter RAL number (e.g., 7016)...",
   "Copy": "Copy to clipboard",
   "ViewDetails": "View color details",
-  "NotFound": "No RAL color found with that number. Please try another."
+  "NotFound": "No RAL color found with that number. Please try another.",
+  "ConvertHeading": "Convert RAL {0} {1} to Other Color Formats",
+  "ConvertDescription": "Below you'll find RAL {0} {1} converted to HEX, RGB, CMYK, HSL, HSV, XYZ, CIE Lab, CIE Luv, Hunter Lab, YIQ and Decimal color codes. Click the copy button to copy any value to your clipboard."
 }

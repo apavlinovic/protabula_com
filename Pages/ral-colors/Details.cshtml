@@ -182,6 +182,18 @@
             </a>
             <figcaption>@Localizer["SceneFrontDoor", Model.Color.Number]</figcaption>
         </figure>
+        <figure class="scene-preview">
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-entrance.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-entrance.jpg" alt="@Localizer["SceneEntranceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
+            <figcaption>@Localizer["SceneEntrance", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview">
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-balcony.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-balcony.jpg" alt="@Localizer["SceneBalconyAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
+            <figcaption>@Localizer["SceneBalcony", Model.Color.Number]</figcaption>
+        </figure>
 
     </div>
 </section>

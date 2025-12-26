@@ -6,8 +6,21 @@
 @using System.Globalization
 @{
     var culture = CultureInfo.CurrentUICulture.Name;
-    ViewData["Title"] = Localizer["Title"].Value;
-    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+    var colorName = Model.SelectedColor?.GetLocalizedName(culture) ?? "";
+    var ralNumber = Model.SelectedColor?.Number ?? "";
+
+    // Dynamic SEO-optimized title and description when a color is selected
+    if (Model.SelectedColor != null)
+    {
+        ViewData["Title"] = Localizer["TitleWithColor", ralNumber, colorName].Value;
+        ViewData["MetaDescription"] = Localizer["MetaDescriptionWithColor", ralNumber, colorName].Value;
+    }
+    else
+    {
+        ViewData["Title"] = Localizer["Title"].Value;
+        ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+    }
+
     ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
     {
         (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = culture }),
@@ -38,14 +51,19 @@
                  style="background-color: @Model.Formats.Hex;">
                 <span class="ral">RAL</span>
                 <h2 class="number">@Model.SelectedColor.Number</h2>
-                @if (!string.IsNullOrEmpty(Model.SelectedColor.Name))
+                @if (!string.IsNullOrEmpty(colorName))
                 {
-                    <span class="name">@Model.SelectedColor.Name</span>
+                    <span class="name">@colorName</span>
                 }
             </div>
 
+            <!-- SEO-optimized heading for the conversion -->
+            <h2 class="converter-seo-heading">@Localizer["ConvertHeading", ralNumber, colorName]</h2>
+            <p class="converter-seo-text">@Localizer["ConvertDescription", ralNumber, colorName]</p>
+
             <div class="color-formats">
-                <div class="format-row">
+                <!-- HEX -->
+                <div class="format-row" id="hex-section">
                     <span class="format-label">HEX</span>
                     <code class="format-value" id="hexValue">@Model.Formats.Hex</code>
                     <button class="btn-copy" onclick="copyToClipboard('hexValue', this)" title="@Localizer["Copy"]">
@@ -56,7 +74,8 @@
                     </button>
                 </div>
 
-                <div class="format-row">
+                <!-- RGB -->
+                <div class="format-row" id="rgb-section">
                     <span class="format-label">RGB</span>
                     <code class="format-value" id="rgbValue">@Model.Formats.RgbString</code>
                     <button class="btn-copy" onclick="copyToClipboard('rgbValue', this)" title="@Localizer["Copy"]">
@@ -67,7 +86,20 @@
                     </button>
                 </div>
 
-                <div class="format-row">
+                <!-- RGB Percent -->
+                <div class="format-row" id="rgb-percent-section">
+                    <span class="format-label">RGB %</span>
+                    <code class="format-value" id="rgbPercentValue">@Model.Formats.RgbPercentString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('rgbPercentValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- HSL -->
+                <div class="format-row" id="hsl-section">
                     <span class="format-label">HSL</span>
                     <code class="format-value" id="hslValue">@Model.Formats.HslString</code>
                     <button class="btn-copy" onclick="copyToClipboard('hslValue', this)" title="@Localizer["Copy"]">
@@ -78,10 +110,95 @@
                     </button>
                 </div>
 
-                <div class="format-row">
+                <!-- HSV -->
+                <div class="format-row" id="hsv-section">
+                    <span class="format-label">HSV</span>
+                    <code class="format-value" id="hsvValue">@Model.Formats.HsvString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('hsvValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- CMYK -->
+                <div class="format-row" id="cmyk-section">
                     <span class="format-label">CMYK</span>
                     <code class="format-value" id="cmykValue">@Model.Formats.CmykString</code>
                     <button class="btn-copy" onclick="copyToClipboard('cmykValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- XYZ -->
+                <div class="format-row" id="xyz-section">
+                    <span class="format-label">XYZ</span>
+                    <code class="format-value" id="xyzValue">@Model.Formats.XyzString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('xyzValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- CIE Lab -->
+                <div class="format-row" id="lab-section">
+                    <span class="format-label">CIE Lab</span>
+                    <code class="format-value" id="labValue">@Model.Formats.LabString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('labValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- CIE Luv -->
+                <div class="format-row" id="luv-section">
+                    <span class="format-label">CIE Luv</span>
+                    <code class="format-value" id="luvValue">@Model.Formats.LuvString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('luvValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Hunter Lab -->
+                <div class="format-row" id="hunterlab-section">
+                    <span class="format-label">Hunter Lab</span>
+                    <code class="format-value" id="hunterLabValue">@Model.Formats.HunterLabString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('hunterLabValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- YIQ -->
+                <div class="format-row" id="yiq-section">
+                    <span class="format-label">YIQ</span>
+                    <code class="format-value" id="yiqValue">@Model.Formats.YiqString</code>
+                    <button class="btn-copy" onclick="copyToClipboard('yiqValue', this)" title="@Localizer["Copy"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Decimal -->
+                <div class="format-row" id="decimal-section">
+                    <span class="format-label">Decimal</span>
+                    <code class="format-value" id="decimalValue">@Model.Formats.Decimal</code>
+                    <button class="btn-copy" onclick="copyToClipboard('decimalValue', this)" title="@Localizer["Copy"]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
                             <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>

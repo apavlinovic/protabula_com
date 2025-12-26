@@ -1,9 +1,13 @@
 {
   "Title": "RAL-Farbumrechner",
-  "MetaDescription": "RAL-Farben in HEX, RGB, HSL und CMYK umrechnen. Kostenloser Online-RAL-Farbcode-Konverter mit Kopieren-Funktion.",
+  "TitleWithColor": "RAL {0} {1} in HEX, RGB, CMYK, HSL umrechnen",
+  "MetaDescription": "RAL-Farben in HEX, RGB, HSL, CMYK, XYZ, Lab und weitere Formate umrechnen. Kostenloser Online-RAL-Farbcode-Konverter mit Kopieren-Funktion.",
+  "MetaDescriptionWithColor": "RAL {0} {1} in HEX, RGB, CMYK, HSL, HSV, XYZ, CIE Lab, CIE Luv, Hunter Lab, YIQ und Dezimal umrechnen. Genaue Farbcodes für RAL {0}.",
   "Intro": "Geben Sie eine RAL-Farbnummer ein, um sie in verschiedene Farbformate umzurechnen.",
   "SearchPlaceholder": "RAL-Nummer eingeben (z.B. 7016)...",
   "Copy": "In Zwischenablage kopieren",
   "ViewDetails": "Farbdetails anzeigen",
-  "NotFound": "Keine RAL-Farbe mit dieser Nummer gefunden. Bitte versuchen Sie eine andere."
+  "NotFound": "Keine RAL-Farbe mit dieser Nummer gefunden. Bitte versuchen Sie eine andere.",
+  "ConvertHeading": "RAL {0} {1} in andere Farbformate umrechnen",
+  "ConvertDescription": "Unten finden Sie RAL {0} {1} umgerechnet in HEX, RGB, CMYK, HSL, HSV, XYZ, CIE Lab, CIE Luv, Hunter Lab, YIQ und Dezimal-Farbcodes. Klicken Sie auf die Kopierschaltfläche, um einen Wert in die Zwischenablage zu kopieren."
 }
