@@ -15,10 +15,12 @@ public sealed class SitemapGenerator : ISitemapGenerator
     private static readonly string[] CategoryPages = ["ral-colors/classic", "ral-colors/design-plus", "ral-colors/effect"];
 
     private readonly IRalColorLoader _colorLoader;
+    private readonly IColorImageService _colorImageService;
 
-    public SitemapGenerator(IRalColorLoader colorLoader)
+    public SitemapGenerator(IRalColorLoader colorLoader, IColorImageService colorImageService)
     {
         _colorLoader = colorLoader;
+        _colorImageService = colorImageService;
     }
 
     public async Task<string> GenerateAsync(string baseUrl, CancellationToken cancellationToken = default)
@@ -52,16 +54,28 @@ public sealed class SitemapGenerator : ISitemapGenerator
         }
 
         // Color detail pages with images
+        var validScenes = _colorImageService.GetValidScenes();
         foreach (var color in colors)
         {
             var path = $"ral-colors/{color.Slug}";
-            var imageUrl = $"{baseUrl}/images/ral-colors/{color.Slug}.jpg";
-            var imageTitle = string.IsNullOrEmpty(color.Name)
+            var colorTitle = string.IsNullOrEmpty(color.Name)
                 ? $"RAL {color.Number}"
                 : $"RAL {color.Number} {color.Name}";
-            var imageCaption = $"RAL {color.Number} color swatch - {color.Hex} hex code";
 
-            WriteUrlWithAlternates(writer, baseUrl, path, imageUrl, imageTitle, imageCaption);
+            // Build list of images: main swatch + scene images
+            var images = new List<(string Url, string Title, string Caption)>
+            {
+                ($"{baseUrl}/images/ral-colors/{color.Slug}.jpg", colorTitle, $"RAL {color.Number} color swatch - {color.Hex} hex code")
+            };
+
+            // Add scene images
+            foreach (var scene in validScenes)
+            {
+                var sceneTitle = $"{colorTitle} {FormatSceneName(scene)}";
+                images.Add(($"{baseUrl}/images/ral-scenes/{color.Slug}-{scene}.jpg", sceneTitle, sceneTitle));
+            }
+
+            WriteUrlWithAlternates(writer, baseUrl, path, images);
         }
 
         writer.WriteEndElement(); // urlset
@@ -75,9 +89,7 @@ public sealed class SitemapGenerator : ISitemapGenerator
         XmlWriter writer,
         string baseUrl,
         string path,
-        string? imageUrl = null,
-        string? imageTitle = null,
-        string? imageCaption = null)
+        IList<(string Url, string Title, string Caption)>? images = null)
     {
         foreach (var culture in SupportedCultures)
         {
@@ -114,24 +126,28 @@ public sealed class SitemapGenerator : ISitemapGenerator
             writer.WriteAttributeString("href", defaultUrl);
             writer.WriteEndElement();
 
-            // Add image if provided
-            if (!string.IsNullOrEmpty(imageUrl))
+            // Add images if provided
+            if (images != null)
             {
-                writer.WriteStartElement("image", "image", "http://www.google.com/schemas/sitemap-image/1.1");
-                writer.WriteElementString("image", "loc", "http://www.google.com/schemas/sitemap-image/1.1", imageUrl);
-                if (!string.IsNullOrEmpty(imageTitle))
+                foreach (var (imageUrl, imageTitle, imageCaption) in images)
                 {
+                    writer.WriteStartElement("image", "image", "http://www.google.com/schemas/sitemap-image/1.1");
+                    writer.WriteElementString("image", "loc", "http://www.google.com/schemas/sitemap-image/1.1", imageUrl);
                     writer.WriteElementString("image", "title", "http://www.google.com/schemas/sitemap-image/1.1", imageTitle);
-                }
-                if (!string.IsNullOrEmpty(imageCaption))
-                {
                     writer.WriteElementString("image", "caption", "http://www.google.com/schemas/sitemap-image/1.1", imageCaption);
+                    writer.WriteEndElement(); // image:image
                 }
-                writer.WriteEndElement(); // image:image
             }
 
             writer.WriteEndElement(); // url
         }
+    }
+
+    private static string FormatSceneName(string scene)
+    {
+        // Convert "front-door" to "Front Door"
+        return string.Join(' ', scene.Split('-').Select(word =>
+            char.ToUpperInvariant(word[0]) + word[1..]));
     }
 
     private static string GetPriority(string path)
