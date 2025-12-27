@@ -9,6 +9,7 @@ public interface IColorImageService
     Task<string> GetOrGenerateSceneImageAsync(string colorSlug, string colorHex, string scene);
     string GetCachedImagePath(string colorSlug, string scene);
     bool ImageExists(string colorSlug, string scene);
+    IReadOnlyList<string> GetValidScenes();
 }
 
 public class ColorImageService : IColorImageService
@@ -16,7 +17,7 @@ public class ColorImageService : IColorImageService
     private readonly IWebHostEnvironment _env;
     private readonly string _cacheFolder;
     private readonly string _scenesFolder;
-    private static readonly string[] ValidScenes = ["front", "side", "terrace", "window", "front-door", "living-room", "entrance", "balcony"];
+    private static readonly string[] ValidScenes = ["window", "front-door", "entrance", "balcony", "window-frame-detail"];
 
     public ColorImageService(IWebHostEnvironment env)
     {
@@ -44,6 +45,8 @@ public class ColorImageService : IColorImageService
     {
         return File.Exists(GetCachedImagePath(colorSlug, scene));
     }
+
+    public IReadOnlyList<string> GetValidScenes() => ValidScenes;
 
     public async Task<string> GetOrGenerateSceneImageAsync(string colorSlug, string colorHex, string scene)
     {
@@ -102,7 +105,7 @@ public async Task GenerateSceneImageAsync(string colorHex, string scene, string 
 
     var targetRgb = ParseHexColor(colorHex);
 
-    // Neutral “base frame” reference color (your suggestion: #A7A7A7)
+    // Neutral “base frame” reference color
     var neutralBase = ParseHexColor("#A7A7A7");
 
     // Strength lets you dial back tinting (0..1). Start with 1, reduce if needed.
@@ -136,7 +139,7 @@ public async Task GenerateSceneImageAsync(string colorHex, string scene, string 
                 if (m <= 0f) continue;
 
                 // Optional: soften mask response a touch (helps avoid harsh dark edges)
-                // m = MathF.Pow(m, 0.9f);
+                m = MathF.Pow(m, 0.9f);
 
                 ref var px = ref baseRow[x];
 

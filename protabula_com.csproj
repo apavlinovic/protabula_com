@@ -1315,6 +1315,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\house-scenes\window-frame-detail\" />
     <Folder Include="wwwroot\images\ral-colors\" />
     <Folder Include="wwwroot\images\ral-scenes\" />
   </ItemGroup>

@@ -144,32 +144,32 @@
 
 <section class="scene-preview-section mt-2xl">
     <h2>@Localizer["ScenePreview", Model.Color.Number]</h2>
-    <p class="text-secondary">@Localizer["ScenePreviewDesc", Model.Color.Number]</p>
+    <p class="text-secondary text-sm"><em>@Localizer["SceneDisclaimer"]</em></p>
     <div class="scene-grid">
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-front.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-front.jpg" alt="@Localizer["SceneFrontAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-side.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-side.jpg" alt="@Localizer["SceneSideAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-terrace.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-terrace.jpg" alt="@Localizer["SceneTerraceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-living-room.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-living-room.jpg" alt="@Localizer["SceneLivingRoomAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneLivingRoom", Model.Color.Number]</figcaption>
-        </figure>
+        @* <figure class="scene-preview"> *@
+        @*     <a href="/images/ral-scenes/@(Model.Color.Slug)-front.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;"> *@
+        @*         <img src="/images/ral-scenes/@(Model.Color.Slug)-front.jpg" alt="@Localizer["SceneFrontAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" /> *@
+        @*     </a> *@
+        @*     <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption> *@
+        @* </figure> *@
+        @* <figure class="scene-preview"> *@
+        @*     <a href="/images/ral-scenes/@(Model.Color.Slug)-side.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;"> *@
+        @*         <img src="/images/ral-scenes/@(Model.Color.Slug)-side.jpg" alt="@Localizer["SceneSideAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" /> *@
+        @*     </a> *@
+        @*     <figcaption>@Localizer["SceneFacade", Model.Color.Number]</figcaption> *@
+        @* </figure> *@
+        @* <figure class="scene-preview"> *@
+        @*     <a href="/images/ral-scenes/@(Model.Color.Slug)-terrace.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;"> *@
+        @*         <img src="/images/ral-scenes/@(Model.Color.Slug)-terrace.jpg" alt="@Localizer["SceneTerraceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" /> *@
+        @*     </a> *@
+        @*     <figcaption>@Localizer["SceneTerrace", Model.Color.Number]</figcaption> *@
+        @* </figure> *@
+        @* <figure class="scene-preview"> *@
+        @*     <a href="/images/ral-scenes/@(Model.Color.Slug)-living-room.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;"> *@
+        @*         <img src="/images/ral-scenes/@(Model.Color.Slug)-living-room.jpg" alt="@Localizer["SceneLivingRoomAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" /> *@
+        @*     </a> *@
+        @*     <figcaption>@Localizer["SceneLivingRoom", Model.Color.Number]</figcaption> *@
+        @* </figure> *@
         <figure class="scene-preview">
             <a href="/images/ral-scenes/@(Model.Color.Slug)-window.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
                 <img src="/images/ral-scenes/@(Model.Color.Slug)-window.jpg" alt="@Localizer["SceneWindowAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
@@ -193,6 +193,12 @@
                 <img src="/images/ral-scenes/@(Model.Color.Slug)-balcony.jpg" alt="@Localizer["SceneBalconyAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
             </a>
             <figcaption>@Localizer["SceneBalcony", Model.Color.Number]</figcaption>
+        </figure>
+        <figure class="scene-preview">
+            <a href="/images/ral-scenes/@(Model.Color.Slug)-window-frame-detail.jpg" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
+                <img src="/images/ral-scenes/@(Model.Color.Slug)-window-frame-detail.jpg" alt="@Localizer["SceneWindowFrameDetailAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image" loading="lazy" />
+            </a>
+            <figcaption>@Localizer["SceneWindowFrameDetail", Model.Color.Number]</figcaption>
         </figure>
 
     </div>
@@ -305,15 +311,15 @@
     <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
     <table class="color-details">
         <tr>
-            <th>@Localizer["LabelName"]</th>
+            <th>@Localizer["LabelName", Model.Color.Number]</th>
             <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelNameDe"]</th>
+            <th>@Localizer["LabelNameDe", Model.Color.Number]</th>
             <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelRootColor"]</th>
+            <th>@Localizer["LabelRootColor", Model.Color.Number]</th>
             <td>
                 @if (Model.Color.RootColor != RootColor.Unknown)
                 {
@@ -328,51 +334,51 @@
             </td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHex"]</th>
+            <th>@Localizer["LabelHex", Model.Color.Number]</th>
             <td>@Model.Color.Hex</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelRgbValues"]</th>
+            <th>@Localizer["LabelRgbValues", Model.Color.Number]</th>
             <td>@Model.Formats?.Rgb.R, @Model.Formats?.Rgb.G, @Model.Formats?.Rgb.B</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelRgbPercent"]</th>
+            <th>@Localizer["LabelRgbPercent", Model.Color.Number]</th>
             <td>@Model.Formats?.RgbPercentString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHsv"]</th>
+            <th>@Localizer["LabelHsv", Model.Color.Number]</th>
             <td>@Model.Formats?.HsvString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHsl"]</th>
+            <th>@Localizer["LabelHsl", Model.Color.Number]</th>
             <td>@Model.Formats?.HslString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelCmyk"]</th>
+            <th>@Localizer["LabelCmyk", Model.Color.Number]</th>
             <td>@Model.Formats?.CmykString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelYiq"]</th>
+            <th>@Localizer["LabelYiq", Model.Color.Number]</th>
             <td>@Model.Formats?.YiqString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelXyz"]</th>
+            <th>@Localizer["LabelXyz", Model.Color.Number]</th>
             <td>@Model.Formats?.XyzString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelCieLab"]</th>
+            <th>@Localizer["LabelCieLab", Model.Color.Number]</th>
             <td>@Model.Formats?.LabString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelCieLuv"]</th>
+            <th>@Localizer["LabelCieLuv", Model.Color.Number]</th>
             <td>@Model.Formats?.LuvString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelDecimal"]</th>
+            <th>@Localizer["LabelDecimal", Model.Color.Number]</th>
             <td>@Model.Formats?.Decimal</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHunterLab"]</th>
+            <th>@Localizer["LabelHunterLab", Model.Color.Number]</th>
             <td>@Model.Formats?.HunterLabString</td>
         </tr>
     </table>
