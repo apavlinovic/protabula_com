@@ -95,6 +95,17 @@ private static Rgba32 FromLinearRgb(float r, float g, float b, byte a)
     return new Rgba32(R, G, B, a);
 }
 
+private static float GetLuminance(Rgba32 color)
+{
+    // Convert to linear RGB and calculate perceived luminance
+    float r = SrgbToLinear(color.R / 255f);
+    float g = SrgbToLinear(color.G / 255f);
+    float b = SrgbToLinear(color.B / 255f);
+
+    // Standard luminance coefficients (Rec. 709)
+    return 0.2126f * r + 0.7152f * g + 0.0722f * b;
+}
+
 public async Task GenerateSceneImageAsync(string colorHex, string scene, string outputPath)
 {
     var basePath = Path.Combine(_scenesFolder, scene, "render.jpg");
@@ -105,8 +116,16 @@ public async Task GenerateSceneImageAsync(string colorHex, string scene, string 
 
     var targetRgb = ParseHexColor(colorHex);
 
-    // Neutral “base frame” reference color
-    var neutralBase = ParseHexColor("#A7A7A7");
+    // Calculate perceived luminance to determine if color is light or dark
+    // Using standard luminance formula in linear space
+    var targetLuminance = GetLuminance(targetRgb);
+
+    // Use different neutral base colors for light vs dark target colors
+    // Light colors need a lighter neutral to avoid blown-out highlights
+    // Dark colors work well with a mid-gray neutral
+    var neutralBase = targetLuminance > 0.35f
+        ? ParseHexColor("#CFCFCF")  // Slightly darker neutral for light colors (brighter output)
+        : ParseHexColor("#B3B3B3"); // Slightly brighter neutral for dark colors (brighter output)
 
     // Strength lets you dial back tinting (0..1). Start with 1, reduce if needed.
     const float strength = 1.0f;
