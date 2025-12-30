@@ -1,6 +1,7 @@
 @page "/ral-colors/{slug:regex(.*-vs-.*)}"
 @using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization
+@using protabula_com.Helpers
 @model VersusModel
 @inject IViewLocalizer Localizer
 @{
@@ -82,57 +83,140 @@
     </a>
 </div>
 
-<section class="versus-details mt-xl">
-    <h2>@Localizer["ColorCodes"]</h2>
-    <div class="versus-tables">
-        <table class="color-details">
-            <caption>@color1Title</caption>
-            <tr>
-                <th>HEX</th>
-                <td><code>@Model.Color1.Hex</code></td>
-            </tr>
-            <tr>
-                <th>@Localizer["RgbCode"]</th>
-                <td><code>@Model.Formats1?.RgbString</code></td>
-            </tr>
-            <tr>
-                <th>@Localizer["RgbValues"]</th>
-                <td><code>@Model.Formats1?.Rgb.R, @Model.Formats1?.Rgb.G, @Model.Formats1?.Rgb.B</code></td>
-            </tr>
-            <tr>
-                <th>CMYK</th>
-                <td><code>@Model.Formats1?.CmykString</code></td>
-            </tr>
-            <tr>
-                <th>HSL</th>
-                <td><code>@Model.Formats1?.HslString</code></td>
-            </tr>
-        </table>
+@{
+    var hue1 = Model.Formats1?.Hsl.H ?? 0;
+    var hue2 = Model.Formats2?.Hsl.H ?? 0;
+    var sat1 = Model.Formats1?.Hsl.S ?? 0;
+    var sat2 = Model.Formats2?.Hsl.S ?? 0;
+    var light1 = Model.Formats1?.Hsl.L ?? 0;
+    var light2 = Model.Formats2?.Hsl.L ?? 0;
+    var lrv1 = Model.Formats1?.Lrv ?? 0;
+    var lrv2 = Model.Formats2?.Lrv ?? 0;
+    var cieL1 = Model.Formats1?.Lab.L ?? 0;
+    var cieL2 = Model.Formats2?.Lab.L ?? 0;
 
-        <table class="color-details">
-            <caption>@color2Title</caption>
+    string GetTemperatureClass(string classification) => classification switch
+    {
+        "Warm" => "temp-warm",
+        "Cool" => "temp-cool",
+        _ => "temp-neutral"
+    };
+}
+
+<section class="versus-comparison mt-xl">
+    <h2>@Localizer["ColorComparison"]</h2>
+    
+    @{
+        var hueFamily1 = ColorMath.GetHueColorFamily(hue1);
+        var hueFamily2 = ColorMath.GetHueColorFamily(hue2);
+        var color1Short = $"RAL {Model.Color1.Number}";
+        var color2Short = $"RAL {Model.Color2.Number}";
+    }
+    <p class="comparison-summary">@Localizer["SummaryDeltaE", Model.DeltaE.ToString("F1"), Model.DeltaEInterpretation.ToLower()] @if (hueFamily1 == hueFamily2){@Localizer["SummaryHueFamilySame", hueFamily1]}else{@Localizer["SummaryHueFamily", color1Short, hueFamily1, color2Short, hueFamily2]} @if (Model.Temperature1.Classification == Model.Temperature2.Classification){@Localizer["SummaryTemperatureSame", Localizer[Model.Temperature1.Classification].Value.ToLower()]}else{@Localizer["SummaryTemperatureDiff", color1Short, Localizer[Model.Temperature1.Classification].Value.ToLower(), color2Short, Localizer[Model.Temperature2.Classification].Value.ToLower()]} @if (Math.Abs(lrv1 - lrv2) < 5){@Localizer["SummarySameBrightness", lrv1.ToString("F1"), lrv2.ToString("F1")]}else if (lrv1 > lrv2){@Localizer["SummaryBrighterColor", color1Short, lrv1.ToString("F1"), lrv2.ToString("F1"), color2Short]}else{@Localizer["SummaryBrighterColor", color2Short, lrv2.ToString("F1"), lrv1.ToString("F1"), color1Short]} @if (Math.Abs(sat1 - sat2) < 10){@Localizer["SummarySimilarSaturation"]}else if (sat1 > sat2){@Localizer["SummaryMoreSaturated", color1Short, sat1, color2Short, sat2]}else{@Localizer["SummaryMoreSaturated", color2Short, sat2, color1Short, sat1]}</p>
+
+    <div class="delta-e-display">
+        <div class="delta-e-header">
+            <span class="delta-e-label">@Localizer["ColorDifference"] (ΔE)</span>
+            <span class="delta-e-sublabel">@Localizer["DeltaEDescription"]</span>
+        </div>
+        <div class="delta-e-value">
+            <span class="delta-e-number">@Model.DeltaE.ToString("F2")</span>
+            <span class="delta-e-interpretation">@Model.DeltaEInterpretation</span>
+        </div>
+        <div class="delta-e-scale">
+            <div class="delta-e-bar">
+                <div class="delta-e-marker" style="left: @(Math.Min(Model.DeltaE / 20.0 * 100, 100))%;"></div>
+            </div>
+            <div class="delta-e-labels">
+                <span>0</span>
+                <span>5</span>
+                <span>10</span>
+                <span>20+</span>
+            </div>
+        </div>
+    </div>
+
+    <table class="color-details">
+        <thead>
             <tr>
-                <th>HEX</th>
-                <td><code>@Model.Color2.Hex</code></td>
+                <th></th>
+                <th>@color1Title</th>
+                <th>@color2Title</th>
             </tr>
+        </thead>
+        <tbody>
             <tr>
-                <th>@Localizer["RgbCode"]</th>
-                <td><code>@Model.Formats2?.RgbString</code></td>
-            </tr>
-            <tr>
-                <th>@Localizer["RgbValues"]</th>
-                <td><code>@Model.Formats2?.Rgb.R, @Model.Formats2?.Rgb.G, @Model.Formats2?.Rgb.B</code></td>
+                <th>RGB</th>
+                <td>
+                    <div class="color-value-list">
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ff0000;"></span> Red</span> <span>@Model.Formats1?.Rgb.R</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#00ff00;"></span> Green</span> <span>@Model.Formats1?.Rgb.G</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#0000ff;"></span> Blue</span> <span>@Model.Formats1?.Rgb.B</span></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="color-value-list">
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ff0000;"></span> Red</span> <span>@Model.Formats2?.Rgb.R</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#00ff00;"></span> Green</span> <span>@Model.Formats2?.Rgb.G</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#0000ff;"></span> Blue</span> <span>@Model.Formats2?.Rgb.B</span></span>
+                    </div>
+                </td>
             </tr>
             <tr>
                 <th>CMYK</th>
-                <td><code>@Model.Formats2?.CmykString</code></td>
+                <td>
+                    <div class="color-value-list">
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#00ffff;"></span> Cyan</span> <span>@Model.Formats1?.Cmyk.C%</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ff00ff;"></span> Magenta</span> <span>@Model.Formats1?.Cmyk.M%</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ffff00;"></span> Yellow</span> <span>@Model.Formats1?.Cmyk.Y%</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#000000;"></span> Key</span> <span>@Model.Formats1?.Cmyk.K%</span></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="color-value-list">
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#00ffff;"></span> Cyan</span> <span>@Model.Formats2?.Cmyk.C%</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ff00ff;"></span> Magenta</span> <span>@Model.Formats2?.Cmyk.M%</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ffff00;"></span> Yellow</span> <span>@Model.Formats2?.Cmyk.Y%</span></span>
+                        <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#000000;"></span> Key</span> <span>@Model.Formats2?.Cmyk.K%</span></span>
+                    </div>
+                </td>
             </tr>
             <tr>
-                <th>HSL</th>
-                <td><code>@Model.Formats2?.HslString</code></td>
+                <th>@Localizer["Hue"]</th>
+                <td>
+                    <partial name="Shared/_HueDiagram" model="hue1" />
+                </td>
+                <td>
+                    <partial name="Shared/_HueDiagram" model="hue2" />
+                </td>
             </tr>
-        </table>
-    </div>
+            <tr>
+                <th>@Localizer["Saturation"]</th>
+                <td>@sat1%</td>
+                <td>@sat2%</td>
+            </tr>
+            <tr>
+                <th>@Localizer["Lightness"]</th>
+                <td>@light1%</td>
+                <td>@light2%</td>
+            </tr>
+            <tr>
+                <th>@Localizer["LRV"]</th>
+                <td>@lrv1.ToString("F1")</td>
+                <td>@lrv2.ToString("F1")</td>
+            </tr>
+            <tr>
+                <th>@Localizer["CieL"]</th>
+                <td>@cieL1.ToString("F1")</td>
+                <td>@cieL2.ToString("F1")</td>
+            </tr>
+            <tr>
+                <th>@Localizer["ColorTemperature"]</th>
+                <td><span class="temp-badge @GetTemperatureClass(Model.Temperature1.Classification)">@Localizer[Model.Temperature1.Classification]</span> @Model.Temperature1.Kelvin K</td>
+                <td><span class="temp-badge @GetTemperatureClass(Model.Temperature2.Classification)">@Localizer[Model.Temperature2.Classification]</span> @Model.Temperature2.Kelvin K</td>
+            </tr>
+        </tbody>
+    </table>
 </section>
 
 <section class="versus-links mt-xl">

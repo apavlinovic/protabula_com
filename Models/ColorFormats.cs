@@ -1,3 +1,5 @@
+using protabula_com.Helpers;
+
 namespace protabula_com.Models;
 
 /// <summary>
@@ -29,22 +31,22 @@ public sealed record ColorFormats
     /// </summary>
     public static ColorFormats FromHex(string hex)
     {
-        var normalizedHex = ColorWrangler.NormalizeHex(hex);
+        var normalizedHex = ColorMath.NormalizeHex(hex);
         return new ColorFormats
         {
             Hex = normalizedHex,
-            Rgb = ColorWrangler.HexToRgb(normalizedHex),
-            Hsl = ColorWrangler.HexToHsl(normalizedHex),
-            Cmyk = ColorWrangler.HexToCmyk(normalizedHex),
-            Hsv = ColorWrangler.HexToHsv(normalizedHex),
-            RgbPercent = ColorWrangler.HexToRgbPercent(normalizedHex),
-            Xyz = ColorWrangler.HexToXyz(normalizedHex),
-            Lab = ColorWrangler.HexToLabValues(normalizedHex),
-            Luv = ColorWrangler.HexToLuv(normalizedHex),
-            HunterLab = ColorWrangler.HexToHunterLab(normalizedHex),
-            Yiq = ColorWrangler.HexToYiq(normalizedHex),
-            Decimal = ColorWrangler.HexToDecimal(normalizedHex),
-            Lrv = ColorWrangler.HexToLrv(normalizedHex)
+            Rgb = ColorMath.HexToRgb(normalizedHex),
+            Hsl = ColorMath.HexToHsl(normalizedHex),
+            Cmyk = ColorMath.HexToCmyk(normalizedHex),
+            Hsv = ColorMath.HexToHsv(normalizedHex),
+            RgbPercent = ColorMath.HexToRgbPercent(normalizedHex),
+            Xyz = ColorMath.HexToXyz(normalizedHex),
+            Lab = ColorMath.HexToLabValues(normalizedHex),
+            Luv = ColorMath.HexToLuv(normalizedHex),
+            HunterLab = ColorMath.HexToHunterLab(normalizedHex),
+            Yiq = ColorMath.HexToYiq(normalizedHex),
+            Decimal = ColorMath.HexToDecimal(normalizedHex),
+            Lrv = ColorMath.HexToLrv(normalizedHex)
         };
     }
 

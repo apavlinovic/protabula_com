@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using protabula_com.Helpers;
 using protabula_com.Models;
 using protabula_com.Services;
 
@@ -18,6 +19,14 @@ public class VersusModel : PageModel
     public RalColor Color2 { get; set; }
     public ColorFormats? Formats1 { get; private set; }
     public ColorFormats? Formats2 { get; private set; }
+
+    // Color comparison metrics
+    public double DeltaE { get; private set; }
+    public string DeltaEInterpretation { get; private set; } = "";
+
+    // Color temperature for each color
+    public (int Kelvin, string Classification) Temperature1 { get; private set; }
+    public (int Kelvin, string Classification) Temperature2 { get; private set; }
 
     public async Task<IActionResult> OnGetAsync(string slug)
     {
@@ -47,6 +56,13 @@ public class VersusModel : PageModel
 
         Formats1 = ColorFormats.FromHex(Color1.Hex);
         Formats2 = ColorFormats.FromHex(Color2.Hex);
+
+        // Calculate comparison metrics
+        DeltaE = ColorMath.GetDeltaE(Color1.Hex, Color2.Hex);
+        DeltaEInterpretation = ColorMath.GetDeltaEInterpretation(DeltaE);
+
+        Temperature1 = ColorMath.EstimateColorTemperature(Color1.Hex);
+        Temperature2 = ColorMath.EstimateColorTemperature(Color2.Hex);
 
         return Page();
     }

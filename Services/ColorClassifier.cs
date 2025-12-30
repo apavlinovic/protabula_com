@@ -1,4 +1,5 @@
 using Colourful;
+using protabula_com.Helpers;
 using protabula_com.Models;
 
 namespace protabula_com.Services;
@@ -45,14 +46,14 @@ public sealed class SimilarColorFinder : ISimilarColorFinder
 
     public SimilarColorsResult FindSimilar(RalColor referenceColor, IReadOnlyList<RalColor> allColors, int maxPerCategory = 5)
     {
-        var referenceLab = ColorWrangler.HexToLab(referenceColor.Hex);
+        var referenceLab = ColorMath.HexToLab(referenceColor.Hex);
 
         var colorDistances = allColors
             .Where(c => c.Number != referenceColor.Number) // Exclude the reference color itself
             .Select(c => new SimilarColor
             {
                 Color = c,
-                Distance = Difference.ComputeDifference(referenceLab, ColorWrangler.HexToLab(c.Hex))
+                Distance = Difference.ComputeDifference(referenceLab, ColorMath.HexToLab(c.Hex))
             })
             .ToList();
 

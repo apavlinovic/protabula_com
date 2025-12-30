@@ -36,25 +36,6 @@
     opacity: 0.9;
 }
 
-/* Comparison tables side by side */
-.versus-tables {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-}
-
-.versus-tables .color-details {
-    margin-bottom: 0;
-}
-
-.versus-tables .color-details caption {
-    text-align: left;
-    font-weight: 600;
-    font-size: 1.125rem;
-    padding-bottom: var(--spacing-sm);
-    color: var(--text-primary);
-}
-
 /* Link buttons */
 .versus-link-buttons {
     display: flex;
@@ -75,6 +56,206 @@
     flex-shrink: 0;
 }
 
+/* Color Comparison Section */
+.versus-comparison {
+    background: var(--bg-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+}
+
+.versus-comparison h2 {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Color value lists (RGB, CMYK) */
+.color-value-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.color-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.color-value-row:last-child {
+    border-bottom: none;
+}
+
+.color-dot-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.color-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Inline hue bar for table cells */
+.hue-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.hue-bar-small {
+    position: relative;
+    height: 12px;
+    border-radius: 3px;
+    background: linear-gradient(to right,
+        hsl(0, 100%, 50%),
+        hsl(60, 100%, 50%),
+        hsl(120, 100%, 50%),
+        hsl(180, 100%, 50%),
+        hsl(240, 100%, 50%),
+        hsl(300, 100%, 50%),
+        hsl(360, 100%, 50%)
+    );
+    min-width: 120px;
+}
+
+.hue-marker-small {
+    position: absolute;
+    top: -3px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.hue-marker-dot-small {
+    display: block;
+    width: 4px;
+    height: 18px;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hue-value-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Temperature badges */
+.temp-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-right: var(--spacing-xs);
+}
+
+.temp-warm {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.temp-neutral {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.temp-cool {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Comparison summary */
+p.comparison-summary {
+    margin: 0 0 var(--spacing-lg) 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Delta E display */
+.delta-e-display {
+    background: var(--bg-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.delta-e-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-md);
+}
+
+.delta-e-label {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.delta-e-sublabel {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.delta-e-value {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.delta-e-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.delta-e-interpretation {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+}
+
+.delta-e-scale {
+    width: 100%;
+}
+
+.delta-e-bar {
+    position: relative;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right,
+        #22c55e 0%,
+        #22c55e 5%,
+        #84cc16 10%,
+        #eab308 25%,
+        #f97316 50%,
+        #ef4444 100%
+    );
+    margin-bottom: var(--spacing-xs);
+}
+
+.delta-e-marker {
+    position: absolute;
+    top: -4px;
+    width: 4px;
+    height: 16px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transform: translateX(-50%);
+}
+
+.delta-e-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .versus-swatches {
@@ -85,10 +266,6 @@
         min-height: 200px;
     }
 
-    .versus-tables {
-        grid-template-columns: 1fr;
-    }
-
     .versus-link-buttons {
         flex-direction: column;
     }
@@ -96,5 +273,13 @@
     .versus-link-buttons .btn {
         width: 100%;
         text-align: center;
+    }
+
+    .hue-bar-small {
+        min-width: 80px;
+    }
+
+    .delta-e-number {
+        font-size: 2rem;
     }
 }

@@ -1,0 +1,16 @@
+@using protabula_com.Helpers
+@model int
+@{
+    var hue = Model;
+    var colorFamily = ColorMath.GetHueColorFamily(hue);
+    var position = hue / 360.0 * 100;
+}
+
+<div class="hue-cell">
+    <div class="hue-bar-small">
+        <div class="hue-marker-small" style="left: @position%;">
+            <span class="hue-marker-dot-small"></span>
+        </div>
+    </div>
+    <span class="hue-value-text">@hue° (@colorFamily)</span>
+</div>

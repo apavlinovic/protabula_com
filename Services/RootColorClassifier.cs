@@ -1,4 +1,5 @@
 using Colourful;
+using protabula_com.Helpers;
 using protabula_com.Models;
 
 namespace protabula_com.Services;
@@ -83,7 +84,7 @@ public sealed class RootColorClassifier : IRootColorClassifier
 
         try
         {
-            var inputLab = ColorWrangler.HexToLab(hex);
+            var inputLab = ColorMath.HexToLab(hex);
 
             var best = RootColorAnchors
                 .Select(anchor => new
@@ -122,7 +123,7 @@ public sealed class RootColorClassifier : IRootColorClassifier
         };
 
         return anchors
-            .Select(a => (a.color, ColorWrangler.HexToLab(a.hex)))
+            .Select(a => (a.color, ColorMath.HexToLab(a.hex)))
             .ToList();
     }
 }

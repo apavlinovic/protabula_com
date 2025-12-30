@@ -26,8 +26,8 @@ Routes are prefixed with culture codes (`/en/...`, `/de/...`). Root path `/` red
 
 - `Data/RAL/all-colors.json` - RAL color dataset (Classic, Design Plus, Effect categories)
 - `Services/RalColorLoader.cs` - Loads and caches RAL colors, registered as singleton
-- `Services/ColorClassifier.cs` - Color classification utilities
-- `Helpers/ColorWrangler.cs` - Hex to RGB conversion utilities
+- `Services/ColorClassifier.cs` - Color classification utilities (similar colors, root color detection)
+- `Helpers/ColorMath.cs` - Consolidated color utilities (conversions, Delta E, color temperature, LRV, contrast)
 - `Models/RalColor.cs` - RAL color model with category, brightness, localized names
 
 ### Pages Structure
