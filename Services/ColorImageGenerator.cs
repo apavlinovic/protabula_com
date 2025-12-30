@@ -1,3 +1,4 @@
+using protabula_com.Helpers;
 using protabula_com.Models;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -38,7 +39,8 @@ public class ColorImageGenerator
 
     public void GenerateColorImage(RalColor color, string outputPath, string? culture = "en")
     {
-        var bgColor = ParseHexColor(color.Hex);
+        var (r, g, b) = ColorMath.ParseHex(color.Hex);
+        var bgColor = Color.FromRgb(r, g, b);
         var textColor = color.NeedsDarkText ? Color.Black : Color.White;
         var textColorFaded = color.NeedsDarkText
             ? Color.FromRgba(0, 0, 0, 160)
@@ -141,20 +143,5 @@ public class ColorImageGenerator
         };
 
         ctx.DrawText(textOptions, text, color);
-    }
-
-    private static Color ParseHexColor(string hex)
-    {
-        hex = hex.TrimStart('#');
-
-        if (hex.Length == 6)
-        {
-            var r = Convert.ToByte(hex[..2], 16);
-            var g = Convert.ToByte(hex[2..4], 16);
-            var b = Convert.ToByte(hex[4..6], 16);
-            return Color.FromRgb(r, g, b);
-        }
-
-        return Color.Black;
     }
 }

@@ -1,8 +1,20 @@
 using System.Globalization;
 using Colourful;
+using protabula_com.Helpers;
 
 public static class ColorWrangler
 {
+    /// <summary>
+    /// Calculate Light Reflectance Value (LRV) from hex color.
+    /// LRV ranges from 0 (black) to 100 (white) and indicates how much light a color reflects.
+    /// </summary>
+    public static double HexToLrv(string hex) => ColorMath.GetLrv(hex);
+
+    /// <summary>
+    /// Get relative luminance (0-1) from hex color.
+    /// </summary>
+    public static float HexToLuminance(string hex) => ColorMath.GetLuminance(hex);
+
     /// <summary>
     /// Convert a hex color to LAB color space.
     /// </summary>
@@ -21,12 +33,12 @@ public static class ColorWrangler
 
     /// <summary>
     /// Parse a hex color into RGB bytes (0–255).
-    /// Accepts "#RRGGBB" or "RRGGBB" and throws on invalid input.
+    /// Accepts "#RRGGBB", "RRGGBB", "#RGB", or "RGB" formats.
     /// </summary>
     public static (byte r, byte g, byte b) HexToRgb(string hex)
     {
-        var normalizedHex = NormalizeHex(hex);
-        return HexToRgbInternal(normalizedHex);
+        var (r, g, b) = ColorMath.ParseHex(hex);
+        return (r, g, b);
     }
 
     /// <summary>
@@ -276,19 +288,5 @@ public static class ColorWrangler
         }
 
         return "#" + hex.ToUpperInvariant();
-    }
-
-    private static (byte r, byte g, byte b) HexToRgbInternal(string normalizedHex)
-    {
-        // normalizedHex is assumed "#RRGGBB"
-        string hex = normalizedHex.StartsWith("#")
-            ? normalizedHex[1..]
-            : normalizedHex;
-
-        byte r = byte.Parse(hex.Substring(0, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-        byte g = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-        byte b = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-
-        return (r, g, b);
     }
 }

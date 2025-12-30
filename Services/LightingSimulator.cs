@@ -1,3 +1,5 @@
+using protabula_com.Helpers;
+
 namespace protabula_com.Services;
 
 /// <summary>
@@ -25,7 +27,8 @@ public static class LightingSimulator
     /// </summary>
     public static string SimulateLighting(string hexColor, int temperatureKelvin, float intensity)
     {
-        var (r, g, b) = ParseHex(hexColor);
+        var rgb = ColorMath.ParseHex(hexColor);
+        float r = rgb.R, g = rgb.G, b = rgb.B;
         var (lightR, lightG, lightB) = TemperatureToRgb(temperatureKelvin);
 
         // Normalize light color against D55 (~5500K daylight) reference
@@ -83,7 +86,8 @@ public static class LightingSimulator
     /// </summary>
     public static string SimulateDirectSunlight(string hexColor, int temperatureKelvin, float intensity)
     {
-        var (r, g, b) = ParseHex(hexColor);
+        var rgb = ColorMath.ParseHex(hexColor);
+        float r = rgb.R, g = rgb.G, b = rgb.B;
         var (lightR, lightG, lightB) = TemperatureToRgb(temperatureKelvin);
 
         // Normalize against D55 reference
@@ -178,22 +182,6 @@ public static class LightingSimulator
             b = 138.5177312231f * MathF.Log(b) - 305.0447927307f;
             b = Math.Clamp(b, 0, 255);
         }
-
-        return (r, g, b);
-    }
-
-    private static (float R, float G, float B) ParseHex(string hex)
-    {
-        hex = hex.TrimStart('#');
-
-        if (hex.Length == 3)
-        {
-            hex = string.Concat(hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]);
-        }
-
-        var r = Convert.ToByte(hex[..2], 16);
-        var g = Convert.ToByte(hex[2..4], 16);
-        var b = Convert.ToByte(hex[4..6], 16);
 
         return (r, g, b);
     }

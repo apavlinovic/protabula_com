@@ -26,6 +26,7 @@
   "LabelHex": "RAL {0} HEX",
   "LabelRgbCode": "RAL {0} RGB-Code",
   "LabelRgbValues": "RAL {0} RGB",
+  "LabelLrv": "RAL {0} LRV",
   "LabelCmyk": "RAL {0} CMYK",
   "LabelHsl": "RAL {0} HSL",
   "LabelHsv": "RAL {0} HSV",

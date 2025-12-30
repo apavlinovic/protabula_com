@@ -19,6 +19,12 @@ public sealed record ColorFormats
     public required int Decimal { get; init; }
 
     /// <summary>
+    /// Light Reflectance Value (0-100). Indicates how much light a color reflects.
+    /// Used in architecture and interior design for lighting calculations.
+    /// </summary>
+    public required double Lrv { get; init; }
+
+    /// <summary>
     /// Creates ColorFormats from a hex color string.
     /// </summary>
     public static ColorFormats FromHex(string hex)
@@ -37,7 +43,8 @@ public sealed record ColorFormats
             Luv = ColorWrangler.HexToLuv(normalizedHex),
             HunterLab = ColorWrangler.HexToHunterLab(normalizedHex),
             Yiq = ColorWrangler.HexToYiq(normalizedHex),
-            Decimal = ColorWrangler.HexToDecimal(normalizedHex)
+            Decimal = ColorWrangler.HexToDecimal(normalizedHex),
+            Lrv = ColorWrangler.HexToLrv(normalizedHex)
         };
     }
 
@@ -52,4 +59,5 @@ public sealed record ColorFormats
     public string LuvString => $"L: {Luv.L} u: {Luv.u} v: {Luv.v}";
     public string HunterLabString => $"L: {HunterLab.L} a: {HunterLab.a} b: {HunterLab.b}";
     public string YiqString => $"Y: {Yiq.Y} I: {Yiq.I} Q: {Yiq.Q}";
+    public string LrvString => $"{Lrv}";
 }
