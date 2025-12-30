@@ -129,6 +129,36 @@ app.MapGet("/robots.txt", (HttpContext context) =>
     return Results.Content(robotsTxt, "text/plain");
 });
 
+// Color search API endpoint
+app.MapGet("/api/colors/search", async (string? q, string? culture, IRalColorLoader colorLoader) =>
+{
+    if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+    {
+        return Results.Ok(Array.Empty<object>());
+    }
+
+    var lang = culture == "de" ? "de" : "en";
+    var colors = await colorLoader.LoadAsync();
+    var query = q.Trim();
+
+    var results = colors
+        .Where(c =>
+            c.Number.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+            c.GetLocalizedName(lang).Contains(query, StringComparison.OrdinalIgnoreCase))
+        .Take(10)
+        .Select(c => new
+        {
+            number = c.Number,
+            name = c.GetLocalizedName(lang),
+            hex = c.Hex,
+            slug = c.Slug,
+            needsDarkText = c.NeedsDarkText
+        })
+        .ToArray();
+
+    return Results.Ok(results);
+});
+
 // Scene image endpoint - generates color preview images on demand
 // Format: /images/ral-scenes/{slug}-{scene}.jpg (e.g., ral-1000-green-beige-front.jpg)
 app.MapGet("/images/ral-scenes/{filename}.jpg", async (
