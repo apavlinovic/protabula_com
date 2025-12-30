@@ -129,34 +129,50 @@ app.MapGet("/robots.txt", (HttpContext context) =>
     return Results.Content(robotsTxt, "text/plain");
 });
 
-// Color search API endpoint
+// Color search API endpoint - returns results grouped by category
 app.MapGet("/api/colors/search", async (string? q, string? culture, IRalColorLoader colorLoader) =>
 {
     if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
     {
-        return Results.Ok(Array.Empty<object>());
+        return Results.Ok(new { categories = Array.Empty<object>() });
     }
 
     var lang = culture == "de" ? "de" : "en";
     var colors = await colorLoader.LoadAsync();
     var query = q.Trim();
 
-    var results = colors
+    var matchingColors = colors
         .Where(c =>
             c.Number.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-            c.GetLocalizedName(lang).Contains(query, StringComparison.OrdinalIgnoreCase))
-        .Take(10)
-        .Select(c => new
+            c.GetLocalizedName(lang).Contains(query, StringComparison.OrdinalIgnoreCase));
+
+    var categoryNames = new Dictionary<protabula_com.Models.RalCategory, (string key, string en, string de)>
+    {
+        { protabula_com.Models.RalCategory.Classic, ("classic", "RAL Classic", "RAL Classic") },
+        { protabula_com.Models.RalCategory.DesignPlus, ("design-plus", "RAL Design System Plus", "RAL Design System Plus") },
+        { protabula_com.Models.RalCategory.Effect, ("effect", "RAL Effect", "RAL Effect") }
+    };
+
+    var categories = matchingColors
+        .GroupBy(c => c.Category)
+        .OrderBy(g => g.Key)
+        .Select(g => new
         {
-            number = c.Number,
-            name = c.GetLocalizedName(lang),
-            hex = c.Hex,
-            slug = c.Slug,
-            needsDarkText = c.NeedsDarkText
+            key = categoryNames[g.Key].key,
+            name = lang == "de" ? categoryNames[g.Key].de : categoryNames[g.Key].en,
+            colors = g.Take(10).Select(c => new
+            {
+                number = c.Number,
+                name = c.GetLocalizedName(lang),
+                hex = c.Hex,
+                slug = c.Slug,
+                needsDarkText = c.NeedsDarkText
+            }).ToArray()
         })
+        .Where(c => c.colors.Length > 0)
         .ToArray();
 
-    return Results.Ok(results);
+    return Results.Ok(new { categories });
 });
 
 // Scene image endpoint - generates color preview images on demand
