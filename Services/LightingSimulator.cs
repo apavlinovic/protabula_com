@@ -28,34 +28,8 @@ public static class LightingSimulator
     /// </summary>
     public static string SimulateLighting(string hexColor, int temperatureKelvin, float intensity)
     {
-        var rgb = ColorMath.ParseHex(hexColor);
-
-        // Convert to linear RGB for physically accurate calculations
-        var (linR, linG, linB) = ColorMath.ToLinearRgb(rgb.R, rgb.G, rgb.B);
-
-        // Get light color and reference in linear space
-        var (lightR, lightG, lightB) = TemperatureToLinearRgb(temperatureKelvin);
-        var (refR, refG, refB) = TemperatureToLinearRgb(6500); // D65 standard daylight
-
-        // Calculate chromatic adaptation ratios
-        float ratioR = lightR / Math.Max(refR, 0.001f);
-        float ratioG = lightG / Math.Max(refG, 0.001f);
-        float ratioB = lightB / Math.Max(refB, 0.001f);
-
-        // Blend factor controls adaptation strength (0.3 = subtle ambient lighting)
-        const float blendFactor = 0.3f;
-        float adaptR = 1f + (ratioR - 1f) * blendFactor;
-        float adaptG = 1f + (ratioG - 1f) * blendFactor;
-        float adaptB = 1f + (ratioB - 1f) * blendFactor;
-
-        // Apply chromatic adaptation and intensity in linear space
-        float newR = linR * adaptR * intensity;
-        float newG = linG * adaptG * intensity;
-        float newB = linB * adaptB * intensity;
-
-        // Convert back to sRGB
-        var result = ColorMath.FromLinearRgb(newR, newG, newB);
-        return $"#{result.R:X2}{result.G:X2}{result.B:X2}";
+        // 0.3 = subtle ambient lighting effect
+        return ApplyLightingSimulation(hexColor, temperatureKelvin, intensity, 0.3f);
     }
 
     /// <summary>
@@ -90,6 +64,19 @@ public static class LightingSimulator
     /// </summary>
     public static string SimulateDirectSunlight(string hexColor, int temperatureKelvin, float intensity)
     {
+        // 0.55 = significant direct sunlight shift
+        return ApplyLightingSimulation(hexColor, temperatureKelvin, intensity, 0.55f);
+    }
+
+    /// <summary>
+    /// Core lighting simulation using chromatic adaptation in linear RGB space.
+    /// </summary>
+    /// <param name="hexColor">The base color in hex format</param>
+    /// <param name="temperatureKelvin">Light source color temperature</param>
+    /// <param name="intensity">Light intensity multiplier</param>
+    /// <param name="blendFactor">Adaptation strength (0.3 for ambient, 0.55 for direct sun)</param>
+    private static string ApplyLightingSimulation(string hexColor, int temperatureKelvin, float intensity, float blendFactor)
+    {
         var rgb = ColorMath.ParseHex(hexColor);
 
         // Convert to linear RGB for physically accurate calculations
@@ -104,8 +91,7 @@ public static class LightingSimulator
         float ratioG = lightG / Math.Max(refG, 0.001f);
         float ratioB = lightB / Math.Max(refB, 0.001f);
 
-        // Stronger blend factor for direct sunlight (0.55 = significant shift)
-        const float blendFactor = 0.55f;
+        // Apply blend factor for adaptation strength
         float adaptR = 1f + (ratioR - 1f) * blendFactor;
         float adaptG = 1f + (ratioG - 1f) * blendFactor;
         float adaptB = 1f + (ratioB - 1f) * blendFactor;

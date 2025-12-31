@@ -97,17 +97,6 @@ var localizationOptions = new RequestLocalizationOptions
     }
 };
 
-app.Use(async (context, next) =>
-{
-    if (context.Request.Path == "/")
-    {
-        context.Response.Redirect("/en");
-        return;
-    }
-
-    await next();
-});
-
 app.UseRouting();
 
 app.UseRequestLocalization(localizationOptions);
@@ -117,6 +106,9 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+
+// Redirect root to English
+app.MapGet("/", () => Results.Redirect("/en"));
 
 // Sitemap endpoint
 app.MapGet("/sitemap.xml", async (HttpContext context, ISitemapGenerator sitemapGenerator) =>
@@ -193,27 +185,14 @@ app.MapGet("/images/ral-scenes/{filename}.jpg", async (
     IColorImageService imageService,
     HttpContext context) =>
 {
-    // Parse filename to extract slug and scene (e.g., "ral-1000-green-beige-front" -> slug + "front")
-    string? scene = null;
-    string? slug = null;
-
-    foreach (var s in imageService.GetValidScenes())
-    {
-        if (filename.EndsWith($"-{s}"))
-        {
-            scene = s;
-            slug = filename[..^(s.Length + 1)]; // Remove "-{scene}" from end
-            break;
-        }
-    }
-
-    if (scene == null || slug == null)
+    // Parse filename to extract slug and scene using optimized parser
+    if (!imageService.TryParseFilename(filename, out var slug, out var scene))
     {
         return Results.NotFound();
     }
 
-    // Parse slug to get color number
-    var colorNumber = protabula_com.Models.RalColor.FromSlug(slug);
+    // Parse slug to get color number (slug is guaranteed non-null after TryParseFilename succeeds)
+    var colorNumber = protabula_com.Models.RalColor.FromSlug(slug!);
     var colors = await colorLoader.LoadAsync();
     var color = colors.FirstOrDefault(c => c.Number == colorNumber);
 
@@ -224,7 +203,7 @@ app.MapGet("/images/ral-scenes/{filename}.jpg", async (
 
     try
     {
-        var imagePath = await imageService.GetOrGenerateSceneImageAsync(color.Slug, color.Hex, scene);
+        var imagePath = await imageService.GetOrGenerateSceneImageAsync(color.Slug, color.Hex, scene!);
 
         // Set cache headers (cache for 1 year since images don't change)
         context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";

@@ -153,10 +153,10 @@ public sealed class RalColorLoader : IRalColorLoader
             .ToArray();
     }
 
-    public Task<RalColor?> LoadSingleAsync(string colorNumber, CancellationToken cancellationToken = default)
+    public async Task<RalColor?> LoadSingleAsync(string colorNumber, CancellationToken cancellationToken = default)
     {
-        return LoadAsync(cancellationToken)
-            .ContinueWith(t => t.Result.FirstOrDefault(c => c.Number.Equals(colorNumber, StringComparison.OrdinalIgnoreCase)), cancellationToken);
+        var colors = await LoadAsync(cancellationToken);
+        return colors.FirstOrDefault(c => c.Number.Equals(colorNumber, StringComparison.OrdinalIgnoreCase));
     }
 
     private sealed record RalColorRecord(

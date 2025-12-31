@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using protabula_com.Helpers;
 
 namespace protabula_com.Models;
@@ -7,6 +8,9 @@ namespace protabula_com.Models;
 /// </summary>
 public sealed record ColorFormats
 {
+    // Cache to avoid repeated conversions for the same color
+    private static readonly ConcurrentDictionary<string, ColorFormats> Cache = new();
+
     public required string Hex { get; init; }
     public required (byte R, byte G, byte B) Rgb { get; init; }
     public required (int H, int S, int L) Hsl { get; init; }
@@ -27,27 +31,27 @@ public sealed record ColorFormats
     public required double Lrv { get; init; }
 
     /// <summary>
-    /// Creates ColorFormats from a hex color string.
+    /// Creates ColorFormats from a hex color string. Results are cached.
     /// </summary>
     public static ColorFormats FromHex(string hex)
     {
         var normalizedHex = ColorMath.NormalizeHex(hex);
-        return new ColorFormats
+        return Cache.GetOrAdd(normalizedHex, static key => new ColorFormats
         {
-            Hex = normalizedHex,
-            Rgb = ColorMath.HexToRgb(normalizedHex),
-            Hsl = ColorMath.HexToHsl(normalizedHex),
-            Cmyk = ColorMath.HexToCmyk(normalizedHex),
-            Hsv = ColorMath.HexToHsv(normalizedHex),
-            RgbPercent = ColorMath.HexToRgbPercent(normalizedHex),
-            Xyz = ColorMath.HexToXyz(normalizedHex),
-            Lab = ColorMath.HexToLabValues(normalizedHex),
-            Luv = ColorMath.HexToLuv(normalizedHex),
-            HunterLab = ColorMath.HexToHunterLab(normalizedHex),
-            Yiq = ColorMath.HexToYiq(normalizedHex),
-            Decimal = ColorMath.HexToDecimal(normalizedHex),
-            Lrv = ColorMath.HexToLrv(normalizedHex)
-        };
+            Hex = key,
+            Rgb = ColorMath.HexToRgb(key),
+            Hsl = ColorMath.HexToHsl(key),
+            Cmyk = ColorMath.HexToCmyk(key),
+            Hsv = ColorMath.HexToHsv(key),
+            RgbPercent = ColorMath.HexToRgbPercent(key),
+            Xyz = ColorMath.HexToXyz(key),
+            Lab = ColorMath.HexToLabValues(key),
+            Luv = ColorMath.HexToLuv(key),
+            HunterLab = ColorMath.HexToHunterLab(key),
+            Yiq = ColorMath.HexToYiq(key),
+            Decimal = ColorMath.HexToDecimal(key),
+            Lrv = ColorMath.HexToLrv(key)
+        });
     }
 
     // Formatted string helpers for display

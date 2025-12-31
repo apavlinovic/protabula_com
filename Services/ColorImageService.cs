@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using protabula_com.Helpers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -11,6 +12,12 @@ public interface IColorImageService
     string GetCachedImagePath(string colorSlug, string scene);
     bool ImageExists(string colorSlug, string scene);
     IReadOnlyList<string> GetValidScenes();
+
+    /// <summary>
+    /// Parses a filename to extract the color slug and scene name.
+    /// Returns true if successful, false if the scene is invalid.
+    /// </summary>
+    bool TryParseFilename(string filename, out string? slug, out string? scene);
 }
 
 public class ColorImageService : IColorImageService
@@ -21,6 +28,10 @@ public class ColorImageService : IColorImageService
 
     private static readonly string[] ValidScenes =
         ["window", "front-door", "entrance", "balcony", "window-frame-detail"];
+
+    // Pre-sorted by length descending for greedy suffix matching
+    private static readonly string[] ScenesByLengthDesc =
+        ValidScenes.OrderByDescending(s => s.Length).ToArray();
 
     public ColorImageService(IWebHostEnvironment env)
     {
@@ -50,6 +61,25 @@ public class ColorImageService : IColorImageService
     }
 
     public IReadOnlyList<string> GetValidScenes() => ValidScenes;
+
+    public bool TryParseFilename(string filename, out string? slug, out string? scene)
+    {
+        slug = null;
+        scene = null;
+
+        // Use pre-sorted array (longest first) for greedy matching
+        foreach (var s in ScenesByLengthDesc)
+        {
+            if (filename.EndsWith($"-{s}", StringComparison.Ordinal))
+            {
+                scene = s;
+                slug = filename[..^(s.Length + 1)];
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public async Task<string> GetOrGenerateSceneImageAsync(string colorSlug, string colorHex, string scene)
     {

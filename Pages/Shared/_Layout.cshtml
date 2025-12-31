@@ -58,6 +58,13 @@
 <html lang="@currentCulture">
 
 <head>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme') ||
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@metaDescription" />
@@ -115,6 +122,16 @@
                     <img src="~/logo.svg" alt="@Localizer["SiteName"]" height="28" />
                 </a>
 
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="@Localizer["ToggleDarkMode"]">
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                    </svg>
+                </button>
+
                 <button class="nav-search-button" id="search-trigger" aria-label="@Localizer["SearchPlaceholder"]" data-culture="@currentCulture" data-placeholder="@Localizer["SearchPlaceholder"]" data-no-results="@Localizer["SearchNoResults"]">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <circle cx="11" cy="11" r="8"/>
@@ -162,45 +179,86 @@
         </div>
 
         <footer>
-            <div class="footer-logo p-xl">
-                <a class="nav-logo" asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">
-                    <img src="~/logo.svg" alt="@Localizer["SiteName"]" height="28" />
-                </a>
-                
+            <div class="footer-main p-xl">
+                <div class="footer-about">
+                    <a class="nav-logo" asp-area="" asp-page="/Index" asp-route-culture="@currentCulture">
+                        <img src="~/logo.svg" alt="@Localizer["SiteName"]" height="28" />
+                    </a>
+                    <p>@Localizer["FooterAbout"]</p>
+                </div>
+
+                <nav class="footer-nav" aria-label="@Localizer["FooterNavLabel"]">
+                    <div class="footer-section">
+                        <h3>@Localizer["FooterRalColors"]</h3>
+                        <ul>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["FooterAllColors"]</a></li>
+                            <li><a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@currentCulture">@Localizer["FooterClassic"]</a></li>
+                            <li><a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@currentCulture">@Localizer["FooterDesignPlus"]</a></li>
+                            <li><a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@currentCulture">@Localizer["FooterEffect"]</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>@Localizer["FooterBrowseByColor"]</h3>
+                        <ul>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="yellow">@Localizer["FooterYellow"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="orange">@Localizer["FooterOrange"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="red">@Localizer["FooterRed"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="green">@Localizer["FooterGreen"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="blue">@Localizer["FooterBlue"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="grey">@Localizer["FooterGrey"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="brown">@Localizer["FooterBrown"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="white">@Localizer["FooterWhite"]</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>@Localizer["FooterTools"]</h3>
+                        <ul>
+                            <li><a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["FooterConverter"]</a></li>
+                            <li><a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["FooterCompare"]</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>@Localizer["FooterInfo"]</h3>
+                        <ul>
+                            <li><a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a></li>
+                            <li><a href="/sitemap.xml">@Localizer["FooterSitemap"]</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="footer-bottom p-xl">
+                <p class="footer-tagline">@Localizer["FooterTagline"]</p>
+
                 <div class="footer-language">
                     <a href="@BuildCulturePath("en")" aria-current="@(currentCulture == "en" ? "true" : null)">EN</a>
                     <span>|</span>
                     <a href="@BuildCulturePath("de")" aria-current="@(currentCulture == "de" ? "true" : null)">DE</a>
                 </div>
-            </div>
-            <div class="footer-grid p-xl">
-                <div class="footer-section">
-                    <strong>@Localizer["FooterRalColors"]</strong>
-                    <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["FooterAllColors"]</a>
-                    <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@currentCulture">@Localizer["FooterClassic"]</a>
-                    <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@currentCulture">@Localizer["FooterDesignPlus"]</a>
-                    <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@currentCulture">@Localizer["FooterEffect"]</a>
-                </div>
-                <div class="footer-section">
-                    <strong>@Localizer["FooterTools"]</strong>
-                    <a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["FooterConverter"]</a>
-                    <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["FooterCompare"]</a>
-                </div>
-                <div class="footer-section">
-                    <strong>@Localizer["FooterInfo"]</strong>
-                    <a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a>
-                    <a href="/sitemap.xml">@Localizer["FooterSitemap"]</a>
-                </div>
-            </div>
-            <div class="footer-bottom p-xl">
-                <p class="footer-tagline">@Localizer["FooterTagline"]</p>
 
-                <div class="footer-copyright">
+                <p class="footer-copyright">
                     &copy; 2025 @Localizer["SiteName"]
-                </div>
+                </p>
             </div>
+
+            <script type="application/ld+json">
+            {
+                "@@context": "https://schema.org",
+                "@@type": "SiteNavigationElement",
+                "name": "@Localizer["FooterNavLabel"]",
+                "hasPart": [
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterAllColors"]", "url": "@baseUrl/@currentCulture/ral-colors" },
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterClassic"]", "url": "@baseUrl/@currentCulture/ral-colors/classic" },
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterDesignPlus"]", "url": "@baseUrl/@currentCulture/ral-colors/design-plus" },
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterEffect"]", "url": "@baseUrl/@currentCulture/ral-colors/effect" },
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterConverter"]", "url": "@baseUrl/@currentCulture/ral-colors/converter" },
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterCompare"]", "url": "@baseUrl/@currentCulture/ral-colors/compare" }
+                ]
+            }
+            </script>
         </footer>
 
+        <script src="~/js/theme.js" asp-append-version="true"></script>
         <script src="~/js/nav.js" asp-append-version="true"></script>
         <script src="~/js/search.js" asp-append-version="true"></script>
         @await RenderSectionAsync("Scripts", required: false)

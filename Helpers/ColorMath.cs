@@ -9,6 +9,23 @@ namespace protabula_com.Helpers;
 /// </summary>
 public static class ColorMath
 {
+    #region Cached Converters
+
+    // Pre-built converters to avoid repeated allocations
+    private static readonly IColorConverter<RGBColor, LabColor> RgbToLabConverter =
+        new ConverterBuilder().FromRGB(RGBWorkingSpaces.sRGB).ToLab(Illuminants.D50).Build();
+
+    private static readonly IColorConverter<RGBColor, XYZColor> RgbToXyzConverter =
+        new ConverterBuilder().FromRGB(RGBWorkingSpaces.sRGB).ToXYZ(Illuminants.D50).Build();
+
+    private static readonly IColorConverter<RGBColor, LuvColor> RgbToLuvConverter =
+        new ConverterBuilder().FromRGB(RGBWorkingSpaces.sRGB).ToLuv(Illuminants.D50).Build();
+
+    private static readonly IColorConverter<RGBColor, HunterLabColor> RgbToHunterLabConverter =
+        new ConverterBuilder().FromRGB(RGBWorkingSpaces.sRGB).ToHunterLab(Illuminants.D50).Build();
+
+    #endregion
+
     #region Hex Parsing and Normalization
 
     /// <summary>
@@ -295,13 +312,7 @@ public static class ColorMath
     {
         var (r, g, b) = ParseHex(hex);
         var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
-
-        var converter = new ConverterBuilder()
-            .FromRGB(RGBWorkingSpaces.sRGB)
-            .ToLab(Illuminants.D50)
-            .Build();
-
-        return converter.Convert(rgb);
+        return RgbToLabConverter.Convert(rgb);
     }
 
     /// <summary>
@@ -320,13 +331,7 @@ public static class ColorMath
     {
         var (r, g, b) = ParseHex(hex);
         var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
-
-        var converter = new ConverterBuilder()
-            .FromRGB(RGBWorkingSpaces.sRGB)
-            .ToXYZ(Illuminants.D50)
-            .Build();
-
-        var xyz = converter.Convert(rgb);
+        var xyz = RgbToXyzConverter.Convert(rgb);
         return (Math.Round(xyz.X * 100, 3), Math.Round(xyz.Y * 100, 3), Math.Round(xyz.Z * 100, 3));
     }
 
@@ -337,13 +342,7 @@ public static class ColorMath
     {
         var (r, g, b) = ParseHex(hex);
         var rgb = new RGBColor(r / 255.0, g / 255.0, b / 255.0);
-
-        var converter = new ConverterBuilder()
-            .FromRGB(RGBWorkingSpaces.sRGB)
-            .ToLuv(Illuminants.D50)
-            .Build();
-
-        var luv = converter.Convert(rgb);
+        var luv = RgbToLuvConverter.Convert(rgb);
         return (Math.Round(luv.L, 3), Math.Round(luv.u, 3), Math.Round(luv.v, 3));
     }
 
@@ -354,13 +353,7 @@ public static class ColorMath
     {
         var (r, g, bl) = ParseHex(hex);
         var rgb = new RGBColor(r / 255.0, g / 255.0, bl / 255.0);
-
-        var converter = new ConverterBuilder()
-            .FromRGB(RGBWorkingSpaces.sRGB)
-            .ToHunterLab(Illuminants.D50)
-            .Build();
-
-        var hunterLab = converter.Convert(rgb);
+        var hunterLab = RgbToHunterLabConverter.Convert(rgb);
         return (Math.Round(hunterLab.L, 3), Math.Round(hunterLab.a, 3), Math.Round(hunterLab.b, 3));
     }
 
