@@ -28,5 +28,11 @@
   "SummaryMoreSaturated": "{0} ist gesättigter ({1}%) als {2} ({3}%).",
   "SummarySimilarSaturation": "Beide Farben haben ähnliche Sättigungswerte.",
   "SummaryHueFamily": "{0} gehört zur {1}-Familie, während {2} zur {3}-Familie gehört.",
-  "SummaryHueFamilySame": "Beide Farben gehören zur {0}-Farbfamilie."
+  "SummaryHueFamilySame": "Beide Farben gehören zur {0}-Farbfamilie.",
+  "SeeInContext": "Farben im Kontext sehen",
+  "SceneWindow": "Fenster",
+  "SceneFrontDoor": "Haustür",
+  "SceneEntrance": "Eingang",
+  "SceneBalcony": "Balkon",
+  "SceneWindowFrameDetail": "Fensterrahmen Detail"
 }

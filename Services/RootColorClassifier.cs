@@ -1,8 +1,17 @@
-using Colourful;
 using protabula_com.Helpers;
 using protabula_com.Models;
 
 namespace protabula_com.Services;
+
+/// <summary>
+/// Input context for color classification.
+/// </summary>
+public readonly record struct ColorClassificationContext(
+    string Hex,
+    string? Name = null,
+    RalCategory? Category = null,
+    string? Number = null
+);
 
 /// <summary>
 /// Service for classifying colors into root color categories.
@@ -11,28 +20,35 @@ public interface IRootColorClassifier
 {
     /// <summary>
     /// Detects the root color category for a given color.
-    /// First attempts to detect from the English name, then falls back to LAB color distance.
+    /// For RAL Classic, uses the official numbering system (first digit).
+    /// For other palettes, uses name detection then HSL-based classification.
     /// </summary>
-    RootColor Classify(string? name, string hex);
+    RootColor Classify(ColorClassificationContext context);
 }
 
 public sealed class RootColorClassifier : IRootColorClassifier
 {
-    private static readonly IColorDifference<LabColor> ColorDifference = new CIEDE2000ColorDifference();
-
-    private static readonly IReadOnlyList<(RootColor Color, LabColor Lab)> RootColorAnchors = BuildAnchors();
-
-    public RootColor Classify(string? name, string hex)
+    public RootColor Classify(ColorClassificationContext context)
     {
-        // First try to detect from the English name
-        var fromName = DetectFromName(name);
+        // For RAL Classic, use the authoritative numbering system
+        if (context.Category == RalCategory.Classic && !string.IsNullOrEmpty(context.Number))
+        {
+            var classicResult = ColorMath.ClassifyByRalClassicNumber(context.Number, context.Hex);
+            if (classicResult != RootColor.Unknown)
+            {
+                return classicResult;
+            }
+        }
+
+        // For other palettes, try name detection first
+        var fromName = DetectFromName(context.Name);
         if (fromName != RootColor.Unknown)
         {
             return fromName;
         }
 
-        // Fall back to color distance classification
-        return ClassifyByColorDistance(hex);
+        // Fall back to fast HSL-based classification
+        return ColorMath.ClassifyRootColor(context.Hex);
     }
 
     private static RootColor DetectFromName(string? name)
@@ -43,7 +59,7 @@ public sealed class RootColorClassifier : IRootColorClassifier
         }
 
         // Check for color keywords in the name (case-insensitive)
-        // Order matters: check more specific colors first (e.g., "rose" before "red")
+        // Order matters: check more specific colors first
         var colorKeywords = new (string keyword, RootColor color)[]
         {
             ("yellow", RootColor.Yellow),
@@ -52,14 +68,14 @@ public sealed class RootColorClassifier : IRootColorClassifier
             ("green", RootColor.Green),
             ("blue", RootColor.Blue),
             ("grey", RootColor.Grey),
-            ("gray", RootColor.Grey),  // American spelling
+            ("gray", RootColor.Grey),
             ("brown", RootColor.Brown),
             ("white", RootColor.White),
             ("black", RootColor.Black),
             ("pink", RootColor.Pink),
             ("rose", RootColor.Rose),
             ("beige", RootColor.Beige),
-            ("red", RootColor.Red),  // Check after rose/pink to avoid false matches
+            ("red", RootColor.Red),
         };
 
         var lowerName = name.ToLowerInvariant();
@@ -73,57 +89,5 @@ public sealed class RootColorClassifier : IRootColorClassifier
         }
 
         return RootColor.Unknown;
-    }
-
-    private static RootColor ClassifyByColorDistance(string hex)
-    {
-        if (string.IsNullOrWhiteSpace(hex))
-        {
-            return RootColor.Unknown;
-        }
-
-        try
-        {
-            var inputLab = ColorMath.HexToLab(hex);
-
-            var best = RootColorAnchors
-                .Select(anchor => new
-                {
-                    anchor.Color,
-                    Distance = ColorDifference.ComputeDifference(inputLab, anchor.Lab)
-                })
-                .OrderBy(x => x.Distance)
-                .First();
-
-            return best.Color;
-        }
-        catch
-        {
-            return RootColor.Unknown;
-        }
-    }
-
-    private static IReadOnlyList<(RootColor Color, LabColor Lab)> BuildAnchors()
-    {
-        var anchors = new (RootColor color, string hex)[]
-        {
-            (RootColor.Yellow, "#FFFF00"),
-            (RootColor.Red, "#FF0000"),
-            (RootColor.Green, "#008000"),
-            (RootColor.Orange, "#FFA500"),
-            (RootColor.Violet, "#8B00FF"),
-            (RootColor.Blue, "#0000FF"),
-            (RootColor.Grey, "#808080"),
-            (RootColor.Brown, "#8B4513"),
-            (RootColor.White, "#FFFFFF"),
-            (RootColor.Black, "#000000"),
-            (RootColor.Pink, "#FFC0CB"),
-            (RootColor.Rose, "#FF007F"),
-            (RootColor.Beige, "#F5F5DC"),
-        };
-
-        return anchors
-            .Select(a => (a.color, ColorMath.HexToLab(a.hex)))
-            .ToList();
     }
 }

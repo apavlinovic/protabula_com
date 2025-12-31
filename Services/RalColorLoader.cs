@@ -73,7 +73,12 @@ public sealed class RalColorLoader : IRalColorLoader
                 var brightness = ParseBrightness(record.Brightness, record.Number);
                 var tags = ParseTags(record.Tags);
                 var hex = record.Hex ?? string.Empty;
-                var rootColor = _rootColorClassifier.Classify(record.Name, hex);
+                var rootColor = _rootColorClassifier.Classify(new ColorClassificationContext(
+                    Hex: hex,
+                    Name: record.Name,
+                    Category: category,
+                    Number: record.Number
+                ));
 
                 colors.Add(new RalColor(
                     category,

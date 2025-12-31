@@ -7,10 +7,12 @@ using protabula_com.Services;
 public class VersusModel : PageModel
 {
     private readonly IRalColorLoader _loader;
+    private readonly IColorImageService _colorImageService;
 
-    public VersusModel(IRalColorLoader loader)
+    public VersusModel(IRalColorLoader loader, IColorImageService colorImageService)
     {
         _loader = loader;
+        _colorImageService = colorImageService;
         Color1 = RalColor.Empty;
         Color2 = RalColor.Empty;
     }
@@ -27,6 +29,9 @@ public class VersusModel : PageModel
     // Color temperature for each color
     public (int Kelvin, string Classification) Temperature1 { get; private set; }
     public (int Kelvin, string Classification) Temperature2 { get; private set; }
+
+    // Scene images
+    public IReadOnlyList<string> Scenes { get; private set; } = [];
 
     public async Task<IActionResult> OnGetAsync(string slug)
     {
@@ -63,6 +68,8 @@ public class VersusModel : PageModel
 
         Temperature1 = ColorMath.EstimateColorTemperature(Color1.Hex);
         Temperature2 = ColorMath.EstimateColorTemperature(Color2.Hex);
+
+        Scenes = _colorImageService.GetValidScenes();
 
         return Page();
     }

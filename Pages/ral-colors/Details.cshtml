@@ -435,75 +435,36 @@
 </section>
 
 
-@{
-    // Get similar colors from the same category/palette (up to 10)
-    var sameCategoryColors = Model.Color.Category switch
-    {
-        RalCategory.Classic => Model.SimilarColors.Classic,
-        RalCategory.DesignPlus => Model.SimilarColors.DesignPlus,
-        RalCategory.Effect => Model.SimilarColors.Effect,
-        _ => Model.SimilarColors.Classic
-    };
-    var compareColors = sameCategoryColors.Take(10).ToList();
-}
-
-@if (compareColors.Any())
+@if (Model.SameRootColors.Any())
 {
     <section class="compare-links mt-4xl">
         <h2>@Localizer["CompareWith", Model.Color.Number, Model.Color.Name ?? ""]</h2>
         <div class="compare-links-grid">
-            @foreach (var similar in compareColors)
+            @foreach (var color in Model.SameRootColors)
             {
                 <a asp-page="/ral-colors/Versus" asp-route-culture="@currentCulture"
-                   asp-route-slug="@Model.Color.Slug-vs-@similar.Color.Slug" class="compare-link">
+                   asp-route-slug="@Model.Color.Slug-vs-@color.Slug" class="compare-link">
                     <span class="compare-link-swatches">
                         <span class="compare-link-swatch" style="background-color: @Model.Color.Hex;"></span>
-                        <span class="compare-link-swatch" style="background-color: @similar.Color.Hex;"></span>
+                        <span class="compare-link-swatch" style="background-color: @color.Hex;"></span>
                     </span>
-                    <span class="compare-link-label">RAL @Model.Color.Number vs @similar.Color.Number</span>
+                    <span class="compare-link-label">RAL @Model.Color.Number vs @color.Number</span>
                 </a>
             }
         </div>
     </section>
 }
 
-@if (Model.SimilarColors.Classic.Any() || Model.SimilarColors.DesignPlus.Any() || Model.SimilarColors.Effect.Any())
+@if (Model.SimilarColors.Any())
 {
     <section class="similar-colors mt-4xl">
         <h2>@Localizer["SimilarColors", Model.Color.Number]</h2>
-
-        @if (Model.SimilarColors.Classic.Any())
-        {
-            <h3>@Localizer["CategoryClassic"]</h3>
-            <div class="similar-grid">
-                @foreach (var similar in Model.SimilarColors.Classic)
-                {
-                    <partial name="_ColorTile" model="similar.Color" />
-                }
-            </div>
-        }
-
-        @if (Model.SimilarColors.DesignPlus.Any())
-        {
-            <h3>@Localizer["CategoryDesignPlus"]</h3>
-            <div class="similar-grid">
-                @foreach (var similar in Model.SimilarColors.DesignPlus)
-                {
-                    <partial name="_ColorTile" model="similar.Color" />
-                }
-            </div>
-        }
-
-        @if (Model.SimilarColors.Effect.Any())
-        {
-            <h3>@Localizer["CategoryEffect"]</h3>
-            <div class="similar-grid">
-                @foreach (var similar in Model.SimilarColors.Effect)
-                {
-                    <partial name="_ColorTile" model="similar.Color" />
-                }
-            </div>
-        }
+        <div class="similar-grid">
+            @foreach (var similar in Model.SimilarColors)
+            {
+                <partial name="_ColorTile" model="similar.Color" />
+            }
+        </div>
     </section>
 }
 

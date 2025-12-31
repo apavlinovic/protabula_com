@@ -12,14 +12,16 @@ public class RalColorDetailsModel : PageModel
         _loader = loader;
         _similarColorFinder = similarColorFinder;
         Color = RalColor.Empty;
-        SimilarColors = new SimilarColorsResult();
+        SimilarColors = [];
+        SameRootColors = [];
         LightingVariations = [];
         DirectSunlightVariations = [];
     }
 
     public string? ColorIdentifier { get; set; }
     public RalColor Color { get; set; }
-    public SimilarColorsResult SimilarColors { get; set; }
+    public IReadOnlyList<SimilarColor> SimilarColors { get; set; }
+    public IReadOnlyList<RalColor> SameRootColors { get; set; }
     public ColorFormats? Formats { get; private set; }
     public IReadOnlyList<LightingVariation> LightingVariations { get; private set; }
     public IReadOnlyList<DirectSunlightVariation> DirectSunlightVariations { get; private set; }
@@ -45,7 +47,8 @@ public class RalColorDetailsModel : PageModel
             LightingVariations = LightingSimulator.GenerateVariations(Color.Hex);
             DirectSunlightVariations = LightingSimulator.GenerateDirectSunlightVariations(Color.Hex);
             var allColors = await _loader.LoadAsync();
-            SimilarColors = _similarColorFinder.FindSimilar(Color, allColors, maxPerCategory: 10);
+            SimilarColors = _similarColorFinder.FindSimilarInCategory(Color, allColors, maxCount: 10);
+            SameRootColors = _similarColorFinder.FindSameRootColorInCategory(Color, allColors);
         }
     }
 }

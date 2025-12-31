@@ -28,5 +28,11 @@
   "SummaryMoreSaturated": "{0} is more saturated ({1}%) than {2} ({3}%).",
   "SummarySimilarSaturation": "Both colors have similar saturation levels.",
   "SummaryHueFamily": "{0} belongs to the {1} family while {2} belongs to the {3} family.",
-  "SummaryHueFamilySame": "Both colors belong to the {0} hue family."
+  "SummaryHueFamilySame": "Both colors belong to the {0} hue family.",
+  "SeeInContext": "See Colors in Context",
+  "SceneWindow": "Window",
+  "SceneFrontDoor": "Front Door",
+  "SceneEntrance": "Entrance",
+  "SceneBalcony": "Balcony",
+  "SceneWindowFrameDetail": "Window Frame Detail"
 }

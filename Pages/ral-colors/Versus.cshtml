@@ -219,6 +219,35 @@
     </table>
 </section>
 
+<section class="versus-scenes mt-xl">
+    <h2>@Localizer["SeeInContext"]</h2>
+    <div class="scene-comparison-grid">
+        @foreach (var scene in Model.Scenes)
+        {
+            var sceneKey = scene switch
+            {
+                "window" => "Window",
+                "front-door" => "FrontDoor",
+                "entrance" => "Entrance",
+                "balcony" => "Balcony",
+                "window-frame-detail" => "WindowFrameDetail",
+                _ => scene
+            };
+            <div class="scene-comparison-row">
+                <div class="scene-label">@Localizer[$"Scene{sceneKey}"]</div>
+                <div class="scene-pair">
+                    <a href="/images/ral-scenes/@(Model.Color1.Slug)-@(scene).jpg" target="_blank" class="scene-thumb-wrapper" style="background-color: @Model.Color1.Hex;">
+                        <img src="/images/ral-scenes/@(Model.Color1.Slug)-@(scene).jpg" alt="RAL @Model.Color1.Number @(Model.Color1.Name ?? "") - @Localizer[$"Scene{sceneKey}"]" class="scene-thumb" loading="lazy" />
+                    </a>
+                    <a href="/images/ral-scenes/@(Model.Color2.Slug)-@(scene).jpg" target="_blank" class="scene-thumb-wrapper" style="background-color: @Model.Color2.Hex;">
+                        <img src="/images/ral-scenes/@(Model.Color2.Slug)-@(scene).jpg" alt="RAL @Model.Color2.Number @(Model.Color2.Name ?? "") - @Localizer[$"Scene{sceneKey}"]" class="scene-thumb" loading="lazy" />
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
 <section class="versus-links mt-xl">
     <h2>@Localizer["ViewDetails"]</h2>
     <div class="versus-link-buttons">

@@ -1,5 +1,6 @@
 using System.Globalization;
 using Colourful;
+using protabula_com.Models;
 
 namespace protabula_com.Helpers;
 
@@ -522,97 +523,71 @@ public static class ColorMath
     /// Estimates the perceived color temperature of a color.
     /// Returns a Kelvin value and classification (Warm, Neutral, Cool).
     ///
-    /// This is a perceptual estimate based on the color's warmth/coolness,
-    /// not a true correlated color temperature (which only applies to light sources).
+    /// Uses LAB b* channel (yellow-blue axis) for perceptually accurate warmth detection.
+    /// Positive b* = yellow/warm, Negative b* = blue/cool.
     ///
-    /// Warm colors (reds, oranges, yellows): ~2700K-4000K
-    /// Neutral colors (grays, some greens): ~4000K-5500K
-    /// Cool colors (blues, cyans): ~5500K-7500K+
+    /// Also considers:
+    /// - LAB a* (red-green) for additional warmth from reds
+    /// - Chroma (saturation) - low chroma colors are more neutral
+    /// - Lightness - very dark/light colors have less apparent temperature
+    ///
+    /// Warm colors: ~2700K-4000K
+    /// Neutral colors: ~4000K-5500K
+    /// Cool colors: ~5500K-7500K+
     /// </summary>
     public static (int Kelvin, string Classification) EstimateColorTemperature(string hex)
     {
-        var (r, g, b) = ParseHex(hex);
-        var (h, s, l) = HexToHsl(hex);
+        var lab = HexToLab(hex);
 
-        // For very desaturated colors (grays), base temperature on lightness
-        if (s < 10)
+        // Calculate chroma (saturation in LAB space)
+        double chroma = Math.Sqrt(lab.a * lab.a + lab.b * lab.b);
+
+        // For very low chroma colors (grays), return neutral
+        if (chroma < 8)
         {
-            // Grays are neutral, but lighter grays feel slightly cooler
-            var grayKelvin = 4500 + (int)((l - 50) * 20);
-            grayKelvin = Math.Clamp(grayKelvin, 4000, 5500);
+            // Grays are neutral, slight variation based on lightness
+            var grayKelvin = 4800 + (int)((lab.L - 50) * 10);
+            grayKelvin = Math.Clamp(grayKelvin, 4200, 5400);
             return (grayKelvin, "Neutral");
         }
 
-        // Calculate warmth based on hue position
-        // Warm hues: 0-60 (red to yellow) and 300-360 (magenta to red)
-        // Cool hues: 180-270 (cyan to blue-violet)
-        // Transitional: 60-180 (yellow-green to cyan) and 270-300 (violet to magenta)
+        // Use b* as primary warmth indicator (yellow-blue axis)
+        // b* typically ranges from -100 (blue) to +100 (yellow) for saturated colors
+        // Also add contribution from a* (red adds warmth)
+        double warmth = lab.b + (lab.a > 0 ? lab.a * 0.3 : 0);
 
-        int kelvin;
-        string classification;
+        // Map warmth to Kelvin
+        // warmth of +60 → ~2700K (very warm)
+        // warmth of 0 → ~5000K (neutral)
+        // warmth of -60 → ~7500K (very cool)
+        int kelvin = (int)(5000 - warmth * 40);
 
-        if (h <= 30 || h >= 330)
+        // Reduce temperature extremes for low chroma colors
+        if (chroma < 25)
         {
-            // Red range - very warm
-            kelvin = 2700 + (int)(s * 5);
-            classification = "Warm";
-        }
-        else if (h <= 60)
-        {
-            // Orange to yellow - warm
-            kelvin = 3000 + (int)((h - 30) * 25);
-            classification = "Warm";
-        }
-        else if (h <= 90)
-        {
-            // Yellow to yellow-green - warm to neutral transition
-            kelvin = 3800 + (int)((h - 60) * 30);
-            classification = h < 75 ? "Warm" : "Neutral";
-        }
-        else if (h <= 150)
-        {
-            // Green range - neutral
-            kelvin = 4700 + (int)((h - 90) * 10);
-            classification = "Neutral";
-        }
-        else if (h <= 210)
-        {
-            // Cyan range - neutral to cool transition
-            kelvin = 5300 + (int)((h - 150) * 20);
-            classification = h < 180 ? "Neutral" : "Cool";
-        }
-        else if (h <= 270)
-        {
-            // Blue range - cool
-            kelvin = 6500 + (int)((h - 210) * 15);
-            classification = "Cool";
-        }
-        else if (h <= 300)
-        {
-            // Violet range - cool
-            kelvin = 7400 - (int)((h - 270) * 30);
-            classification = "Cool";
-        }
-        else
-        {
-            // Magenta range - warm
-            kelvin = 3500 - (int)((h - 300) * 25);
-            classification = "Warm";
+            double neutralPull = 1 - (chroma / 25.0);
+            kelvin = (int)(kelvin * (1 - neutralPull * 0.6) + 5000 * neutralPull * 0.6);
         }
 
-        // Saturation affects perceived temperature intensity
-        // Higher saturation = more pronounced warm/cool feeling
-        if (s < 30)
+        // Reduce temperature extremes for very dark or very light colors
+        if (lab.L < 20 || lab.L > 85)
         {
-            // Low saturation pulls toward neutral
-            kelvin = (int)(kelvin * 0.3 + 4750 * 0.7);
-            if (classification != "Neutral" && s < 20)
-            {
-                classification = "Neutral";
-            }
+            double lightnessFactor = lab.L < 20
+                ? lab.L / 20.0
+                : (100 - lab.L) / 15.0;
+            lightnessFactor = Math.Clamp(lightnessFactor, 0.3, 1.0);
+            kelvin = (int)(kelvin * lightnessFactor + 5000 * (1 - lightnessFactor));
         }
 
         kelvin = Math.Clamp(kelvin, 2700, 7500);
+
+        // Determine classification based on Kelvin
+        string classification = kelvin switch
+        {
+            < 4200 => "Warm",
+            > 5800 => "Cool",
+            _ => "Neutral"
+        };
 
         return (kelvin, classification);
     }
@@ -640,6 +615,95 @@ public static class ColorMath
             < 330 => "Magenta",
             _ => "Red"
         };
+    }
+
+    #endregion
+
+    #region Root Color Classification
+
+    /// <summary>
+    /// Classifies a color into a root color category using HSL analysis.
+    /// This is a fast, heuristic-based classification suitable for categorization.
+    /// </summary>
+    public static RootColor ClassifyRootColor(string hex)
+    {
+        var (h, s, l) = HexToHsl(hex);
+
+        // Achromatic colors (very low saturation)
+        if (s < 10)
+        {
+            if (l > 85) return RootColor.White;
+            if (l < 15) return RootColor.Black;
+            return RootColor.Grey;
+        }
+
+        // Brown: orange-red hue + moderate saturation + low lightness
+        if (h >= 10 && h < 50 && s >= 15 && s < 70 && l >= 10 && l < 45)
+            return RootColor.Brown;
+
+        // Beige: yellow-orange hue + low saturation + high lightness
+        if (h >= 25 && h < 65 && s >= 10 && s < 45 && l >= 55 && l < 90)
+            return RootColor.Beige;
+
+        // Grey detection for low-saturation colors that aren't beige/brown
+        if (s < 15)
+            return RootColor.Grey;
+
+        // Pink: magenta-red hue with high lightness
+        if ((h >= 300 || h < 15) && l > 65 && s < 60)
+            return RootColor.Pink;
+
+        // Rose: magenta-red hue with medium lightness and higher saturation
+        if (h >= 300 && h < 345 && l >= 40 && l <= 65)
+            return RootColor.Rose;
+
+        // Chromatic colors by hue
+        return h switch
+        {
+            < 15 => RootColor.Red,
+            < 45 => RootColor.Orange,
+            < 75 => RootColor.Yellow,
+            < 150 => RootColor.Green,
+            < 255 => RootColor.Blue,
+            < 285 => RootColor.Violet,
+            < 330 => RootColor.Violet, // Magenta range -> Violet
+            _ => RootColor.Red
+        };
+    }
+
+    /// <summary>
+    /// Classifies a RAL Classic color based on its number prefix.
+    /// RAL Classic uses a systematic numbering where the first digit indicates the color family.
+    /// </summary>
+    public static RootColor ClassifyByRalClassicNumber(string number, string hex)
+    {
+        if (string.IsNullOrEmpty(number) || number.Length < 1 || !char.IsDigit(number[0]))
+            return RootColor.Unknown;
+
+        var firstDigit = number[0];
+
+        return firstDigit switch
+        {
+            '1' => RootColor.Yellow,
+            '2' => RootColor.Orange,
+            '3' => RootColor.Red,
+            '4' => RootColor.Violet,
+            '5' => RootColor.Blue,
+            '6' => RootColor.Green,
+            '7' => RootColor.Grey,
+            '8' => RootColor.Brown,
+            '9' => ClassifyWhiteOrBlack(hex),
+            _ => RootColor.Unknown
+        };
+    }
+
+    /// <summary>
+    /// Distinguishes between white and black for RAL 9xxx colors based on lightness.
+    /// </summary>
+    private static RootColor ClassifyWhiteOrBlack(string hex)
+    {
+        var (_, _, l) = HexToHsl(hex);
+        return l > 50 ? RootColor.White : RootColor.Black;
     }
 
     #endregion

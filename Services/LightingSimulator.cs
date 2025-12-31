@@ -10,50 +10,52 @@ public static class LightingSimulator
 {
     /// <summary>
     /// Time-of-day lighting conditions with their color temperatures and intensities.
+    /// Based on CIE daylight illuminants and typical indoor lighting.
     /// </summary>
     public static readonly LightingCondition[] Conditions =
     [
-        new("9", "morning", 4500, 0.95f, 9),      // Morning - cool daylight building
-        new("12", "noon", 6000, 1.15f, 12),       // Noon - bright midday sun
-        new("15", "afternoon", 5000, 0.98f, 15),  // Afternoon - slightly warm
-        new("18", "evening", 3500, 0.85f, 18),    // Evening - golden hour
-        new("21", "dusk", 2800, 0.65f, 21),       // Dusk - warm orange, dimming
-        new("24", "night", 2700, 0.50f, 24)       // Night - indoor warm light
+        new("9", "morning", 5000, 0.92f, 9),      // Morning - D50 horizon daylight
+        new("12", "noon", 6500, 1.12f, 12),       // Noon - D65 standard daylight
+        new("15", "afternoon", 5500, 0.98f, 15),  // Afternoon - D55 mid-afternoon
+        new("18", "evening", 3200, 0.82f, 18),    // Evening - golden hour
+        new("21", "dusk", 2700, 0.60f, 21),       // Dusk - warm tungsten-like
+        new("24", "night", 2700, 0.45f, 24)       // Night - indoor incandescent
     ];
 
     /// <summary>
     /// Calculates how a color appears under a specific lighting condition.
-    /// Uses a subtle blend to avoid overly dramatic color shifts.
+    /// Uses linear RGB space for physically accurate light simulation.
     /// </summary>
     public static string SimulateLighting(string hexColor, int temperatureKelvin, float intensity)
     {
         var rgb = ColorMath.ParseHex(hexColor);
-        float r = rgb.R, g = rgb.G, b = rgb.B;
-        var (lightR, lightG, lightB) = TemperatureToRgb(temperatureKelvin);
 
-        // Normalize light color against D55 (~5500K daylight) reference
-        var (refR, refG, refB) = TemperatureToRgb(5500);
-        float normR = lightR / refR;
-        float normG = lightG / refG;
-        float normB = lightB / refB;
+        // Convert to linear RGB for physically accurate calculations
+        var (linR, linG, linB) = ColorMath.ToLinearRgb(rgb.R, rgb.G, rgb.B);
 
-        // Blend factor controls how much the light affects the color (0.3 = subtle)
+        // Get light color and reference in linear space
+        var (lightR, lightG, lightB) = TemperatureToLinearRgb(temperatureKelvin);
+        var (refR, refG, refB) = TemperatureToLinearRgb(6500); // D65 standard daylight
+
+        // Calculate chromatic adaptation ratios
+        float ratioR = lightR / Math.Max(refR, 0.001f);
+        float ratioG = lightG / Math.Max(refG, 0.001f);
+        float ratioB = lightB / Math.Max(refB, 0.001f);
+
+        // Blend factor controls adaptation strength (0.3 = subtle ambient lighting)
         const float blendFactor = 0.3f;
-        float tintR = 1f + (normR - 1f) * blendFactor;
-        float tintG = 1f + (normG - 1f) * blendFactor;
-        float tintB = 1f + (normB - 1f) * blendFactor;
+        float adaptR = 1f + (ratioR - 1f) * blendFactor;
+        float adaptG = 1f + (ratioG - 1f) * blendFactor;
+        float adaptB = 1f + (ratioB - 1f) * blendFactor;
 
-        // Apply lighting: tint and intensity
-        float newR = r * tintR * intensity;
-        float newG = g * tintG * intensity;
-        float newB = b * tintB * intensity;
+        // Apply chromatic adaptation and intensity in linear space
+        float newR = linR * adaptR * intensity;
+        float newG = linG * adaptG * intensity;
+        float newB = linB * adaptB * intensity;
 
-        // Clamp to valid range
-        newR = Math.Clamp(newR, 0f, 255f);
-        newG = Math.Clamp(newG, 0f, 255f);
-        newB = Math.Clamp(newB, 0f, 255f);
-
-        return $"#{(byte)newR:X2}{(byte)newG:X2}{(byte)newB:X2}";
+        // Convert back to sRGB
+        var result = ColorMath.FromLinearRgb(newR, newG, newB);
+        return $"#{result.R:X2}{result.G:X2}{result.B:X2}";
     }
 
     /// <summary>
@@ -73,46 +75,49 @@ public static class LightingSimulator
 
     /// <summary>
     /// Direct sunlight conditions - stronger color temperature effect.
+    /// Based on measured daylight color temperatures at different sun angles.
     /// </summary>
     public static readonly DirectSunlightCondition[] DirectSunlightConditions =
     [
-        new("Morning", "morning", 4000, 1.05f),      // Morning sun - warm yellow
-        new("Midday", "midday", 5800, 1.20f),        // Midday sun - bright, slightly cool
-        new("GoldenHour", "golden-hour", 2500, 0.95f) // Golden hour - strong orange/amber
+        new("Morning", "morning", 4000, 1.05f),       // Morning sun - warm yellow (low angle)
+        new("Midday", "midday", 5500, 1.18f),         // Midday sun - neutral white (D55)
+        new("GoldenHour", "golden-hour", 2800, 0.92f) // Golden hour - warm amber
     ];
 
     /// <summary>
     /// Simulates direct sunlight hitting a surface - stronger color shift than ambient.
+    /// Uses linear RGB space for physically accurate light simulation.
     /// </summary>
     public static string SimulateDirectSunlight(string hexColor, int temperatureKelvin, float intensity)
     {
         var rgb = ColorMath.ParseHex(hexColor);
-        float r = rgb.R, g = rgb.G, b = rgb.B;
-        var (lightR, lightG, lightB) = TemperatureToRgb(temperatureKelvin);
 
-        // Normalize against D55 reference
-        var (refR, refG, refB) = TemperatureToRgb(5500);
-        float normR = lightR / refR;
-        float normG = lightG / refG;
-        float normB = lightB / refB;
+        // Convert to linear RGB for physically accurate calculations
+        var (linR, linG, linB) = ColorMath.ToLinearRgb(rgb.R, rgb.G, rgb.B);
 
-        // Stronger blend factor for direct sunlight (0.6 = significant shift)
-        const float blendFactor = 0.6f;
-        float tintR = 1f + (normR - 1f) * blendFactor;
-        float tintG = 1f + (normG - 1f) * blendFactor;
-        float tintB = 1f + (normB - 1f) * blendFactor;
+        // Get light color and reference in linear space
+        var (lightR, lightG, lightB) = TemperatureToLinearRgb(temperatureKelvin);
+        var (refR, refG, refB) = TemperatureToLinearRgb(6500); // D65 standard daylight
 
-        // Apply lighting
-        float newR = r * tintR * intensity;
-        float newG = g * tintG * intensity;
-        float newB = b * tintB * intensity;
+        // Calculate chromatic adaptation ratios
+        float ratioR = lightR / Math.Max(refR, 0.001f);
+        float ratioG = lightG / Math.Max(refG, 0.001f);
+        float ratioB = lightB / Math.Max(refB, 0.001f);
 
-        // Clamp
-        newR = Math.Clamp(newR, 0f, 255f);
-        newG = Math.Clamp(newG, 0f, 255f);
-        newB = Math.Clamp(newB, 0f, 255f);
+        // Stronger blend factor for direct sunlight (0.55 = significant shift)
+        const float blendFactor = 0.55f;
+        float adaptR = 1f + (ratioR - 1f) * blendFactor;
+        float adaptG = 1f + (ratioG - 1f) * blendFactor;
+        float adaptB = 1f + (ratioB - 1f) * blendFactor;
 
-        return $"#{(byte)newR:X2}{(byte)newG:X2}{(byte)newB:X2}";
+        // Apply chromatic adaptation and intensity in linear space
+        float newR = linR * adaptR * intensity;
+        float newG = linG * adaptG * intensity;
+        float newB = linB * adaptB * intensity;
+
+        // Convert back to sRGB
+        var result = ColorMath.FromLinearRgb(newR, newG, newB);
+        return $"#{result.R:X2}{result.G:X2}{result.B:X2}";
     }
 
     /// <summary>
@@ -130,10 +135,10 @@ public static class LightingSimulator
     }
 
     /// <summary>
-    /// Converts color temperature (Kelvin) to RGB values.
-    /// Based on Tanner Helland's algorithm (attempt to approximate blackbody radiation).
+    /// Converts color temperature (Kelvin) to linear RGB values (0-1 range).
+    /// Based on Tanner Helland's algorithm, converted to linear space for accurate blending.
     /// </summary>
-    private static (float R, float G, float B) TemperatureToRgb(int kelvin)
+    private static (float R, float G, float B) TemperatureToLinearRgb(int kelvin)
     {
         // Clamp temperature to reasonable range
         kelvin = Math.Clamp(kelvin, 1000, 40000);
@@ -141,7 +146,7 @@ public static class LightingSimulator
         float temp = kelvin / 100f;
         float r, g, b;
 
-        // Red
+        // Red (in sRGB 0-255)
         if (temp <= 66)
         {
             r = 255;
@@ -153,7 +158,7 @@ public static class LightingSimulator
             r = Math.Clamp(r, 0, 255);
         }
 
-        // Green
+        // Green (in sRGB 0-255)
         if (temp <= 66)
         {
             g = temp;
@@ -167,7 +172,7 @@ public static class LightingSimulator
             g = Math.Clamp(g, 0, 255);
         }
 
-        // Blue
+        // Blue (in sRGB 0-255)
         if (temp >= 66)
         {
             b = 255;
@@ -183,7 +188,8 @@ public static class LightingSimulator
             b = Math.Clamp(b, 0, 255);
         }
 
-        return (r, g, b);
+        // Convert from sRGB to linear RGB for accurate blending
+        return ColorMath.ToLinearRgb((byte)r, (byte)g, (byte)b);
     }
 }
 
