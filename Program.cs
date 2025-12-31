@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -23,6 +24,14 @@ builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 builder.Services.AddSingleton<ISimilarColorFinder, SimilarColorFinder>();
 builder.Services.AddSingleton<ISitemapGenerator, SitemapGenerator>();
 builder.Services.AddSingleton<IColorImageService, ColorImageService>();
+
+// Configure forwarded headers for reverse proxy (nginx, Cloudflare, etc.)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 builder.Services.AddRazorPages(options =>
 {
@@ -56,6 +65,7 @@ else
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 app.UseResponseCompression();
 
