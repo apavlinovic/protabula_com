@@ -25,6 +25,77 @@ public enum RootColor
     Beige
 }
 
+/// <summary>
+/// Primary undertone classification based on perceived color temperature.
+/// </summary>
+public enum PrimaryUndertone
+{
+    /// <summary>Colors with dominant yellow/red bias (+a* and/or +b* in Lab)</summary>
+    Warm,
+
+    /// <summary>Colors with dominant blue/green bias (-a* and/or -b* in Lab)</summary>
+    Cool,
+
+    /// <summary>Colors with balanced or negligible chromatic bias (low chroma)</summary>
+    Neutral
+}
+
+/// <summary>
+/// Secondary undertone indicating the specific chromatic direction.
+/// Uses 8 directions like a compass, derived from the hue angle in Lab a*/b* space.
+/// </summary>
+public enum SecondaryUndertone
+{
+    /// <summary>No discernible undertone (achromatic or very low chroma)</summary>
+    None,
+
+    /// <summary>Pure +b* axis: golden, honey tones (67.5° - 112.5°)</summary>
+    Yellow,
+
+    /// <summary>+a* and +b* quadrant: peach, coral, brown-ish, copper (22.5° - 67.5°)</summary>
+    Orange,
+
+    /// <summary>Pure +a* axis: pink-red, rose, salmon (337.5° - 22.5°)</summary>
+    Red,
+
+    /// <summary>+a* and -b* quadrant: mauve, purple, pink-blue, berry (292.5° - 337.5°)</summary>
+    Violet,
+
+    /// <summary>Pure -b* axis: steel, icy, navy (247.5° - 292.5°)</summary>
+    Blue,
+
+    /// <summary>-a* and -b* quadrant: cyan, teal, steel-green (202.5° - 247.5°)</summary>
+    Teal,
+
+    /// <summary>Pure -a* axis: sage, mint, forest (157.5° - 202.5°)</summary>
+    Green,
+
+    /// <summary>-a* and +b* quadrant: khaki, olive, yellow-green (112.5° - 157.5°)</summary>
+    Olive
+}
+
+/// <summary>
+/// Undertone strength based on chroma (color saturation in Lab space).
+/// Calibrated against real RAL color descriptions.
+/// </summary>
+public enum UndertoneStrength
+{
+    /// <summary>No perceptible undertone (achromatic colors)</summary>
+    None,
+
+    /// <summary>Barely perceptible undertone (e.g., RAL 7022 Umbra Grey "slight")</summary>
+    Subtle,
+
+    /// <summary>Noticeable undertone (e.g., RAL 1013 Oyster White "subtle")</summary>
+    Weak,
+
+    /// <summary>Clear, distinct undertone (e.g., RAL 1000 Green Beige "distinct")</summary>
+    Moderate,
+
+    /// <summary>Dominant undertone (e.g., RAL 3004 Purple Red "significant")</summary>
+    Strong
+}
+
 public sealed class RalColor
 {
     public RalColor(

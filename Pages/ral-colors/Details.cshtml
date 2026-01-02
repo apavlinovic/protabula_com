@@ -86,6 +86,88 @@
             .lighting-time { font-size: 0.75rem; }
             .sun-icon { width: 28px; height: 28px; }
         }
+
+        /* Undertone visualization styles */
+        .undertone-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--surface-secondary);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+        }
+        .undertone-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .undertone-label {
+            color: var(--text-secondary);
+        }
+        .undertone-label strong {
+            color: var(--text-primary);
+        }
+
+        .color-with-undertone {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        .undertone-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--surface-secondary);
+            border-radius: var(--border-radius);
+        }
+        .undertone-indicator-swatches {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        .undertone-indicator-main {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+        .undertone-indicator-arrow {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+        .undertone-indicator-undertone {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+        .undertone-indicator-text {
+            flex: 1;
+        }
+        .undertone-indicator-text strong {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+        .undertone-indicator-text span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        @@media (max-width: 480px) {
+            .undertone-indicator {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .undertone-indicator-swatches {
+                align-self: center;
+            }
+        }
     </style>
     <script type="application/ld+json">
     {
@@ -139,11 +221,48 @@
     }
 </p>
 
-<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
-     role="button" tabindex="0"
-     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
-     title="@Localizer["ClickToPreview"]">
-    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
+@if (Model.Formats?.HasVisibleUndertone == true)
+{
+    <div class="undertone-info">
+        <span class="undertone-swatch" style="background-color: @Model.Formats.UndertoneHex;"></span>
+        <span class="undertone-label">
+            @Localizer["UndertoneIntro"]:
+            <strong>@Model.Formats.UndertoneDescription</strong>
+        </span>
+    </div>
+}
+else if (Model.Formats?.Undertone.Primary == PrimaryUndertone.Neutral)
+{
+    <div class="undertone-info">
+        <span class="undertone-label">
+            @Localizer["UndertoneIntro"]:
+            <strong>@Localizer["UndertoneNeutral"]</strong> — @Localizer["UndertoneNeutralDesc"]
+        </span>
+    </div>
+}
+
+<div class="color-with-undertone">
+    <div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
+         role="button" tabindex="0"
+         onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
+         title="@Localizer["ClickToPreview"]">
+        <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
+    </div>
+
+    @if (Model.Formats?.HasVisibleUndertone == true)
+    {
+        <div class="undertone-indicator">
+            <div class="undertone-indicator-swatches">
+                <div class="undertone-indicator-main" style="background-color: @Model.Color.Hex;"></div>
+                <span class="undertone-indicator-arrow">→</span>
+                <div class="undertone-indicator-undertone" style="background-color: @Model.Formats.UndertoneHex;"></div>
+            </div>
+            <div class="undertone-indicator-text">
+                <strong>@Localizer["UndertoneExtracted"]</strong>
+                <span>@Localizer["UndertoneExtractedDesc", Model.Formats.UndertoneHex ?? ""]</span>
+            </div>
+        </div>
+    }
 </div>
 
 @if (Model.Color.HasDescription)
@@ -339,6 +458,27 @@
                 else
                 {
                     <span>—</span>
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>@Localizer["LabelUndertone", Model.Color.Number]</th>
+            <td>
+                @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
+                {
+                    @* Has detectable undertone direction *@
+                    <span class="badge badge-@Model.Formats?.Undertone.Primary.ToString().ToLowerInvariant()">
+                        @Localizer[$"Undertone{Model.Formats?.Undertone.Primary}"]
+                    </span>
+                    <span class="text-secondary text-sm">
+                        (@Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"]
+                        @Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"])
+                    </span>
+                }
+                else
+                {
+                    @* Truly achromatic - no undertone *@
+                    <span>@Localizer["UndertoneNeutral"]</span>
                 }
             </td>
         </tr>

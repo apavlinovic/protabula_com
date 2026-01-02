@@ -66,4 +66,27 @@ public sealed record ColorFormats
     public string HunterLabString => $"L: {HunterLab.L} a: {HunterLab.a} b: {HunterLab.b}";
     public string YiqString => $"Y: {Yiq.Y} I: {Yiq.I} Q: {Yiq.Q}";
     public string LrvString => $"{Lrv}";
+
+    /// <summary>
+    /// Undertone analysis result computed from Lab values.
+    /// Includes primary (Warm/Cool/Neutral), secondary (Yellow/Red/Blue/Green), and strength.
+    /// </summary>
+    public ColorMath.UndertoneResult Undertone => ColorMath.AnalyzeUndertoneFromLab(Lab.L, Lab.a, Lab.b);
+
+    /// <summary>
+    /// Human-readable undertone description.
+    /// E.g., "Warm with strong yellow undertone" or "Neutral"
+    /// </summary>
+    public string UndertoneDescription => Undertone.Description;
+
+    /// <summary>
+    /// The undertone direction extracted as a visible hex color.
+    /// Returns null for neutral/achromatic colors with no perceptible undertone.
+    /// </summary>
+    public string? UndertoneHex => ColorMath.ExtractUndertoneColorFromLab(Lab.L, Lab.a, Lab.b);
+
+    /// <summary>
+    /// Returns true if this color has a visible undertone that can be displayed.
+    /// </summary>
+    public bool HasVisibleUndertone => UndertoneHex != null;
 }
