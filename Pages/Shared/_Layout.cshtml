@@ -261,6 +261,15 @@
         <script src="~/js/theme.js" asp-append-version="true"></script>
         <script src="~/js/nav.js" asp-append-version="true"></script>
         <script src="~/js/search.js" asp-append-version="true"></script>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-F44664FXGL"></script>
+        <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-F44664FXGL');
+</script>
         @await RenderSectionAsync("Scripts", required: false)
     </div>
 </body>
