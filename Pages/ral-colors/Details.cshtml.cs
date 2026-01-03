@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using protabula_com.Helpers;
 using protabula_com.Models;
 using protabula_com.Services;
 
@@ -23,6 +24,7 @@ public class RalColorDetailsModel : PageModel
     public IReadOnlyList<SimilarColor> SimilarColors { get; set; }
     public IReadOnlyList<RalColor> SameRootColors { get; set; }
     public ColorFormats? Formats { get; private set; }
+    public (int Kelvin, string Classification) Temperature { get; private set; }
     public IReadOnlyList<LightingVariation> LightingVariations { get; private set; }
     public IReadOnlyList<DirectSunlightVariation> DirectSunlightVariations { get; private set; }
 
@@ -44,6 +46,7 @@ public class RalColorDetailsModel : PageModel
         if (Color != RalColor.Empty)
         {
             Formats = ColorFormats.FromHex(Color.Hex);
+            Temperature = ColorMath.EstimateColorTemperature(Color.Hex);
             LightingVariations = LightingSimulator.GenerateUndertoneAwareVariations(Color.Hex);
             DirectSunlightVariations = LightingSimulator.GenerateUndertoneAwareDirectSunlightVariations(Color.Hex);
             var allColors = await _loader.LoadAsync();

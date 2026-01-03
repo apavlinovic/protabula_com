@@ -430,6 +430,18 @@ public static class ColorMath
     }
 
     /// <summary>
+    /// Classifies an LRV value into one of five levels for descriptive purposes.
+    /// </summary>
+    public static LrvLevel ClassifyLrv(double lrv) => lrv switch
+    {
+        < 15 => LrvLevel.VeryLow,
+        < 30 => LrvLevel.Low,
+        < 50 => LrvLevel.Moderate,
+        < 70 => LrvLevel.High,
+        _ => LrvLevel.VeryHigh
+    };
+
+    /// <summary>
     /// Get relative luminance (0-1) from hex color.
     /// </summary>
     public static float HexToLuminance(string hex) => GetLuminance(hex);

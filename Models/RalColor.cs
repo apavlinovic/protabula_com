@@ -96,6 +96,27 @@ public enum UndertoneStrength
     Strong
 }
 
+/// <summary>
+/// Light Reflectance Value classification for descriptive purposes.
+/// </summary>
+public enum LrvLevel
+{
+    /// <summary>LRV 0-15: Absorbs most light, creating depth and visual weight</summary>
+    VeryLow,
+
+    /// <summary>LRV 15-30: Absorbs more light than it reflects, providing a grounding effect</summary>
+    Low,
+
+    /// <summary>LRV 30-50: Reflects a balanced level of light, versatile for many applications</summary>
+    Moderate,
+
+    /// <summary>LRV 50-70: Reflects more light than it absorbs, creating an airy, open feel</summary>
+    High,
+
+    /// <summary>LRV 70-100: Reflects most light, maximizing brightness and perceived space</summary>
+    VeryHigh
+}
+
 public sealed class RalColor
 {
     public RalColor(

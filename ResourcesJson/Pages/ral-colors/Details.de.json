@@ -1,5 +1,13 @@
 {
   "BackToColors": "Zurück zu allen Farben",
+  "ColorPropertiesTitle": "RAL {0} Farbeigenschaften",
+  "PropHue": "Farbton",
+  "PropSaturation": "Sättigung",
+  "PropLrv": "Lichtreflexionswert (LRV)",
+  "PropTemperature": "Farbtemperatur",
+  "Warm": "Warm",
+  "Cool": "Kühl",
+  "Neutral": "Neutral",
   "SimilarColors": "Farben ähnlich zu RAL {0}",
   "ScenePreview": "RAL {0} auf verschiedenen Oberflächen",
   "SceneDisclaimer": "Dies sind digitale Darstellungen und können die dynamische Natur von Farben nicht vollständig wiedergeben. Verwenden Sie sie nur als grobe Referenz. Für eine exakte Farbabstimmung muss ein reales Muster unter verschiedenen Lichtbedingungen betrachtet werden.",
@@ -84,5 +92,19 @@
   "UndertoneIntro": "Unterton",
   "UndertoneNeutralDesc": "Diese Farbe hat keine wahrnehmbare warme oder kühle Tendenz",
   "UndertoneExtracted": "Extrahierter Unterton",
-  "UndertoneExtractedDesc": "Die chromatische Richtung dieser Farbe visualisiert als {0}"
+  "UndertoneExtractedDesc": "Die chromatische Richtung dieser Farbe visualisiert als {0}",
+
+  "DescWithName": "RAL {0}, auch bekannt als „{1}", ist ein {2}er {3}-Ton{4}, erhältlich in der {5}. {6} Der Hex-Farbcode von RAL {0} ist {7}, mit RGB-Werten von {8}, {9}, {10}.",
+  "DescNoName": "RAL {0} ist ein {1}er {2}-Ton{3}, erhältlich in der {4}. {5} Der Hex-Farbcode von RAL {0} ist {6}, mit RGB-Werten von {7}, {8}, {9}.",
+  "DescUndertone": " mit einem {0}en {1}",
+
+  "DescCategoryClassic": "RAL Classic Kollektion",
+  "DescCategoryDesignPlus": "RAL Design Plus Kollektion",
+  "DescCategoryEffect": "RAL Effect Kollektion",
+
+  "DescLrvVeryLow": "Der Farbton hat einen sehr niedrigen Lichtreflexionswert, was bedeutet, dass er den größten Teil des Lichts absorbiert und Tiefe sowie visuelles Gewicht erzeugt.",
+  "DescLrvLow": "Der Farbton hat einen niedrigen Lichtreflexionswert, was bedeutet, dass er mehr Licht absorbiert als reflektiert und eine erdende Wirkung erzielt.",
+  "DescLrvModerate": "Der Farbton hat einen mittleren Lichtreflexionswert, was bedeutet, dass er ein ausgewogenes Maß an Licht reflektiert und vielseitig einsetzbar ist.",
+  "DescLrvHigh": "Der Farbton hat einen hohen Lichtreflexionswert, was bedeutet, dass er mehr Licht reflektiert als absorbiert und ein luftiges, offenes Gefühl erzeugt.",
+  "DescLrvVeryHigh": "Der Farbton hat einen sehr hohen Lichtreflexionswert, was bedeutet, dass er den größten Teil des Lichts reflektiert und Helligkeit sowie gefühlte Raumgröße maximiert."
 }

@@ -1,6 +1,7 @@
 @page "/ral-colors/{colorIdentifier}"
 @using Microsoft.AspNetCore.Mvc.Localization
 @using protabula_com.Models
+@using protabula_com.Helpers
 @using System.Globalization
 @model RalColorDetailsModel
 @inject IViewLocalizer Localizer
@@ -87,87 +88,6 @@
             .sun-icon { width: 28px; height: 28px; }
         }
 
-        /* Undertone visualization styles */
-        .undertone-info {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: var(--surface-secondary);
-            border-radius: var(--border-radius);
-            font-size: 0.9rem;
-        }
-        .undertone-swatch {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--border-color);
-            flex-shrink: 0;
-        }
-        .undertone-label {
-            color: var(--text-secondary);
-        }
-        .undertone-label strong {
-            color: var(--text-primary);
-        }
-
-        .color-with-undertone {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
-        }
-        .undertone-indicator {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            padding: var(--spacing-md);
-            background: var(--surface-secondary);
-            border-radius: var(--border-radius);
-        }
-        .undertone-indicator-swatches {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-        .undertone-indicator-main {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-        }
-        .undertone-indicator-arrow {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-        }
-        .undertone-indicator-undertone {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid var(--border-color);
-        }
-        .undertone-indicator-text {
-            flex: 1;
-        }
-        .undertone-indicator-text strong {
-            display: block;
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-        .undertone-indicator-text span {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        @@media (max-width: 480px) {
-            .undertone-indicator {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .undertone-indicator-swatches {
-                align-self: center;
-            }
-        }
     </style>
     <script type="application/ld+json">
     {
@@ -199,76 +119,117 @@
 
 <h1>@colorTitle</h1>
 
-<p>
-    @{
-        var paletteName = Localizer[$"Palette{Model.Color.Category}"].Value;
-    }
-    @if (!string.IsNullOrEmpty(Model.Color.Name) && Model.Color.RootColor != RootColor.Unknown)
+@{
+    var lrvLevel = ColorMath.ClassifyLrv(Model.Formats?.Lrv ?? 0);
+    var undertoneStr = Model.Formats?.Undertone.Secondary != SecondaryUndertone.None
+        ? Localizer["DescUndertone",
+            Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"].Value,
+            Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"].Value].Value
+        : "";
+    var categoryStr = Localizer[$"DescCategory{Model.Color.Category}"].Value;
+    var lrvStr = Localizer[$"DescLrv{lrvLevel}"].Value;
+    var temperatureStr = Localizer[Model.Temperature.Classification].Value.ToLowerInvariant();
+    var rootColorStr = Localizer[$"RootColor{Model.Color.RootColor}"].Value;
+}
+
+<p class="color-description">
+    @if (!string.IsNullOrEmpty(Model.Color.Name))
     {
-        @Localizer["IntroWithNameAndRoot", Model.Color.Number, Model.Color.Name, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
-    }
-    else if (!string.IsNullOrEmpty(Model.Color.Name))
-    {
-        @Localizer["IntroWithName", Model.Color.Number, Model.Color.Name, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
-    }
-    else if (Model.Color.RootColor != RootColor.Unknown)
-    {
-        @Localizer["IntroWithRoot", Model.Color.Number, Localizer[$"RootColor{Model.Color.RootColor}"].Value, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
+        @Localizer["DescWithName",
+            Model.Color.Number,
+            Model.Color.Name,
+            temperatureStr,
+            rootColorStr,
+            undertoneStr,
+            categoryStr,
+            lrvStr,
+            Model.Color.Hex,
+            rgb.R,
+            rgb.G,
+            rgb.B]
     }
     else
     {
-        @Localizer["IntroBasic", Model.Color.Number, paletteName, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
+        @Localizer["DescNoName",
+            Model.Color.Number,
+            temperatureStr,
+            rootColorStr,
+            undertoneStr,
+            categoryStr,
+            lrvStr,
+            Model.Color.Hex,
+            rgb.R,
+            rgb.G,
+            rgb.B]
     }
 </p>
 
-@if (Model.Formats?.HasVisibleUndertone == true)
-{
-    <div class="undertone-info">
-        <span class="undertone-swatch" style="background-color: @Model.Formats.UndertoneHex;"></span>
-        <span class="undertone-label">
-            @Localizer["UndertoneIntro"]:
-            <strong>@Model.Formats.UndertoneDescription</strong>
-        </span>
-    </div>
-}
-else if (Model.Formats?.Undertone.Primary == PrimaryUndertone.Neutral)
-{
-    <div class="undertone-info">
-        <span class="undertone-label">
-            @Localizer["UndertoneIntro"]:
-            <strong>@Localizer["UndertoneNeutral"]</strong> — @Localizer["UndertoneNeutralDesc"]
-        </span>
-    </div>
-}
-
-<div class="color-with-undertone">
-    <div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
-         role="button" tabindex="0"
-         onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
-         title="@Localizer["ClickToPreview"]">
-        <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
-    </div>
-
-    @if (Model.Formats?.HasVisibleUndertone == true)
-    {
-        <div class="undertone-indicator">
-            <div class="undertone-indicator-swatches">
-                <div class="undertone-indicator-main" style="background-color: @Model.Color.Hex;"></div>
-                <span class="undertone-indicator-arrow">→</span>
-                <div class="undertone-indicator-undertone" style="background-color: @Model.Formats.UndertoneHex;"></div>
-            </div>
-            <div class="undertone-indicator-text">
-                <strong>@Localizer["UndertoneExtracted"]</strong>
-                <span>@Localizer["UndertoneExtractedDesc", Model.Formats.UndertoneHex ?? ""]</span>
-            </div>
-        </div>
-    }
+<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
+     role="button" tabindex="0"
+     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
+     title="@Localizer["ClickToPreview"]">
+    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
 </div>
 
-@if (Model.Color.HasDescription)
-{
-    <p class="color-description">@Model.Color.GetLocalizedDescription(currentCulture)</p>
+@{
+    var hue = Model.Formats?.Hsl.H ?? 0;
+    var saturation = Model.Formats?.Hsl.S ?? 0;
+    var lrv = Model.Formats?.Lrv ?? 0;
+    var tempClass = Model.Temperature.Classification.ToLowerInvariant();
 }
+
+<div class="undertone-grid mt-md">
+    <div class="undertone-card">
+        <span class="property-label">@Localizer["UndertoneIntro"]</span>
+        @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
+        {
+            <div class="undertone-card-content">
+                <span class="undertone-swatch" style="background-color: @Model.Formats?.UndertoneHex;"></span>
+                <span class="property-value">@Model.Formats?.UndertoneDescription</span>
+            </div>
+        }
+        else
+        {
+            <span class="property-value">@Localizer["UndertoneNeutral"]</span>
+            <span class="text-secondary text-sm">@Localizer["UndertoneNeutralDesc"]</span>
+        }
+    </div>
+    <div class="undertone-card">
+        <span class="property-label">@Localizer["PropTemperature"]</span>
+        <div class="property-value-row">
+            <span class="temp-badge temp-@tempClass">@Localizer[Model.Temperature.Classification]</span>
+            <span class="property-value">@Model.Temperature.Kelvin K</span>
+        </div>
+    </div>
+</div>
+
+<div class="color-properties-grid mt-md">
+    <div class="property-card">
+        <span class="property-label">@Localizer["PropHue"]</span>
+        <partial name="Shared/_HueDiagram" model="hue" />
+    </div>
+
+    <div class="property-card">
+        <span class="property-label">@Localizer["PropSaturation"]</span>
+        <div class="saturation-bar" style="background: linear-gradient(to right, hsl(@hue, 0%, 50%), hsl(@hue, 100%, 50%));">
+            <div class="saturation-marker" style="left: @saturation%;"></div>
+        </div>
+        <span class="property-value">@saturation%</span>
+    </div>
+
+    <div class="property-card">
+        <span class="property-label">@Localizer["PropLrv"]</span>
+        <div class="lrv-bar">
+            <div class="lrv-marker" style="left: @lrv%;"></div>
+        </div>
+        <span class="property-value">@lrv.ToString("F1")</span>
+    </div>
+
+    <div class="property-card">
+        <span class="property-label">@Localizer["LabelHex", ""]</span>
+        <span class="property-value">@Model.Color.Hex</span>
+    </div>
+</div>
 
 <section class="scene-preview-section mt-2xl">
     <h2>@Localizer["ScenePreview", Model.Color.Number]</h2>
@@ -434,20 +395,73 @@ else if (Model.Formats?.Undertone.Primary == PrimaryUndertone.Neutral)
     </div>
 </section>
 
+<section class="contrast-section mt-2xl">
+    <h2>@Localizer["ContrastComparison", Model.Color.Number]</h2>
+    <div class="contrast-strip">
+        <div class="contrast-segment" style="background-color: #FFFFFF;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#FFFFFF')" onkeydown="handleContrastKeydown(event, '#FFFFFF')">
+            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
+        </div>
+        <div class="contrast-segment" style="background-color: #E0E0E0;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#E0E0E0')" onkeydown="handleContrastKeydown(event, '#E0E0E0')">
+            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
+        </div>
+        <div class="contrast-segment" style="background-color: #9E9E9E;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#9E9E9E')" onkeydown="handleContrastKeydown(event, '#9E9E9E')">
+            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
+        </div>
+        <div class="contrast-segment" style="background-color: #424242;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#424242')" onkeydown="handleContrastKeydown(event, '#424242')">
+            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
+        </div>
+        <div class="contrast-segment" style="background-color: #000000;"
+             role="button" tabindex="0"
+             onclick="openColorPreviewWithBg('#000000')" onkeydown="handleContrastKeydown(event, '#000000')">
+            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
+        </div>
+    </div>
+    <div class="contrast-labels">
+        <span>@Localizer["BgWhite"]</span>
+        <span>@Localizer["BgLightGrey"]</span>
+        <span>@Localizer["BgGrey"]</span>
+        <span>@Localizer["BgDarkGrey"]</span>
+        <span>@Localizer["BgBlack"]</span>
+    </div>
+</section>
+
 
 <section class="color-codes-section mt-4xl">
     <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
     <table class="color-details">
         <tr>
-            <th>@Localizer["LabelName", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/>
+                </svg>
+                @Localizer["LabelName", Model.Color.Number]
+            </th>
             <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelNameDe", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/>
+                </svg>
+                @Localizer["LabelNameDe", Model.Color.Number]
+            </th>
             <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelRootColor", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/><circle cx="6.5" cy="12.5" r="0.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2Z"/>
+                </svg>
+                @Localizer["LabelRootColor", Model.Color.Number]
+            </th>
             <td>
                 @if (Model.Color.RootColor != RootColor.Unknown)
                 {
@@ -462,7 +476,12 @@ else if (Model.Formats?.Undertone.Primary == PrimaryUndertone.Neutral)
             </td>
         </tr>
         <tr>
-            <th>@Localizer["LabelUndertone", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>
+                </svg>
+                @Localizer["LabelUndertone", Model.Color.Number]
+            </th>
             <td>
                 @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
                 {
@@ -483,95 +502,136 @@ else if (Model.Formats?.Undertone.Primary == PrimaryUndertone.Neutral)
             </td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHex", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 9V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/><path d="M9 9v6"/><path d="M15 9v6"/><path d="M9 12h6"/>
+                </svg>
+                @Localizer["LabelHex", Model.Color.Number]
+            </th>
             <td>@Model.Color.Hex</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelRgbValues", Model.Color.Number]</th>
-            <td>@Model.Formats?.Rgb.R, @Model.Formats?.Rgb.G, @Model.Formats?.Rgb.B</td>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
+                </svg>
+                @Localizer["LabelRgbValues", Model.Color.Number]
+            </th>
+            <td>
+                <div class="color-value-list">
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ff0000;"></span> R</span> <span>@Model.Formats?.Rgb.R</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#00ff00;"></span> G</span> <span>@Model.Formats?.Rgb.G</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#0000ff;"></span> B</span> <span>@Model.Formats?.Rgb.B</span></span>
+                </div>
+            </td>
         </tr>
         <tr>
-            <th>@Localizer["LabelLrv", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+                </svg>
+                @Localizer["LabelLrv", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.LrvString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelRgbPercent", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>
+                </svg>
+                @Localizer["LabelRgbPercent", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.RgbPercentString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHsv", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
+                </svg>
+                @Localizer["LabelHsv", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.HsvString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHsl", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
+                </svg>
+                @Localizer["LabelHsl", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.HslString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelCmyk", Model.Color.Number]</th>
-            <td>@Model.Formats?.CmykString</td>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>
+                </svg>
+                @Localizer["LabelCmyk", Model.Color.Number]
+            </th>
+            <td>
+                <div class="color-value-list">
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#00ffff;"></span> C</span> <span>@Model.Formats?.Cmyk.C%</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ff00ff;"></span> M</span> <span>@Model.Formats?.Cmyk.M%</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#ffff00;"></span> Y</span> <span>@Model.Formats?.Cmyk.Y%</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot" style="background:#000000;"></span> K</span> <span>@Model.Formats?.Cmyk.K%</span></span>
+                </div>
+            </td>
         </tr>
         <tr>
-            <th>@Localizer["LabelYiq", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="20" height="15" x="2" y="7" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/>
+                </svg>
+                @Localizer["LabelYiq", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.YiqString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelXyz", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v18"/><path d="M3 12h18"/><path d="m4 4 16 16"/>
+                </svg>
+                @Localizer["LabelXyz", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.XyzString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelCieLab", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
+                </svg>
+                @Localizer["LabelCieLab", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.LabString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelCieLuv", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
+                </svg>
+                @Localizer["LabelCieLuv", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.LuvString</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelDecimal", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="14" y="14" width="4" height="6" rx="2"/><rect x="6" y="4" width="4" height="16" rx="2"/><path d="M6 4h4"/><path d="M14 10h4"/>
+                </svg>
+                @Localizer["LabelDecimal", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.Decimal</td>
         </tr>
         <tr>
-            <th>@Localizer["LabelHunterLab", Model.Color.Number]</th>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
+                </svg>
+                @Localizer["LabelHunterLab", Model.Color.Number]
+            </th>
             <td>@Model.Formats?.HunterLabString</td>
         </tr>
     </table>
-</section>
-
-
-<section class="contrast-section mt-4xl">
-    <h2>@Localizer["ContrastComparison", Model.Color.Number]</h2>
-    <div class="contrast-grid">
-        <div class="contrast-bg" style="background-color: #FFFFFF;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#FFFFFF')" onkeydown="handleContrastKeydown(event, '#FFFFFF')">
-            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
-            <span class="contrast-label">@Localizer["BgWhite"]</span>
-        </div>
-        <div class="contrast-bg" style="background-color: #E0E0E0;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#E0E0E0')" onkeydown="handleContrastKeydown(event, '#E0E0E0')">
-            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
-            <span class="contrast-label">@Localizer["BgLightGrey"]</span>
-        </div>
-        <div class="contrast-bg" style="background-color: #9E9E9E;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#9E9E9E')" onkeydown="handleContrastKeydown(event, '#9E9E9E')">
-            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
-            <span class="contrast-label">@Localizer["BgGrey"]</span>
-        </div>
-        <div class="contrast-bg" style="background-color: #424242;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#424242')" onkeydown="handleContrastKeydown(event, '#424242')">
-            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
-            <span class="contrast-label">@Localizer["BgDarkGrey"]</span>
-        </div>
-        <div class="contrast-bg" style="background-color: #000000;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#000000')" onkeydown="handleContrastKeydown(event, '#000000')">
-            <div class="contrast-swatch" style="background-color: @Model.Color.Hex;"></div>
-            <span class="contrast-label">@Localizer["BgBlack"]</span>
-        </div>
-    </div>
 </section>
 
 
@@ -579,16 +639,16 @@ else if (Model.Formats?.Undertone.Primary == PrimaryUndertone.Neutral)
 {
     <section class="compare-links mt-4xl">
         <h2>@Localizer["CompareWith", Model.Color.Number, Model.Color.Name ?? ""]</h2>
-        <div class="compare-links-grid">
+        <div class="compare-links-list">
             @foreach (var color in Model.SameRootColors)
             {
                 <a asp-page="/ral-colors/Versus" asp-route-culture="@currentCulture"
-                   asp-route-slug="@Model.Color.Slug-vs-@color.Slug" class="compare-link">
-                    <span class="compare-link-swatches">
-                        <span class="compare-link-swatch" style="background-color: @Model.Color.Hex;"></span>
-                        <span class="compare-link-swatch" style="background-color: @color.Hex;"></span>
+                   asp-route-slug="@Model.Color.Slug-vs-@color.Slug" class="compare-link-inline">
+                    <span class="compare-link-swatches-inline">
+                        <span style="background-color: @Model.Color.Hex;"></span>
+                        <span style="background-color: @color.Hex;"></span>
                     </span>
-                    <span class="compare-link-label">RAL @Model.Color.Number vs @color.Number</span>
+                    <span>RAL @Model.Color.Number vs @color.Number</span>
                 </a>
             }
         </div>

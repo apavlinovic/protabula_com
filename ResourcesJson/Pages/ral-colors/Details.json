@@ -1,5 +1,13 @@
 {
   "BackToColors": "Back to all colors",
+  "ColorPropertiesTitle": "RAL {0} Color Properties",
+  "PropHue": "Hue",
+  "PropSaturation": "Saturation",
+  "PropLrv": "Light Reflectance Value (LRV)",
+  "PropTemperature": "Color Temperature",
+  "Warm": "Warm",
+  "Cool": "Cool",
+  "Neutral": "Neutral",
   "SimilarColors": "Colors similar to RAL {0}",
   "ScenePreview": "RAL {0} on different surfaces",
   "SceneDisclaimer": "These are digital renders and cannot truly capture the dynamic nature of colors. Use them only as a rough reference. For exact color matching, a real-world sample must be viewed under different lighting conditions.",
@@ -84,5 +92,19 @@
   "UndertoneIntro": "Undertone",
   "UndertoneNeutralDesc": "This color has no perceptible warm or cool bias",
   "UndertoneExtracted": "Extracted Undertone",
-  "UndertoneExtractedDesc": "The chromatic direction of this color visualized as {0}"
+  "UndertoneExtractedDesc": "The chromatic direction of this color visualized as {0}",
+
+  "DescWithName": "RAL {0}, also known as \"{1}\", is a {2} {3} shade{4}, available in the {5}. {6} RAL {0}'s hex color code is {7}, with RGB values of {8}, {9}, {10}.",
+  "DescNoName": "RAL {0} is a {1} {2} shade{3}, available in the {4}. {5} RAL {0}'s hex color code is {6}, with RGB values of {7}, {8}, {9}.",
+  "DescUndertone": " with a {0} {1}",
+
+  "DescCategoryClassic": "RAL Classic collection",
+  "DescCategoryDesignPlus": "RAL Design Plus collection",
+  "DescCategoryEffect": "RAL Effect collection",
+
+  "DescLrvVeryLow": "The shade has a very low light reflectance value, which means it absorbs most light, creating depth and visual weight.",
+  "DescLrvLow": "The shade has a low light reflectance value, which means it absorbs more light than it reflects, providing a grounding effect.",
+  "DescLrvModerate": "The shade has a moderate light reflectance value, which means it reflects a balanced level of light, versatile for many applications.",
+  "DescLrvHigh": "The shade has a high light reflectance value, which means it reflects more light than it absorbs, creating an airy, open feel.",
+  "DescLrvVeryHigh": "The shade has a very high light reflectance value, which means it reflects most light, maximizing brightness and perceived space."
 }
