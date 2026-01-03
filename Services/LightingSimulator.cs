@@ -120,6 +120,123 @@ public static class LightingSimulator
             .ToList();
     }
 
+    #region Undertone-Aware Lighting
+
+    /// <summary>
+    /// Simulates lighting with undertone-aware adaptation.
+    /// Colors with undertones matching the light temperature are enhanced,
+    /// while opposing undertones are suppressed.
+    /// </summary>
+    public static string SimulateLightingWithUndertone(string hexColor, int temperatureKelvin, float intensity)
+    {
+        // Amplify resonance for more visible effect (raw resonance is typically ±0.2)
+        float resonance = ColorMath.CalculateUndertoneResonance(hexColor, temperatureKelvin) * 3f;
+        resonance = Math.Clamp(resonance, -1f, 1f);
+
+        // Resonance affects both blend strength and chroma
+        // Positive resonance: undertone "glows" under matching light
+        // Negative resonance: undertone is suppressed
+        float blendFactor = 0.3f + resonance * 0.2f; // Range: 0.1 to 0.5
+        blendFactor = Math.Clamp(blendFactor, 0.1f, 0.5f);
+
+        return ApplyLightingSimulationWithUndertone(hexColor, temperatureKelvin, intensity, blendFactor, resonance);
+    }
+
+    /// <summary>
+    /// Simulates direct sunlight with undertone-aware adaptation.
+    /// </summary>
+    public static string SimulateDirectSunlightWithUndertone(string hexColor, int temperatureKelvin, float intensity)
+    {
+        // Amplify resonance for more visible effect
+        float resonance = ColorMath.CalculateUndertoneResonance(hexColor, temperatureKelvin) * 3f;
+        resonance = Math.Clamp(resonance, -1f, 1f);
+
+        // Direct sunlight has stronger effect
+        float blendFactor = 0.55f + resonance * 0.25f; // Range: 0.3 to 0.8
+        blendFactor = Math.Clamp(blendFactor, 0.3f, 0.8f);
+
+        return ApplyLightingSimulationWithUndertone(hexColor, temperatureKelvin, intensity, blendFactor, resonance);
+    }
+
+    /// <summary>
+    /// Core lighting simulation with undertone modulation.
+    /// </summary>
+    private static string ApplyLightingSimulationWithUndertone(
+        string hexColor,
+        int temperatureKelvin,
+        float intensity,
+        float blendFactor,
+        float resonance)
+    {
+        var rgb = ColorMath.ParseHex(hexColor);
+        var (linR, linG, linB) = ColorMath.ToLinearRgb(rgb.R, rgb.G, rgb.B);
+
+        var (lightR, lightG, lightB) = TemperatureToLinearRgb(temperatureKelvin);
+        var (refR, refG, refB) = TemperatureToLinearRgb(ColorMath.NeutralTemperatureKelvin);
+
+        // Calculate base chromatic adaptation ratios
+        float ratioR = lightR / Math.Max(refR, 0.001f);
+        float ratioG = lightG / Math.Max(refG, 0.001f);
+        float ratioB = lightB / Math.Max(refB, 0.001f);
+
+        // Apply blend factor
+        float adaptR = 1f + (ratioR - 1f) * blendFactor;
+        float adaptG = 1f + (ratioG - 1f) * blendFactor;
+        float adaptB = 1f + (ratioB - 1f) * blendFactor;
+
+        // Undertone resonance affects saturation
+        // Positive resonance: boost chroma (undertone "glows")
+        // Negative resonance: reduce chroma (undertone suppressed)
+        float saturationMod = 1f + resonance * 0.5f; // Range: 0.5 to 1.5
+
+        // Calculate the grey point at current lightness
+        float grey = (linR + linG + linB) / 3f;
+
+        // Apply saturation modification around grey point
+        float modR = grey + (linR - grey) * saturationMod;
+        float modG = grey + (linG - grey) * saturationMod;
+        float modB = grey + (linB - grey) * saturationMod;
+
+        // Apply chromatic adaptation and intensity
+        float newR = modR * adaptR * intensity;
+        float newG = modG * adaptG * intensity;
+        float newB = modB * adaptB * intensity;
+
+        var result = ColorMath.FromLinearRgb(newR, newG, newB);
+        return $"#{result.R:X2}{result.G:X2}{result.B:X2}";
+    }
+
+    /// <summary>
+    /// Generates undertone-aware lighting variations for a given color.
+    /// </summary>
+    public static IReadOnlyList<LightingVariation> GenerateUndertoneAwareVariations(string hexColor)
+    {
+        return Conditions
+            .Select(c => new LightingVariation(
+                c.Key,
+                c.CssClass,
+                c.TemperatureKelvin,
+                c.Hour,
+                SimulateLightingWithUndertone(hexColor, c.TemperatureKelvin, c.Intensity)))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Generates undertone-aware direct sunlight variations.
+    /// </summary>
+    public static IReadOnlyList<DirectSunlightVariation> GenerateUndertoneAwareDirectSunlightVariations(string hexColor)
+    {
+        return DirectSunlightConditions
+            .Select(c => new DirectSunlightVariation(
+                c.Key,
+                c.CssClass,
+                c.TemperatureKelvin,
+                SimulateDirectSunlightWithUndertone(hexColor, c.TemperatureKelvin, c.Intensity)))
+            .ToList();
+    }
+
+    #endregion
+
     /// <summary>
     /// Converts color temperature (Kelvin) to linear RGB values (0-1 range).
     /// Based on Tanner Helland's algorithm, converted to linear space for accurate blending.

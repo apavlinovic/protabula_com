@@ -44,8 +44,8 @@ public class RalColorDetailsModel : PageModel
         if (Color != RalColor.Empty)
         {
             Formats = ColorFormats.FromHex(Color.Hex);
-            LightingVariations = LightingSimulator.GenerateVariations(Color.Hex);
-            DirectSunlightVariations = LightingSimulator.GenerateDirectSunlightVariations(Color.Hex);
+            LightingVariations = LightingSimulator.GenerateUndertoneAwareVariations(Color.Hex);
+            DirectSunlightVariations = LightingSimulator.GenerateUndertoneAwareDirectSunlightVariations(Color.Hex);
             var allColors = await _loader.LoadAsync();
             SimilarColors = _similarColorFinder.FindSimilarInCategory(Color, allColors, maxCount: 10);
             SameRootColors = _similarColorFinder.FindSameRootColorInCategory(Color, allColors);

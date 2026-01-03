@@ -1094,5 +1094,77 @@ public static class ColorMath
                b >= -tolerance && b <= 1 + tolerance;
     }
 
+    /// <summary>
+    /// Reference color temperature for neutral daylight (D65).
+    /// Temperatures below this are "warm", above are "cool".
+    /// </summary>
+    public const int NeutralTemperatureKelvin = 6500;
+
+    /// <summary>
+    /// Calculates the warmth of a color from its Lab values.
+    /// Returns a value from -1 (cool) to +1 (warm).
+    /// Positive a* (red) and positive b* (yellow) contribute to warmth.
+    /// Negative a* (green) and negative b* (blue) contribute to coolness.
+    /// </summary>
+    /// <param name="undertone">The color's undertone analysis</param>
+    /// <returns>Warmth factor from -1 (cool) to +1 (warm)</returns>
+    public static float GetColorWarmth(UndertoneResult undertone)
+    {
+        // Neutral colors have no warmth bias
+        if (undertone.Chroma < 2.0)
+            return 0f;
+
+        // Calculate color warmth from Lab values
+        // Positive a* (red) and positive b* (yellow) = warm
+        // Negative a* (green) and negative b* (blue) = cool
+        float colorWarmth = (float)((undertone.a * 0.5 + undertone.b * 0.5) / 50.0);
+        return Math.Clamp(colorWarmth, -1f, 1f);
+    }
+
+    /// <summary>
+    /// Calculates the warmth of a light source from its color temperature.
+    /// Returns a value from -1 (cool/blue, high Kelvin) to +1 (warm/orange, low Kelvin).
+    /// </summary>
+    /// <param name="temperatureKelvin">Light source color temperature in Kelvin</param>
+    /// <returns>Warmth factor from -1 (cool) to +1 (warm)</returns>
+    public static float GetLightWarmth(int temperatureKelvin)
+    {
+        // Normalize temperature to warm/cool scale: positive = warm light, negative = cool light
+        // Range roughly +1 (2700K) to -1 (10000K) with 0 at 6500K
+        float lightWarmth = (NeutralTemperatureKelvin - temperatureKelvin) / 3800f;
+        return Math.Clamp(lightWarmth, -1f, 1f);
+    }
+
+    /// <summary>
+    /// Calculates undertone resonance - how much a color's undertone aligns with the light temperature.
+    /// Returns positive for resonance (undertone matches light), negative for opposition.
+    /// </summary>
+    /// <param name="undertone">The color's undertone analysis</param>
+    /// <param name="temperatureKelvin">Light source temperature in Kelvin</param>
+    /// <returns>Resonance factor from -1 (opposing) to +1 (matching)</returns>
+    public static float CalculateUndertoneResonance(UndertoneResult undertone, int temperatureKelvin)
+    {
+        float colorWarmth = GetColorWarmth(undertone);
+        float lightWarmth = GetLightWarmth(temperatureKelvin);
+
+        // Resonance is positive when light and color warmth align
+        // Multiply and normalize - matching signs = positive resonance
+        float resonance = lightWarmth * colorWarmth;
+
+        // Scale by chroma - stronger undertones show more resonance effect
+        float chromaFactor = (float)Math.Min(undertone.Chroma / 20.0, 1.0);
+
+        return resonance * chromaFactor;
+    }
+
+    /// <summary>
+    /// Calculates undertone resonance directly from hex color.
+    /// </summary>
+    public static float CalculateUndertoneResonance(string hex, int temperatureKelvin)
+    {
+        var undertone = AnalyzeUndertone(hex);
+        return CalculateUndertoneResonance(undertone, temperatureKelvin);
+    }
+
     #endregion
 }
