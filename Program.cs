@@ -131,6 +131,55 @@ app.MapGet("/robots.txt", (HttpContext context) =>
     return Results.Content(robotsTxt, "text/plain");
 });
 
+// RAL color matching API endpoint - finds closest RAL colors to an RGB value
+app.MapGet("/api/ral/match", async (int r, int g, int b, string? culture, IRalColorLoader colorLoader) =>
+{
+    // Clamp values to valid range
+    r = Math.Clamp(r, 0, 255);
+    g = Math.Clamp(g, 0, 255);
+    b = Math.Clamp(b, 0, 255);
+
+    var lang = culture == "de" ? "de" : "en";
+    var hex = $"#{r:X2}{g:X2}{b:X2}";
+    var inputLab = protabula_com.Helpers.ColorMath.HexToLab(hex);
+    var allColors = await colorLoader.LoadAsync();
+
+    // Use CIEDE2000 for perceptually accurate color matching
+    var ciede2000 = new Colourful.CIEDE2000ColorDifference();
+
+    // Helper to create match object
+    object CreateMatch(protabula_com.Models.RalColor c, double deltaE) => new
+    {
+        number = c.Number,
+        name = c.GetLocalizedName(lang),
+        hex = c.Hex,
+        category = c.Category.ToString(),
+        slug = c.Slug,
+        needsDarkText = c.NeedsDarkText,
+        deltaE = Math.Round(deltaE, 2)
+    };
+
+    // Get top 5 Classic matches
+    var classicMatches = allColors
+        .Where(c => c.Category == protabula_com.Models.RalCategory.Classic)
+        .Select(c => (color: c, deltaE: ciede2000.ComputeDifference(inputLab, protabula_com.Helpers.ColorMath.HexToLab(c.Hex))))
+        .OrderBy(x => x.deltaE)
+        .Take(5)
+        .Select(x => CreateMatch(x.color, x.deltaE))
+        .ToList();
+
+    // Get top 5 Design Plus matches
+    var designMatches = allColors
+        .Where(c => c.Category == protabula_com.Models.RalCategory.DesignPlus)
+        .Select(c => (color: c, deltaE: ciede2000.ComputeDifference(inputLab, protabula_com.Helpers.ColorMath.HexToLab(c.Hex))))
+        .OrderBy(x => x.deltaE)
+        .Take(5)
+        .Select(x => CreateMatch(x.color, x.deltaE))
+        .ToList();
+
+    return Results.Ok(new { input = hex, r, g, b, classic = classicMatches, design = designMatches });
+});
+
 // Color search API endpoint - returns results grouped by category
 app.MapGet("/api/colors/search", async (string? q, string? culture, IRalColorLoader colorLoader) =>
 {

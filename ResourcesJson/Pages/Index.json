@@ -16,5 +16,7 @@
   "Converter": "Color Converter",
   "ConverterDesc": "Convert RAL colors to HEX, RGB, HSL, and CMYK formats.",
   "Compare": "Color Comparer",
-  "CompareDesc": "Compare up to 8 RAL colors side by side on different backgrounds."
+  "CompareDesc": "Compare up to 8 RAL colors side by side on different backgrounds.",
+  "Picker": "Color Picker",
+  "PickerDesc": "Upload an image and identify the closest matching RAL colors."
 }

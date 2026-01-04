@@ -1,0 +1,414 @@
+@page "/ral-colors/picker"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
+@model protabula_com.Pages.ral_colors.PickerModel
+@inject IViewLocalizer Localizer
+@{
+    var culture = CultureInfo.CurrentUICulture.Name;
+    ViewData["Title"] = Localizer["Title"].Value;
+    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = culture }),
+        (Localizer["BreadcrumbPicker"].Value, null, null)
+    };
+
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "WebApplication",
+        "name": "@Localizer["Title"].Value",
+        "description": "@Localizer["MetaDescription"].Value",
+        "url": "@baseUrl/@culture/ral-colors/picker",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-secondary intro-text">@Localizer["Intro"]</p>
+
+<div class="picker-container">
+    <!-- Upload Zone -->
+    <div class="upload-zone" id="uploadZone">
+        <div class="upload-content">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p class="upload-hint">@Localizer["UploadHint"]</p>
+            <label class="upload-button">
+                @Localizer["UploadButton"]
+                <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" hidden />
+            </label>
+            <p class="upload-formats">@Localizer["SupportedFormats"]</p>
+        </div>
+    </div>
+
+    <!-- Canvas Container (hidden until image loaded) -->
+    <div class="canvas-container" id="canvasContainer" style="display: none;">
+        <div class="canvas-header">
+            <p class="canvas-hint" id="canvasHint">@Localizer["ClickToSample"]</p>
+            <button class="btn-remove" id="removeImage" title="@Localizer["RemoveImage"]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="pickerCanvas"></canvas>
+            <div class="sample-indicator" id="sampleIndicator"></div>
+        </div>
+    </div>
+
+    <!-- Results Section (hidden until color sampled) -->
+    <div class="results-section" id="resultsSection" style="display: none;">
+        <!-- Sampled Color -->
+        <div class="sampled-color-card">
+            <h2 class="section-title">@Localizer["SampledColor"]</h2>
+            <div class="sampled-color">
+                <div class="sampled-swatch" id="sampledSwatch"></div>
+                <div class="sampled-info">
+                    <code class="sampled-hex" id="sampledHex"></code>
+                    <span class="sampled-rgb" id="sampledRgb"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState" style="display: none;">
+            <div class="loading-spinner"></div>
+            <span>@Localizer["Loading"]</span>
+        </div>
+
+        <!-- Matches -->
+        <div class="matches-section" id="matchesSection" style="display: none;">
+            <div class="matches-category">
+                <h2 class="section-title">RAL Classic</h2>
+                <div class="matches-list" id="classicMatchesGrid"></div>
+            </div>
+            <div class="matches-category">
+                <h2 class="section-title">RAL Design System Plus</h2>
+                <div class="matches-list" id="designMatchesGrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Legend and Algorithm Explanation (always visible for SEO) -->
+<section class="info-section">
+    <h2>@Localizer["LegendTitle"]</h2>
+    <p class="info-intro">@Localizer["LegendIntro"]</p>
+
+    <div class="legend-table-wrapper">
+        <table class="legend-table">
+            <thead>
+                <tr>
+                    <th>@Localizer["LegendLabel"]</th>
+                    <th>@Localizer["LegendDeltaE"]</th>
+                    <th>@Localizer["LegendMeaning"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="legend-badge exact">@Localizer["MatchExact"]</span></td>
+                    <td class="legend-range">&lt; 1.0</td>
+                    <td>@Localizer["LegendExactDesc"]</td>
+                </tr>
+                <tr>
+                    <td><span class="legend-badge very-close">@Localizer["MatchVeryClose"]</span></td>
+                    <td class="legend-range">1.0 – 2.0</td>
+                    <td>@Localizer["LegendVeryCloseDesc"]</td>
+                </tr>
+                <tr>
+                    <td><span class="legend-badge close">@Localizer["MatchClose"]</span></td>
+                    <td class="legend-range">2.0 – 5.0</td>
+                    <td>@Localizer["LegendCloseDesc"]</td>
+                </tr>
+                <tr>
+                    <td><span class="legend-badge similar">@Localizer["MatchSimilar"]</span></td>
+                    <td class="legend-range">5.0 – 10.0</td>
+                    <td>@Localizer["LegendSimilarDesc"]</td>
+                </tr>
+                <tr>
+                    <td><span class="legend-badge different">@Localizer["MatchDifferent"]</span></td>
+                    <td class="legend-range">&gt; 10.0</td>
+                    <td>@Localizer["LegendDifferentDesc"]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="info-section">
+    <h2>@Localizer["AlgorithmTitle"]</h2>
+    <p>@Localizer["AlgorithmIntro"]</p>
+
+    <h3>@Localizer["AlgorithmStepsTitle"]</h3>
+    <ol class="algorithm-steps">
+        <li>@Localizer["AlgorithmStep1"]</li>
+        <li>@Localizer["AlgorithmStep2"]</li>
+        <li>@Localizer["AlgorithmStep3"]</li>
+        <li>@Localizer["AlgorithmStep4"]</li>
+    </ol>
+
+    <h3>@Localizer["AlgorithmCIEDE2000Title"]</h3>
+    <p>@Localizer["AlgorithmCIEDE2000Desc"]</p>
+
+    <h3>@Localizer["AlgorithmLabTitle"]</h3>
+    <p>@Localizer["AlgorithmLabDesc"]</p>
+</section>
+
+@section Scripts {
+    <script>
+        (function() {
+            const culture = '@culture';
+            const uploadZone = document.getElementById('uploadZone');
+            const imageInput = document.getElementById('imageInput');
+            const canvasContainer = document.getElementById('canvasContainer');
+            const canvas = document.getElementById('pickerCanvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const sampleIndicator = document.getElementById('sampleIndicator');
+            const canvasHint = document.getElementById('canvasHint');
+            const removeImageBtn = document.getElementById('removeImage');
+            const resultsSection = document.getElementById('resultsSection');
+            const sampledSwatch = document.getElementById('sampledSwatch');
+            const sampledHex = document.getElementById('sampledHex');
+            const sampledRgb = document.getElementById('sampledRgb');
+            const loadingState = document.getElementById('loadingState');
+            const matchesSection = document.getElementById('matchesSection');
+            const classicMatchesGrid = document.getElementById('classicMatchesGrid');
+            const designMatchesGrid = document.getElementById('designMatchesGrid');
+
+            let currentImage = null;
+            let scale = 1;
+
+            // Localized strings
+            const strings = {
+                viewDetails: '@Localizer["ViewDetails"].Value',
+                sampleAgain: '@Localizer["SampleAgain"].Value',
+                matchExact: '@Localizer["MatchExact"].Value',
+                matchVeryClose: '@Localizer["MatchVeryClose"].Value',
+                matchClose: '@Localizer["MatchClose"].Value',
+                matchSimilar: '@Localizer["MatchSimilar"].Value',
+                matchDifferent: '@Localizer["MatchDifferent"].Value'
+            };
+
+            // Drag and drop
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('drag-over');
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('drag-over');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    loadImage(file);
+                }
+            });
+
+            // Click to upload
+            uploadZone.addEventListener('click', () => {
+                imageInput.value = ''; // Clear so same file can be re-selected
+                imageInput.click();
+            });
+
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    loadImage(file);
+                }
+            });
+
+            // Remove image
+            removeImageBtn.addEventListener('click', () => {
+                resetToUpload();
+            });
+
+            function loadImage(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        currentImage = img;
+                        displayImage(img);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function displayImage(img) {
+                uploadZone.style.display = 'none';
+                canvasContainer.style.display = 'block';
+                resultsSection.style.display = 'none';
+                matchesSection.style.display = 'none';
+
+                // Calculate scale to fit container while maintaining aspect ratio
+                const container = canvasContainer.querySelector('.canvas-wrapper');
+                const maxWidth = container.clientWidth || 800;
+                const maxHeight = 600;
+
+                scale = Math.min(maxWidth / img.width, maxHeight / img.height, 1);
+
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+
+            function resetToUpload() {
+                currentImage = null;
+                uploadZone.style.display = 'flex';
+                canvasContainer.style.display = 'none';
+                resultsSection.style.display = 'none';
+                sampleIndicator.style.display = 'none';
+                imageInput.value = '';
+            }
+
+            // Canvas click/touch handling
+            canvas.addEventListener('click', handleCanvasClick);
+            canvas.addEventListener('touchend', handleCanvasTouch);
+
+            function handleCanvasTouch(e) {
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                sampleColorAt(x, y);
+            }
+
+            function handleCanvasClick(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                sampleColorAt(x, y);
+            }
+
+            function sampleColorAt(x, y) {
+                // Show indicator - calculate position relative to canvas-wrapper
+                const wrapper = canvasContainer.querySelector('.canvas-wrapper');
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+
+                // Calculate canvas offset within the wrapper
+                const canvasOffsetX = canvasRect.left - wrapperRect.left;
+                const canvasOffsetY = canvasRect.top - wrapperRect.top;
+
+                sampleIndicator.style.left = (canvasOffsetX + x) + 'px';
+                sampleIndicator.style.top = (canvasOffsetY + y) + 'px';
+                sampleIndicator.style.display = 'block';
+
+                // Get 5x5 pixel average
+                const size = 5;
+                const halfSize = Math.floor(size / 2);
+                const startX = Math.max(0, Math.floor(x) - halfSize);
+                const startY = Math.max(0, Math.floor(y) - halfSize);
+                const endX = Math.min(canvas.width, startX + size);
+                const endY = Math.min(canvas.height, startY + size);
+
+                const imageData = ctx.getImageData(startX, startY, endX - startX, endY - startY);
+                const pixels = imageData.data;
+
+                let totalR = 0, totalG = 0, totalB = 0;
+                const pixelCount = (endX - startX) * (endY - startY);
+
+                for (let i = 0; i < pixels.length; i += 4) {
+                    totalR += pixels[i];
+                    totalG += pixels[i + 1];
+                    totalB += pixels[i + 2];
+                }
+
+                const r = Math.round(totalR / pixelCount);
+                const g = Math.round(totalG / pixelCount);
+                const b = Math.round(totalB / pixelCount);
+
+                displaySampledColor(r, g, b);
+                findMatches(r, g, b);
+            }
+
+            function displaySampledColor(r, g, b) {
+                const hex = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+                sampledSwatch.style.backgroundColor = hex;
+                sampledHex.textContent = hex;
+                sampledRgb.textContent = `RGB(${r}, ${g}, ${b})`;
+
+                // Determine text color based on luminance
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                sampledSwatch.classList.toggle('dark-text', luminance > 0.5);
+
+                resultsSection.style.display = 'block';
+                loadingState.style.display = 'flex';
+                matchesSection.style.display = 'none';
+                canvasHint.textContent = strings.sampleAgain;
+            }
+
+            async function findMatches(r, g, b) {
+                try {
+                    const response = await fetch(`/api/ral/match?r=${r}&g=${g}&b=${b}&culture=${culture}`);
+                    const data = await response.json();
+
+                    loadingState.style.display = 'none';
+                    matchesSection.style.display = 'block';
+
+                    renderMatches(classicMatchesGrid, data.classic);
+                    renderMatches(designMatchesGrid, data.design);
+                } catch (error) {
+                    console.error('Error finding matches:', error);
+                    loadingState.style.display = 'none';
+                }
+            }
+
+            function getDeltaELabel(deltaE) {
+                if (deltaE < 1) return { text: strings.matchExact, class: 'exact' };
+                if (deltaE < 2) return { text: strings.matchVeryClose, class: 'very-close' };
+                if (deltaE < 5) return { text: strings.matchClose, class: 'close' };
+                if (deltaE < 10) return { text: strings.matchSimilar, class: 'similar' };
+                return { text: strings.matchDifferent, class: 'different' };
+            }
+
+            function renderMatches(container, matches) {
+                container.innerHTML = matches.map((match) => {
+                    const label = getDeltaELabel(match.deltaE);
+                    const textClass = match.needsDarkText ? 'dark-text' : '';
+                    const detailsUrl = `/${culture}/ral-colors/${match.slug}`;
+
+                    return `
+                        <a href="${detailsUrl}" class="match-card">
+                            <span class="match-swatch ${textClass}" style="background-color: ${match.hex}"></span>
+                            <span class="match-info">
+                                <strong class="match-number">RAL ${match.number}</strong>
+                                <span class="match-name">${match.name || ''}</span>
+                            </span>
+                            <span class="match-similarity ${label.class}">
+                                <span class="similarity-label">${label.text}</span>
+                                <span class="similarity-delta">ΔE ${match.deltaE}</span>
+                            </span>
+                        </a>
+                    `;
+                }).join('');
+            }
+        })();
+    </script>
+}

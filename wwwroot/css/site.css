@@ -3,6 +3,8 @@
     --body-bg: #fefefe;
     --surface-bg: #fff;
     --overlay-bg: rgba(255, 255, 255, 0.9);
+    
+    --font-mono: monospace;
 
     --text-primary: #222;
     --text-secondary: #666;

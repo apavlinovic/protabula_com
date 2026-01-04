@@ -11,7 +11,7 @@ public interface ISitemapGenerator
 public sealed class SitemapGenerator : ISitemapGenerator
 {
     private static readonly string[] SupportedCultures = ["en", "de"];
-    private static readonly string[] StaticPages = ["", "ral-colors", "ral-colors/converter", "ral-colors/compare", "privacy"];
+    private static readonly string[] StaticPages = ["", "ral-colors", "ral-colors/converter", "ral-colors/compare", "ral-colors/picker", "privacy"];
     private static readonly string[] CategoryPages = ["ral-colors/classic", "ral-colors/design-plus", "ral-colors/effect"];
 
     private readonly IRalColorLoader _colorLoader;
@@ -161,7 +161,8 @@ public sealed class SitemapGenerator : ISitemapGenerator
                    path.StartsWith("ral-colors/design-plus") ||
                    path.StartsWith("ral-colors/effect") => "0.8",
             _ when path.StartsWith("ral-colors/converter") ||
-                   path.StartsWith("ral-colors/compare") => "0.7",
+                   path.StartsWith("ral-colors/compare") ||
+                   path.StartsWith("ral-colors/picker") => "0.7",
             _ => "0.6"
         };
     }

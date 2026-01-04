@@ -165,6 +165,7 @@
                                 <span class="dropdown-section-title">@Localizer["Tools"]</span>
                                 <a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["Converter"]</a>
                                 <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["Compare"]</a>
+                                <a asp-page="/ral-colors/Picker" asp-route-culture="@currentCulture">@Localizer["Picker"]</a>
                             </div>
                         </div>
                     </div>
@@ -215,6 +216,7 @@
                         <ul>
                             <li><a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["FooterConverter"]</a></li>
                             <li><a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["FooterCompare"]</a></li>
+                            <li><a asp-page="/ral-colors/Picker" asp-route-culture="@currentCulture">@Localizer["FooterPicker"]</a></li>
                         </ul>
                     </div>
                     <div class="footer-section">
@@ -252,7 +254,8 @@
                     { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterDesignPlus"]", "url": "@baseUrl/@currentCulture/ral-colors/design-plus" },
                     { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterEffect"]", "url": "@baseUrl/@currentCulture/ral-colors/effect" },
                     { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterConverter"]", "url": "@baseUrl/@currentCulture/ral-colors/converter" },
-                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterCompare"]", "url": "@baseUrl/@currentCulture/ral-colors/compare" }
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterCompare"]", "url": "@baseUrl/@currentCulture/ral-colors/compare" },
+                    { "@@type": "SiteNavigationElement", "name": "@Localizer["FooterPicker"]", "url": "@baseUrl/@currentCulture/ral-colors/picker" }
                 ]
             }
             </script>

@@ -17,6 +17,7 @@
   "RalEffect": "RAL Effect",
   "Converter": "Farbkonverter",
   "Compare": "Farbvergleich",
+  "Picker": "Farbwähler",
   "DefaultMetaDescription": "Entdecken Sie RAL-Farben mit Hex-Codes, RGB-Werten und Farbvergleichen. Finden Sie die perfekte RAL-Farbe für Ihr Projekt.",
   "FooterAbout": "Ihre umfassende Ressource für RAL-Farben. Finden Sie Farbcodes, vergleichen Sie Farbtöne und konvertieren Sie zwischen Farbformaten für Ihre Design- und Profi-Projekte.",
   "FooterNavLabel": "Footer-Navigation",
@@ -37,6 +38,7 @@
   "FooterTools": "Werkzeuge",
   "FooterConverter": "Farbkonverter",
   "FooterCompare": "Farbvergleich",
+  "FooterPicker": "Farbwähler",
   "FooterInfo": "Info",
   "FooterSitemap": "Sitemap",
   "FooterTagline": "RAL-Farbcodes mit HEX-, RGB- & CMYK-Werten für Designer und Profis"
