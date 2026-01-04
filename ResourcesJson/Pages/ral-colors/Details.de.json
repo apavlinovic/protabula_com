@@ -106,5 +106,25 @@
   "DescLrvLow": "Der Farbton hat einen niedrigen Lichtreflexionswert, was bedeutet, dass er mehr Licht absorbiert als reflektiert und eine erdende Wirkung erzielt.",
   "DescLrvModerate": "Der Farbton hat einen mittleren Lichtreflexionswert, was bedeutet, dass er ein ausgewogenes Maß an Licht reflektiert und vielseitig einsetzbar ist.",
   "DescLrvHigh": "Der Farbton hat einen hohen Lichtreflexionswert, was bedeutet, dass er mehr Licht reflektiert als absorbiert und ein luftiges, offenes Gefühl erzeugt.",
-  "DescLrvVeryHigh": "Der Farbton hat einen sehr hohen Lichtreflexionswert, was bedeutet, dass er den größten Teil des Lichts reflektiert und Helligkeit sowie gefühlte Raumgröße maximiert."
+  "DescLrvVeryHigh": "Der Farbton hat einen sehr hohen Lichtreflexionswert, was bedeutet, dass er den größten Teil des Lichts reflektiert und Helligkeit sowie gefühlte Raumgröße maximiert.",
+
+  "HueTip": "Position auf dem Farbkreis (0-360°)",
+  "SaturationTip": "Farbintensität oder Lebendigkeit (0-100%)",
+  "LrvTip": "Lichtreflexionswert - Prozentsatz des reflektierten Lichts",
+  "TemperatureTip": "Warmer oder kühler Farbcharakter in Kelvin",
+  "UndertoneTip": "Die subtile sekundäre Farbrichtung innerhalb dieses Farbtons",
+
+  "LearnMetrics": "Farbmetriken verstehen",
+  "LearnMetricsIntro": "Farbe kann auf viele verschiedene Arten gemessen werden. Jede Metrik erfasst einen anderen Aspekt davon, wie wir Farbe wahrnehmen und damit arbeiten.",
+  "LearnHue": "Farbton",
+  "LearnHueDesc": "Der Farbton ist die reine Farbposition auf dem Farbkreis, gemessen in Grad von 0° bis 360°. Rot liegt bei 0°, Gelb bei 60°, Grün bei 120°, Cyan bei 180°, Blau bei 240° und Magenta bei 300°. Der Farbton sagt aus, zu welcher 'Familie' eine Farbe gehört, unabhängig davon, wie hell, dunkel oder lebendig sie ist.",
+  "LearnSaturation": "Sättigung",
+  "LearnSaturationDesc": "Die Sättigung misst, wie rein oder lebendig eine Farbe ist, von 0% (komplett grau) bis 100% (voll gesättigt). Farben mit niedriger Sättigung erscheinen gedämpft oder ausgewaschen, während Farben mit hoher Sättigung kräftig und intensiv sind. Sättigung wird manchmal auch 'Chroma' oder 'Intensität' genannt.",
+  "LearnLrv": "Lichtreflexionswert (LRV)",
+  "LearnLrvDesc": "Der LRV misst, wie viel Licht eine Oberfläche reflektiert, von 0 (absorbiert alles Licht, reines Schwarz) bis 100 (reflektiert alles Licht, reines Weiß). Dies ist entscheidend für Innenarchitektur und Architektur - Farben mit LRV unter 50 absorbieren mehr Licht als sie reflektieren, lassen Räume kleiner wirken und erfordern mehr künstliche Beleuchtung.",
+  "LearnTemperature": "Farbtemperatur",
+  "LearnTemperatureDesc": "Die Farbtemperatur, gemessen in Kelvin (K), beschreibt, ob eine Farbe warm (niedrigerer K-Wert, orange/rote Töne) oder kühl (höherer K-Wert, blaue Töne) wirkt. Dieses Konzept stammt von der Schwarzkörperstrahlung - wenn Metall erhitzt wird, glüht es von Rot (≈2000K) über Weiß (≈5500K) bis Blau (≈10000K). Warme Farben schaffen gemütliche, einladende Atmosphären, während kühle Farben ruhig und professionell wirken.",
+  "LearnUndertone": "Unterton",
+  "LearnUndertoneDesc": "Der Unterton ist der subtile sekundäre Farbton, der beeinflusst, wie eine Farbe erscheint und mit anderen Farben interagiert. Selbst scheinbar neutrale Farben haben oft warme (gelb, orange, rot) oder kühle (blau, grün, violett) Untertöne. Das Verständnis von Untertönen ist essentiell für die Farbkoordination - Farben mit passenden Untertönen harmonieren tendenziell besser miteinander.",
+  "ShowDefinitions": "Definitionen anzeigen"
 }

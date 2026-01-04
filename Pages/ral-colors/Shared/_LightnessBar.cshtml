@@ -1,0 +1,13 @@
+@using protabula_com.Models
+@model LightnessBarModel
+@{
+    var hue = Model.Hue;
+    var lightness = Model.Lightness;
+}
+
+<div class="lightness-cell">
+    <div class="lightness-bar" style="background: linear-gradient(to right, hsl(@hue, 100%, 0%), hsl(@hue, 100%, 50%), hsl(@hue, 100%, 100%));">
+        <div class="lightness-marker" style="left: @lightness%;"></div>
+    </div>
+    <span class="lightness-value-text">@lightness%</span>
+</div>

@@ -175,12 +175,19 @@
     var hue = Model.Formats?.Hsl.H ?? 0;
     var saturation = Model.Formats?.Hsl.S ?? 0;
     var lrv = Model.Formats?.Lrv ?? 0;
-    var tempClass = Model.Temperature.Classification.ToLowerInvariant();
 }
 
 <div class="undertone-grid mt-md">
     <div class="undertone-card">
-        <span class="property-label">@Localizer["UndertoneIntro"]</span>
+        <span class="property-label">
+            <span class="metric-header">
+                @Localizer["UndertoneIntro"]
+                <span class="info-tooltip" tabindex="0">
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltip-text">@Localizer["UndertoneTip"]</span>
+                </span>
+            </span>
+        </span>
         @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
         {
             <div class="undertone-card-content">
@@ -195,34 +202,57 @@
         }
     </div>
     <div class="undertone-card">
-        <span class="property-label">@Localizer["PropTemperature"]</span>
-        <div class="property-value-row">
-            <span class="temp-badge temp-@tempClass">@Localizer[Model.Temperature.Classification]</span>
-            <span class="property-value">@Model.Temperature.Kelvin K</span>
-        </div>
+        <span class="property-label">
+            <span class="metric-header">
+                @Localizer["PropTemperature"]
+                <span class="info-tooltip" tabindex="0">
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltip-text">@Localizer["TemperatureTip"]</span>
+                </span>
+            </span>
+        </span>
+        <partial name="Shared/_TemperatureBadge" model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
     </div>
 </div>
 
 <div class="color-properties-grid mt-md">
     <div class="property-card">
-        <span class="property-label">@Localizer["PropHue"]</span>
+        <span class="property-label">
+            <span class="metric-header">
+                @Localizer["PropHue"]
+                <span class="info-tooltip" tabindex="0">
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltip-text">@Localizer["HueTip"]</span>
+                </span>
+            </span>
+        </span>
         <partial name="Shared/_HueDiagram" model="hue" />
     </div>
 
     <div class="property-card">
-        <span class="property-label">@Localizer["PropSaturation"]</span>
-        <div class="saturation-bar" style="background: linear-gradient(to right, hsl(@hue, 0%, 50%), hsl(@hue, 100%, 50%));">
-            <div class="saturation-marker" style="left: @saturation%;"></div>
-        </div>
-        <span class="property-value">@saturation%</span>
+        <span class="property-label">
+            <span class="metric-header">
+                @Localizer["PropSaturation"]
+                <span class="info-tooltip" tabindex="0">
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltip-text">@Localizer["SaturationTip"]</span>
+                </span>
+            </span>
+        </span>
+        <partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" />
     </div>
 
     <div class="property-card">
-        <span class="property-label">@Localizer["PropLrv"]</span>
-        <div class="lrv-bar">
-            <div class="lrv-marker" style="left: @lrv%;"></div>
-        </div>
-        <span class="property-value">@lrv.ToString("F1")</span>
+        <span class="property-label">
+            <span class="metric-header">
+                @Localizer["PropLrv"]
+                <span class="info-tooltip" tabindex="0">
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltip-text">@Localizer["LrvTip"]</span>
+                </span>
+            </span>
+        </span>
+        <partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" />
     </div>
 
     <div class="property-card">
@@ -532,7 +562,7 @@
                 </svg>
                 @Localizer["LabelLrv", Model.Color.Number]
             </th>
-            <td>@Model.Formats?.LrvString</td>
+            <td><partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" /></td>
         </tr>
         <tr>
             <th>
@@ -551,6 +581,24 @@
                 @Localizer["LabelHsv", Model.Color.Number]
             </th>
             <td>@Model.Formats?.HsvString</td>
+        </tr>
+        <tr>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
+                </svg>
+                @Localizer["PropHue"]
+            </th>
+            <td><partial name="Shared/_HueDiagram" model="hue" /></td>
+        </tr>
+        <tr>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
+                </svg>
+                @Localizer["PropSaturation"]
+            </th>
+            <td><partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" /></td>
         </tr>
         <tr>
             <th>
@@ -594,6 +642,33 @@
                 @Localizer["LabelXyz", Model.Color.Number]
             </th>
             <td>@Model.Formats?.XyzString</td>
+        </tr>
+        <tr>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
+                </svg>
+                CIE L*
+            </th>
+            <td><partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("L", Model.Formats?.Lab.L ?? 0))" /></td>
+        </tr>
+        <tr>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
+                </svg>
+                CIE a*
+            </th>
+            <td><partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("a", Model.Formats?.Lab.a ?? 0))" /></td>
+        </tr>
+        <tr>
+            <th>
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
+                </svg>
+                CIE b*
+            </th>
+            <td><partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("b", Model.Formats?.Lab.b ?? 0))" /></td>
         </tr>
         <tr>
             <th>
@@ -667,6 +742,37 @@
         </div>
     </section>
 }
+
+<section class="learn-metrics-section mt-4xl">
+    <h2>@Localizer["LearnMetrics"]</h2>
+    <p class="text-secondary">@Localizer["LearnMetricsIntro"]</p>
+    <button type="button" class="learn-metrics-toggle" aria-expanded="false" aria-controls="learn-metrics-content" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false'); document.getElementById('learn-metrics-content').classList.toggle('expanded');">
+        <span>@Localizer["ShowDefinitions"]</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+    </button>
+    <div id="learn-metrics-content" class="learn-metrics-content">
+        <div class="metric-definition">
+            <h3>@Localizer["LearnHue"]</h3>
+            <p>@Localizer["LearnHueDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnSaturation"]</h3>
+            <p>@Localizer["LearnSaturationDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnLrv"]</h3>
+            <p>@Localizer["LearnLrvDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnTemperature"]</h3>
+            <p>@Localizer["LearnTemperatureDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnUndertone"]</h3>
+            <p>@Localizer["LearnUndertoneDesc"]</p>
+        </div>
+    </div>
+</section>
 
 <a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]

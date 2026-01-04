@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model TemperatureBadgeModel
+@inject IViewLocalizer Localizer
+@{
+    var classification = Model.Classification;
+    var kelvin = Model.Kelvin;
+    var cssClass = classification.ToLowerInvariant();
+}
+
+<div class="temp-cell">
+    <span class="temp-badge temp-@cssClass">@Localizer[classification]</span>
+    <span class="temp-value-text">@kelvin K</span>
+</div>

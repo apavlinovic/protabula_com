@@ -1,0 +1,13 @@
+@using protabula_com.Models
+@model SaturationBarModel
+@{
+    var hue = Model.Hue;
+    var saturation = Model.Saturation;
+}
+
+<div class="saturation-cell">
+    <div class="saturation-bar" style="background: linear-gradient(to right, hsl(@hue, 0%, 50%), hsl(@hue, 100%, 50%));">
+        <div class="saturation-marker" style="left: @saturation%;"></div>
+    </div>
+    <span class="saturation-value-text">@saturation%</span>
+</div>

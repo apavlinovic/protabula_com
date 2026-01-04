@@ -1,0 +1,35 @@
+.saturation-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.saturation-bar {
+    position: relative;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    min-width: 120px;
+}
+
+.saturation-marker {
+    position: absolute;
+    top: -3px;
+    width: 4px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.saturation-value-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .saturation-bar {
+        min-width: 80px;
+    }
+}

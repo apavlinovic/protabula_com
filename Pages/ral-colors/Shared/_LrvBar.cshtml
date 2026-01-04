@@ -1,0 +1,12 @@
+@using protabula_com.Models
+@model LrvBarModel
+@{
+    var lrv = Model.Lrv;
+}
+
+<div class="lrv-cell">
+    <div class="lrv-bar">
+        <div class="lrv-marker" style="left: @lrv%;"></div>
+    </div>
+    <span class="lrv-value-text">@lrv.ToString("F1")</span>
+</div>

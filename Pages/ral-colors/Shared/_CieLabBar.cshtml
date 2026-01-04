@@ -1,0 +1,41 @@
+@using protabula_com.Models
+@model CieLabComponentModel
+@{
+    var component = Model.Component;
+    var value = Model.Value;
+
+    // Calculate position and gradient based on component type
+    string gradient;
+    double position;
+    string displayValue;
+
+    switch (component)
+    {
+        case "L":
+            // L*: 0-100, black to white
+            gradient = "linear-gradient(to right, #000000 0%, #808080 50%, #ffffff 100%)";
+            position = Math.Clamp(value, 0, 100);
+            displayValue = value.ToString("F1");
+            break;
+        case "a":
+            // a*: -128 to +128, green to gray to red (using typical range -100 to +100)
+            gradient = "linear-gradient(to right, #00a000 0%, #808080 50%, #ff0000 100%)";
+            position = Math.Clamp((value + 100) / 200 * 100, 0, 100);
+            displayValue = (value >= 0 ? "+" : "") + value.ToString("F1");
+            break;
+        case "b":
+        default:
+            // b*: -128 to +128, blue to gray to yellow (using typical range -100 to +100)
+            gradient = "linear-gradient(to right, #0066ff 0%, #808080 50%, #ffcc00 100%)";
+            position = Math.Clamp((value + 100) / 200 * 100, 0, 100);
+            displayValue = (value >= 0 ? "+" : "") + value.ToString("F1");
+            break;
+    }
+}
+
+<div class="cielab-cell">
+    <div class="cielab-bar cielab-bar-@component.ToLowerInvariant()" style="background: @gradient;">
+        <div class="cielab-marker" style="left: @position%;"></div>
+    </div>
+    <span class="cielab-value-text">@displayValue</span>
+</div>

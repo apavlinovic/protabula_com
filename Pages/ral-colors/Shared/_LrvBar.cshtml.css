@@ -1,0 +1,36 @@
+.lrv-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.lrv-bar {
+    position: relative;
+    height: 12px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #1a1a1a 0%, #ffffff 100%);
+    border: 1px solid var(--border-color);
+    min-width: 120px;
+}
+
+.lrv-marker {
+    position: absolute;
+    top: -3px;
+    width: 4px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.lrv-value-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .lrv-bar {
+        min-width: 80px;
+    }
+}
