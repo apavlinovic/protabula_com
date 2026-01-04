@@ -164,100 +164,102 @@
     }
 </p>
 
-<div class="color @(Model.Color.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color.Hex;"
-     role="button" tabindex="0"
-     onclick="openColorPreview()" onkeydown="handleColorKeydown(event)"
-     title="@Localizer["ClickToPreview"]">
-    <span class="color-preview-hint">@Localizer["ClickToPreview"]</span>
-</div>
-
 @{
+    var colorTileModel = new ColorTileModel(
+        Model.Color.Hex,
+        UndertoneHex: Model.Formats?.UndertoneHex,
+        Strength: Model.Formats?.Undertone.Strength ?? UndertoneStrength.None,
+        OnClick: "openColorPreview()",
+        ClickHint: Localizer["ClickToPreview"].Value,
+        NeedsDarkText: Model.Color.NeedsDarkText);
     var hue = Model.Formats?.Hsl.H ?? 0;
     var saturation = Model.Formats?.Hsl.S ?? 0;
     var lrv = Model.Formats?.Lrv ?? 0;
 }
 
-<div class="undertone-grid mt-md">
-    <div class="undertone-card">
-        <span class="property-label">
-            <span class="metric-header">
-                @Localizer["UndertoneIntro"]
-                <span class="info-tooltip" tabindex="0">
-                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                    <span class="tooltip-text">@Localizer["UndertoneTip"]</span>
+<div class="color-hero">
+    <div class="color-hero-preview">
+        <partial name="Shared/_ColorTile" model="colorTileModel" />
+    </div>
+    <div class="color-hero-sidebar">
+        <div class="sidebar-card">
+            <span class="property-label">
+                <span class="metric-header">
+                    @Localizer["UndertoneIntro"]
+                    <span class="info-tooltip" tabindex="0">
+                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltip-text">@Localizer["UndertoneTip"]</span>
+                    </span>
                 </span>
             </span>
-        </span>
-        @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
-        {
-            <div class="undertone-card-content">
-                <span class="undertone-swatch" style="background-color: @Model.Formats?.UndertoneHex;"></span>
+            @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
+            {
+                <div class="undertone-swatches">
+                    <div class="undertone-swatch-pair">
+                        <span class="undertone-swatch-color" style="background-color: @Model.Color.Hex;"></span>
+                        <span class="undertone-swatch-arrow">→</span>
+                        <span class="undertone-swatch-color" style="background-color: @Model.Formats?.UndertoneHex;"></span>
+                    </div>
+                </div>
                 <span class="property-value">@Model.Formats?.UndertoneDescription</span>
-            </div>
-        }
-        else
-        {
-            <span class="property-value">@Localizer["UndertoneNeutral"]</span>
-            <span class="text-secondary text-sm">@Localizer["UndertoneNeutralDesc"]</span>
-        }
-    </div>
-    <div class="undertone-card">
-        <span class="property-label">
-            <span class="metric-header">
-                @Localizer["PropTemperature"]
-                <span class="info-tooltip" tabindex="0">
-                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                    <span class="tooltip-text">@Localizer["TemperatureTip"]</span>
+            }
+            else
+            {
+                <span class="property-value">@Localizer["UndertoneNeutral"]</span>
+            }
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">
+                <span class="metric-header">
+                    @Localizer["PropTemperature"]
+                    <span class="info-tooltip" tabindex="0">
+                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltip-text">@Localizer["TemperatureTip"]</span>
+                    </span>
                 </span>
             </span>
-        </span>
-        <partial name="Shared/_TemperatureBadge" model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
-    </div>
-</div>
-
-<div class="color-properties-grid mt-md">
-    <div class="property-card">
-        <span class="property-label">
-            <span class="metric-header">
-                @Localizer["PropHue"]
-                <span class="info-tooltip" tabindex="0">
-                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                    <span class="tooltip-text">@Localizer["HueTip"]</span>
+            <partial name="Shared/_TemperatureBadge" model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">
+                <span class="metric-header">
+                    @Localizer["PropHue"]
+                    <span class="info-tooltip" tabindex="0">
+                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltip-text">@Localizer["HueTip"]</span>
+                    </span>
                 </span>
             </span>
-        </span>
-        <partial name="Shared/_HueDiagram" model="hue" />
-    </div>
-
-    <div class="property-card">
-        <span class="property-label">
-            <span class="metric-header">
-                @Localizer["PropSaturation"]
-                <span class="info-tooltip" tabindex="0">
-                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                    <span class="tooltip-text">@Localizer["SaturationTip"]</span>
+            <partial name="Shared/_HueDiagram" model="hue" />
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">
+                <span class="metric-header">
+                    @Localizer["PropSaturation"]
+                    <span class="info-tooltip" tabindex="0">
+                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltip-text">@Localizer["SaturationTip"]</span>
+                    </span>
                 </span>
             </span>
-        </span>
-        <partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" />
-    </div>
-
-    <div class="property-card">
-        <span class="property-label">
-            <span class="metric-header">
-                @Localizer["PropLrv"]
-                <span class="info-tooltip" tabindex="0">
-                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                    <span class="tooltip-text">@Localizer["LrvTip"]</span>
+            <partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" />
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">
+                <span class="metric-header">
+                    @Localizer["PropLrv"]
+                    <span class="info-tooltip" tabindex="0">
+                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltip-text">@Localizer["LrvTip"]</span>
+                    </span>
                 </span>
             </span>
-        </span>
-        <partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" />
-    </div>
-
-    <div class="property-card">
-        <span class="property-label">@Localizer["LabelHex", ""]</span>
-        <span class="property-value">@Model.Color.Hex</span>
+            <partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" />
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">@Localizer["LabelHex", ""]</span>
+            <span class="property-value">@Model.Color.Hex</span>
+        </div>
     </div>
 </div>
 

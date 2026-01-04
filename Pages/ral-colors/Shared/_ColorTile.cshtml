@@ -1,0 +1,158 @@
+@using protabula_com.Models
+@model ColorTileModel
+@{
+    var hex = Model.Hex;
+    var undertoneHex = Model.UndertoneHex ?? hex;
+    var strength = Model.Strength.ToString().ToLowerInvariant();
+    var label = Model.Label;
+    var onClick = Model.OnClick;
+    var clickHint = Model.ClickHint;
+    var needsDarkText = Model.NeedsDarkText;
+    var tileId = $"tile-{Guid.NewGuid():N}";
+    var isClickable = !string.IsNullOrEmpty(onClick);
+}
+
+<div class="material-sample @(isClickable ? "clickable" : "") @(needsDarkText ? "dark-text" : "")"
+     id="@tileId"
+     data-strength="@strength"
+     style="--color: @hex; --undertone: @undertoneHex;"
+     @if (isClickable) {
+        <text>role="button" tabindex="0" onclick="@onClick" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();@onClick}"</text>
+     }>
+    <div class="sample-stage">
+        <div class="sample-card">
+            <!-- Physical depth layers -->
+            <div class="card-edge card-edge-left"></div>
+            <div class="card-edge card-edge-bottom"></div>
+
+            <!-- Main surface -->
+            <div class="card-surface">
+                <div class="surface-base"></div>
+                <div class="surface-shadow"></div>
+                <div class="surface-undertone"></div>
+                <div class="surface-specular"></div>
+                <div class="surface-texture"></div>
+                <div class="surface-reflection"></div>
+                @if (!string.IsNullOrEmpty(clickHint))
+                {
+                    <span class="surface-hint">@clickHint</span>
+                }
+            </div>
+
+            <!-- Beveled top edge catch light -->
+            <div class="card-bevel"></div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(label))
+    {
+        <div class="sample-label">@label</div>
+    }
+</div>
+
+<script>
+(function() {
+    const sample = document.getElementById('@tileId');
+    if (!sample || sample.dataset.init) return;
+    sample.dataset.init = '1';
+
+    const card = sample.querySelector('.sample-card');
+    const specular = sample.querySelector('.surface-specular');
+    const reflection = sample.querySelector('.surface-reflection');
+    const stage = sample.querySelector('.sample-stage');
+
+    let bounds = null;
+    let animationId = null;
+    let currentX = 0, currentY = 0;
+    let targetX = 0, targetY = 0;
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const isSettled = () => {
+        return Math.abs(currentX - targetX) < 0.01 && Math.abs(currentY - targetY) < 0.01;
+    };
+
+    const render = () => {
+        // Apply 3D rotation
+        card.style.transform = `rotateY(${currentX}deg) rotateX(${-currentY}deg)`;
+
+        // Move specular highlight - starts at top center (50% 0%), shifts with tilt
+        const specX = 50 - currentX * 2;
+        const specY = 0 + currentY * 1.5;
+        specular.style.background = `radial-gradient(ellipse 100% 100% at ${specX}% ${Math.max(0, specY)}%,
+            rgba(255,255,255,0.22) 0%,
+            rgba(255,255,255,0.08) 30%,
+            transparent 60%)`;
+
+        // Reflection shifts
+        reflection.style.background = `linear-gradient(to top,
+            rgba(255,255,255,0.08) 0%,
+            transparent ${40 - currentY}%)`;
+        reflection.style.transform = `translateX(${currentX * 0.5}px)`;
+    };
+
+    const animate = () => {
+        currentX = lerp(currentX, targetX, 0.1);
+        currentY = lerp(currentY, targetY, 0.1);
+
+        render();
+
+        // Stop animation when settled
+        if (isSettled()) {
+            currentX = targetX;
+            currentY = targetY;
+            render();
+            animationId = null;
+            return;
+        }
+
+        animationId = requestAnimationFrame(animate);
+    };
+
+    const startAnimation = () => {
+        if (!animationId) {
+            animationId = requestAnimationFrame(animate);
+        }
+    };
+
+    stage.addEventListener('mouseenter', () => {
+        bounds = stage.getBoundingClientRect();
+    });
+
+    stage.addEventListener('mouseleave', () => {
+        targetX = 0;
+        targetY = 0;
+        startAnimation();
+    });
+
+    stage.addEventListener('mousemove', (e) => {
+        if (!bounds) bounds = stage.getBoundingClientRect();
+        const x = (e.clientX - bounds.left) / bounds.width;
+        const y = (e.clientY - bounds.top) / bounds.height;
+        targetX = (x - 0.5) * 24;
+        targetY = (y - 0.5) * 16;
+        startAnimation();
+    });
+
+    // Touch support
+    stage.addEventListener('touchstart', () => {
+        bounds = stage.getBoundingClientRect();
+    }, { passive: true });
+
+    stage.addEventListener('touchend', () => {
+        targetX = 0;
+        targetY = 0;
+        startAnimation();
+    });
+
+    stage.addEventListener('touchmove', (e) => {
+        if (!bounds) bounds = stage.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = (touch.clientX - bounds.left) / bounds.width;
+        const y = (touch.clientY - bounds.top) / bounds.height;
+        targetX = (x - 0.5) * 24;
+        targetY = (y - 0.5) * 16;
+        startAnimation();
+    }, { passive: true });
+})();
+</script>

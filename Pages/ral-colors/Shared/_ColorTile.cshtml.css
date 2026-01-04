@@ -1,0 +1,232 @@
+/* 3D Material Sample - Industrial Color Swatch */
+
+.material-sample {
+    --shadow-color: rgba(0, 0, 0, 0.25);
+    --edge-thickness: 4px;
+    --card-radius: 6px;
+}
+
+.material-sample.clickable {
+    cursor: pointer;
+}
+
+.material-sample.clickable:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: var(--card-radius);
+}
+
+/* Stage provides perspective container */
+.sample-stage {
+    perspective: 800px;
+    perspective-origin: 50% 50%;
+    padding: 20px;
+    cursor: grab;
+}
+
+.sample-stage:active {
+    cursor: grabbing;
+}
+
+/* The 3D card container */
+.sample-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    transform-style: preserve-3d;
+    transition: transform 0.05s linear;
+    will-change: transform;
+}
+
+@media (max-width: 900px) {
+    .sample-card {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+/* Hide 3D edge elements - using box-shadow for depth instead */
+.card-edge {
+    display: none;
+}
+
+/* Main surface container */
+.card-surface {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    transform: translateZ(0);
+    box-shadow:
+        0 2px 4px var(--shadow-color),
+        0 8px 16px var(--shadow-color),
+        0 16px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Base color layer */
+.surface-base {
+    position: absolute;
+    inset: 0;
+    background: var(--color);
+}
+
+/* Form shadow - darkens bottom/edges for depth */
+.surface-shadow {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.05) 30%,
+        transparent 60%);
+    pointer-events: none;
+}
+
+/* Specular highlight - moves with JS */
+.surface-specular {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 100% at 50% 0%,
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(255, 255, 255, 0.08) 30%,
+        transparent 60%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+/* Powder coat / matte texture */
+.surface-texture {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+}
+
+/* Bottom reflection / ambient */
+.surface-reflection {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+        rgba(255, 255, 255, 0.08) 0%,
+        transparent 40%);
+    pointer-events: none;
+}
+
+/* Undertone influence - subtle edge glow showing color direction */
+.surface-undertone {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 200% 200% at 0% 50%,
+        color-mix(in oklab, var(--undertone) 25%, transparent) 0%,
+        transparent 50%);
+    pointer-events: none;
+    mix-blend-mode: color;
+    opacity: 0;
+}
+
+/* Strength-based undertone visibility */
+.material-sample[data-strength="subtle"] .surface-undertone {
+    opacity: 0.12;
+}
+
+.material-sample[data-strength="weak"] .surface-undertone {
+    opacity: 0.2;
+}
+
+.material-sample[data-strength="moderate"] .surface-undertone {
+    opacity: 0.35;
+}
+
+.material-sample[data-strength="strong"] .surface-undertone {
+    opacity: 0.5;
+}
+
+/* Click hint text */
+.surface-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.material-sample.dark-text .surface-hint {
+    color: rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Top edge bevel catch light */
+.card-bevel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right,
+        transparent 10%,
+        rgba(255, 255, 255, 0.3) 30%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.3) 70%,
+        transparent 90%);
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
+    transform: translateZ(1px);
+    opacity: 0.8;
+}
+
+/* Label below */
+.sample-label {
+    margin-top: var(--spacing-sm);
+    padding: 0 20px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .material-sample {
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .card-surface {
+    box-shadow:
+        0 2px 4px var(--shadow-color),
+        0 8px 16px var(--shadow-color),
+        0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .surface-specular {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.08) 30%,
+        transparent 70%);
+}
+
+[data-theme="dark"] .card-bevel {
+    opacity: 0.5;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .sample-card {
+        transition: none;
+    }
+}
+
+/* Touch hint on mobile */
+@media (hover: none) {
+    .sample-stage::after {
+        content: "Touch & drag to tilt";
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        opacity: 0.7;
+        pointer-events: none;
+    }
+}
