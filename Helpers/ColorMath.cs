@@ -844,9 +844,9 @@ public static class ColorMath
         // Determine undertone strength based on L*-adjusted thresholds
         var strength = DetermineUndertoneStrength(chroma, subtleThreshold, weakThreshold, moderateThreshold);
 
-        // Determine secondary undertone based on hue angle
-        // For low-strength undertones, collapse to 4 cardinal directions for stability
-        var secondary = DetermineSecondaryUndertone(angleDeg, strength);
+        // Determine secondary undertone based on hue angle (8 directions)
+        // Pass a* and b* for ratio-based adjustments in transitional zones
+        var secondary = DetermineSecondaryUndertone(angleDeg, a, b);
 
         // Determine primary undertone using hue angle sectors
         var primary = DeterminePrimaryUndertone(angleDeg, chroma, achromaticThreshold);
@@ -959,62 +959,95 @@ public static class ColorMath
     }
 
     /// <summary>
-    /// Determines the specific undertone direction using 8 compass directions for strong undertones,
-    /// or 4 cardinal directions for weak undertones (to reduce noise).
-    ///
-    /// Based on the hue angle in Lab a*/b* space where:
-    /// - 0° = pure red (+a*)
-    /// - 90° = pure yellow (+b*)
-    /// - 180° = pure green (-a*)
-    /// - 270° = pure blue (-b*)
+    /// Determines the specific undertone direction using 8 compass directions
+    /// with perceptually-adjusted boundaries and ratio-based adjustments for transitional zones.
     /// </summary>
-    private static SecondaryUndertone DetermineSecondaryUndertone(double angleDeg, UndertoneStrength strength)
+    private static SecondaryUndertone DetermineSecondaryUndertone(double angleDeg, double aStar, double bStar)
     {
-        // For subtle undertones, collapse to 4 cardinal directions for stability
-        // This reduces noise where low-chroma colors might flip between adjacent 8-way directions
-        if (strength == UndertoneStrength.Subtle)
+        angleDeg = (angleDeg + 360) % 360;
+
+        // First, get the base sector from angle
+        var baseSector = angleDeg switch
         {
-            return angleDeg switch
-            {
-                // Red: 315° - 45°
-                >= 315 or < 45 => SecondaryUndertone.Red,
-                // Yellow: 45° - 135°
-                >= 45 and < 135 => SecondaryUndertone.Yellow,
-                // Green: 135° - 225°
-                >= 135 and < 225 => SecondaryUndertone.Green,
-                // Blue: 225° - 315°
-                _ => SecondaryUndertone.Blue
-            };
-        }
+            // Red (slightly wider due to dominance)
+            >= 345 or < 25 => SecondaryUndertone.Red,
 
-        // For Weak and above, use full 8-direction compass
-        // Each direction covers 45° (360° / 8 directions)
-        return angleDeg switch
-        {
-            // Red: centered at 0°, covers 337.5° - 22.5°
-            >= 337.5 or < 22.5 => SecondaryUndertone.Red,
+            // Orange
+            >= 25 and < 65 => SecondaryUndertone.Orange,
 
-            // Orange: centered at 45°, covers 22.5° - 67.5° (warm+warm: red+yellow)
-            >= 22.5 and < 67.5 => SecondaryUndertone.Orange,
+            // Yellow (very narrow!)
+            >= 65 and < 95 => SecondaryUndertone.Yellow,
 
-            // Yellow: centered at 90°, covers 67.5° - 112.5°
-            >= 67.5 and < 112.5 => SecondaryUndertone.Yellow,
+            // Olive / Yellow-Green (broad transitional zone)
+            >= 95 and < 165 => SecondaryUndertone.Olive,
 
-            // Olive: centered at 135°, covers 112.5° - 157.5° (cool+warm: green+yellow)
-            >= 112.5 and < 157.5 => SecondaryUndertone.Olive,
+            // Green
+            >= 165 and < 205 => SecondaryUndertone.Green,
 
-            // Green: centered at 180°, covers 157.5° - 202.5°
-            >= 157.5 and < 202.5 => SecondaryUndertone.Green,
+            // Teal (Green-Blue)
+            >= 205 and < 245 => SecondaryUndertone.Teal,
 
-            // Teal: centered at 225°, covers 202.5° - 247.5° (cool+cool: green+blue)
-            >= 202.5 and < 247.5 => SecondaryUndertone.Teal,
+            // Blue
+            >= 245 and < 285 => SecondaryUndertone.Blue,
 
-            // Blue: centered at 270°, covers 247.5° - 292.5°
-            >= 247.5 and < 292.5 => SecondaryUndertone.Blue,
-
-            // Violet: centered at 315°, covers 292.5° - 337.5° (warm+cool: red+blue)
+            // Violet / Purple
             _ => SecondaryUndertone.Violet
         };
+
+        // Apply ratio-based adjustments for transitional zones
+        return AdjustForTransitionalZones(baseSector, aStar, bStar);
+    }
+
+    /// <summary>
+    /// Adjusts undertone classification in transitional zones based on a*/b* ratio.
+    /// This prevents vivid reds from being called "orange" and allows olive to lean yellow or green.
+    /// </summary>
+    private static SecondaryUndertone AdjustForTransitionalZones(SecondaryUndertone baseSector, double aStar, double bStar)
+    {
+        double absA = Math.Abs(aStar);
+        double absB = Math.Abs(bStar);
+
+        switch (baseSector)
+        {
+            // Orange zone: if a* strongly dominates, it's actually Red (warm red, not orange)
+            case SecondaryUndertone.Orange:
+                // For vivid reds with warm bias: a* is large positive, b* is smaller positive
+                // If a* dominates by 1.5x or more, call it Red
+                if (aStar > 0 && absA > absB * 1.5)
+                    return SecondaryUndertone.Red;
+                // If b* strongly dominates, it's more Yellow than Orange
+                if (bStar > 0 && absB > absA * 2.0)
+                    return SecondaryUndertone.Yellow;
+                break;
+
+            // Olive zone: can lean Yellow (b* dominates) or Green (-a* dominates)
+            case SecondaryUndertone.Olive:
+                // If b* strongly dominates (yellowish), lean Yellow
+                if (bStar > 0 && absB > absA * 1.5)
+                    return SecondaryUndertone.Yellow;
+                // If -a* strongly dominates (greenish), lean Green
+                if (aStar < 0 && absA > absB * 1.5)
+                    return SecondaryUndertone.Green;
+                break;
+
+            // Teal zone: can lean Green (-a* dominates) or Blue (-b* dominates)
+            case SecondaryUndertone.Teal:
+                if (aStar < 0 && absA > absB * 1.5)
+                    return SecondaryUndertone.Green;
+                if (bStar < 0 && absB > absA * 1.5)
+                    return SecondaryUndertone.Blue;
+                break;
+
+            // Violet zone: can lean Blue (-b* dominates) or Red (+a* dominates)
+            case SecondaryUndertone.Violet:
+                if (bStar < 0 && absB > absA * 1.5)
+                    return SecondaryUndertone.Blue;
+                if (aStar > 0 && absA > absB * 1.5)
+                    return SecondaryUndertone.Red;
+                break;
+        }
+
+        return baseSector;
     }
 
     // Pre-built converter for Lab to RGB
