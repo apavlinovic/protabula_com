@@ -39,8 +39,12 @@
 }
 
 @media (max-width: 900px) {
+    .sample-stage {
+        padding: 0px;
+    }
+    
     .sample-card {
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 16 / 12;
     }
 }
 
@@ -213,20 +217,5 @@
 @media (prefers-reduced-motion: reduce) {
     .sample-card {
         transition: none;
-    }
-}
-
-/* Touch hint on mobile */
-@media (hover: none) {
-    .sample-stage::after {
-        content: "Touch & drag to tilt";
-        position: absolute;
-        bottom: 4px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        opacity: 0.7;
-        pointer-events: none;
     }
 }
