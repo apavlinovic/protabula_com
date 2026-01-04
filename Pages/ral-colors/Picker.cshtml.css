@@ -75,72 +75,246 @@
 /* Canvas Container */
 .canvas-container {
     background: var(--surface-bg);
+    border-radius: var(--border-radius);
     overflow: hidden;
 }
 
-.canvas-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-md);
-}
-
-.canvas-hint {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.btn-remove {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.btn-remove:hover {
-    background: var(--bg-subtle);
-    border-color: var(--text-muted);
-}
-
-.btn-remove svg {
-    width: 16px;
-    height: 16px;
-    color: var(--text-muted);
+.canvas-viewport {
+    position: relative;
 }
 
 .canvas-wrapper {
     position: relative;
     display: flex;
     justify-content: center;
-    padding: var(--spacing-md);
-    background: var(--bg-subtle);
+    align-items: center;
+    min-height: 300px;
+    padding: var(--spacing-xl);
+    background:
+        linear-gradient(45deg, var(--bg-subtle) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--bg-subtle) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--bg-subtle) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--bg-subtle) 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    background-color: var(--body-bg);
 }
 
 #pickerCanvas {
     max-width: 100%;
     height: auto;
     cursor: crosshair;
-    border-radius: 8px;
-    touch-action: none;
+    border-radius: 4px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.08);
+    touch-action: pinch-zoom;
 }
 
+[data-theme="dark"] #pickerCanvas {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+#pickerCanvas.can-pan {
+    cursor: grab;
+}
+
+#pickerCanvas.panning {
+    cursor: grabbing;
+}
+
+/* Sample Indicator with Crosshair */
 .sample-indicator {
     display: none;
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
     border: 2px solid white;
     border-radius: 50%;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.25),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     transform: translate(-50%, -50%);
     pointer-events: none;
+    transition: transform 0.1s ease;
+}
+
+.sample-indicator .crosshair-h,
+.sample-indicator .crosshair-v {
+    position: absolute;
+    background: white;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.sample-indicator .crosshair-h {
+    width: 14px;
+    height: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sample-indicator .crosshair-v {
+    width: 2px;
+    height: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Floating Hint Overlay */
+.canvas-hint-overlay {
+    position: absolute;
+    top: var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.canvas-hint {
+    margin: 0;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 100px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .canvas-hint {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Unified Floating Toolbar */
+.canvas-toolbar {
+    position: absolute;
+    bottom: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-radius: 14px;
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.04),
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .canvas-toolbar {
+    background: rgba(40, 40, 45, 0.88);
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 24px;
+    margin: 0 6px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .toolbar-divider {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 12px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.toolbar-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .toolbar-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toolbar-btn:active {
+    transform: scale(0.96);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .toolbar-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.toolbar-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.toolbar-btn-icon {
+    width: 36px;
+    padding: 0;
+}
+
+.toolbar-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Zoom Display */
+.zoom-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 28px;
+    padding: 0 8px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 6px;
+}
+
+[data-theme="dark"] .zoom-display {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.zoom-level {
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    letter-spacing: -0.02em;
+}
+
+.toolbar-zoom {
+    gap: 4px;
 }
 
 /* Results Section */
@@ -495,6 +669,69 @@
     .upload-icon {
         width: 40px;
         height: 40px;
+    }
+
+    .canvas-wrapper {
+        padding: var(--spacing-md);
+        min-height: 250px;
+    }
+
+    .canvas-hint {
+        font-size: 0.7rem;
+        padding: 5px 10px;
+    }
+
+    .canvas-toolbar {
+        padding: 4px;
+        border-radius: 12px;
+        bottom: var(--spacing-md);
+    }
+
+    .toolbar-btn {
+        height: 32px;
+        padding: 0 8px;
+        border-radius: 8px;
+    }
+
+    .toolbar-btn-icon {
+        width: 32px;
+    }
+
+    .toolbar-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .toolbar-label {
+        display: none;
+    }
+
+    .toolbar-divider {
+        height: 20px;
+        margin: 0 4px;
+    }
+
+    .zoom-display {
+        min-width: 44px;
+        height: 24px;
+        padding: 0 6px;
+    }
+
+    .zoom-level {
+        font-size: 0.7rem;
+    }
+
+    .sample-indicator {
+        width: 32px;
+        height: 32px;
+    }
+
+    .sample-indicator .crosshair-h {
+        width: 12px;
+    }
+
+    .sample-indicator .crosshair-v {
+        height: 12px;
     }
 
     .sampled-swatch {
