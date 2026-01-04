@@ -50,13 +50,11 @@
                 <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
             <p class="upload-hint">@Localizer["UploadHint"]</p>
-            <label class="upload-button">
-                @Localizer["UploadButton"]
-                <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" hidden />
-            </label>
+            <span class="upload-button" id="uploadButton">@Localizer["UploadButton"]</span>
             <p class="upload-formats">@Localizer["SupportedFormats"]</p>
         </div>
     </div>
+    <input type="file" id="imageInput" accept="image/*" hidden />
 
     <!-- Canvas Container (hidden until image loaded) -->
     <div class="canvas-container" id="canvasContainer" style="display: none;">
@@ -226,9 +224,10 @@
                 }
             });
 
-            // Click to upload
-            uploadZone.addEventListener('click', () => {
-                imageInput.value = ''; // Clear so same file can be re-selected
+            // Click to upload - single handler on the zone
+            uploadZone.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 imageInput.click();
             });
 
@@ -237,6 +236,8 @@
                 if (file) {
                     loadImage(file);
                 }
+                // Clear input so the same file can be re-selected next time
+                imageInput.value = '';
             });
 
             // Remove image
