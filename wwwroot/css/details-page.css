@@ -129,6 +129,49 @@
     font-size: 0.85rem;
 }
 
+.btn-group .btn.active {
+    background-color: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.btn-group .btn.active:hover {
+    background-color: var(--accent-hover, var(--accent));
+}
+
+/* Icon Buttons */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.btn-group-sm .btn-icon {
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Hide text on smaller screens, show only icons */
+@media (max-width: 640px) {
+    .specular-controls .btn-icon span {
+        display: none;
+    }
+
+    .specular-controls .btn-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .specular-controls .btn-group-sm .btn-icon {
+        padding: var(--spacing-sm);
+    }
+}
+
 /* Focus Indicators for Accessibility */
 .info-tooltip:focus-visible,
 .contrast-segment:focus-visible,

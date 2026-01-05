@@ -151,15 +151,18 @@
         const controlsContainer = document.querySelector('.specular-controls');
         if (!controlsContainer) return;
 
-        // Event delegation for finish and model buttons
+        // Event delegation for finish, model, and lighting buttons
         controlsContainer.addEventListener('click', (e) => {
             const finishBtn = e.target.closest('[data-finish]');
             const modelBtn = e.target.closest('[data-model]');
+            const lightingBtn = e.target.closest('[data-lighting]');
 
             if (finishBtn) {
                 handleFinishChange(finishBtn);
             } else if (modelBtn) {
                 handleModelChange(modelBtn, config);
+            } else if (lightingBtn) {
+                handleLightingChange(lightingBtn);
             }
         });
     }
@@ -170,6 +173,14 @@
         document.querySelector('[data-finish].active')?.classList.remove('active');
         btn.classList.add('active');
         preview.setFinish(btn.dataset.finish);
+    }
+
+    function handleLightingChange(btn) {
+        if (!preview) return;
+
+        document.querySelector('[data-lighting].active')?.classList.remove('active');
+        btn.classList.add('active');
+        preview.setLighting(btn.dataset.lighting);
     }
 
     function handleModelChange(btn, config) {

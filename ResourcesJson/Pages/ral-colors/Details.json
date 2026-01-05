@@ -140,6 +140,12 @@
   "ModelCurvedSample": "S-Curve",
   "ModelWindow": "Window Frame",
   "ModelDoor": "Door",
+  "LightingLabel": "Lighting",
+  "LightingStudio": "Studio",
+  "LightingMorning": "Morning",
+  "LightingMidday": "Midday",
+  "LightingGolden": "Golden Hour",
+  "LightingOvercast": "Overcast",
 
   "FaqTitle": "Frequently Asked Questions",
   "FaqWhatColor": "What color is RAL {0}?",

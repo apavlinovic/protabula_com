@@ -717,23 +717,23 @@
             const ambient = new THREE.AmbientLight(0xffffff, 0.3);
             this.lights.push(ambient);
 
-            // Hemisphere light (sky/ground gradient)
-            const hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 0.35);
+            // Hemisphere light (sky/ground gradient) - higher for softer shadows
+            const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 0.6);
             hemi.position.set(0, 20, 0);
             this.lights.push(hemi);
 
             // Front light (main illumination from camera direction)
-            const frontLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            const frontLight = new THREE.DirectionalLight(0xffffff, 0.7);
             frontLight.position.set(0, 2, 10);
             this.lights.push(frontLight);
 
             // Key light (main directional from top-right)
-            this.keyLight = new THREE.DirectionalLight(0xffffff, 0.7);
+            this.keyLight = new THREE.DirectionalLight(0xffffff, 0.5);
             this.keyLight.position.set(5, 8, 5);
             this.lights.push(this.keyLight);
 
             // Fill light (left side, softer) - can be tinted by undertone
-            this.fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            this.fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
             this.fillLight.position.set(-6, 4, 2);
             this.lights.push(this.fillLight);
 
@@ -759,10 +759,78 @@
             const undertoneColor = new THREE.Color(undertoneHex);
             const white = new THREE.Color(0xffffff);
 
-            // Blend white with undertone based on strength (subtle effect)
-            const tintedColor = white.clone().lerp(undertoneColor, strength * 0.4);
+            // Blend white with undertone based on strength (visible under light)
+            const tintedColor = white.clone().lerp(undertoneColor, strength * 0.6);
 
             this.fillLight.color.copy(tintedColor);
+        }
+
+        // Apply lighting preset
+        // Aligned with backend LightingSimulator.DirectSunlightConditions
+        applyPreset(preset) {
+            // Kelvin to approximate RGB (from TemperatureToLinearRgb algorithm):
+            // 2800K → 0xffb46b (warm amber)
+            // 4000K → 0xffd1a3 (warm yellow)
+            // 5500K → 0xfff4e5 (neutral warm)
+            // 6500K → 0xffffff (D65 white reference)
+            const presets = {
+                'studio': {
+                    // Neutral D65 reference lighting for true color
+                    ambient: { color: 0xffffff, intensity: 0.3 },
+                    hemi: { skyColor: 0xffffff, groundColor: 0xaaaaaa, intensity: 0.6 },
+                    key: { color: 0xffffff, intensity: 0.5 },
+                    fill: { color: 0xffffff, intensity: 0.5 }
+                },
+                'morning': {
+                    // Backend: 4000K, 1.05 intensity - warm yellow morning sun
+                    ambient: { color: 0xfff0e0, intensity: 0.28 },
+                    hemi: { skyColor: 0xffeedd, groundColor: 0x998877, intensity: 0.5 },
+                    key: { color: 0xffd1a3, intensity: 0.65 },  // 4000K warm yellow
+                    fill: { color: 0x88aacc, intensity: 0.35 }  // Cool sky fill
+                },
+                'midday': {
+                    // Backend: 5500K, 1.18 intensity - bright neutral sun
+                    ambient: { color: 0xffffff, intensity: 0.35 },
+                    hemi: { skyColor: 0xeeffff, groundColor: 0xcccccc, intensity: 0.7 },
+                    key: { color: 0xfff4e5, intensity: 0.75 },  // 5500K neutral warm
+                    fill: { color: 0xaaccff, intensity: 0.3 }   // Blue sky fill
+                },
+                'golden': {
+                    // Backend: 2800K, 0.92 intensity - golden hour amber
+                    ambient: { color: 0xffe0b0, intensity: 0.25 },
+                    hemi: { skyColor: 0xffddaa, groundColor: 0x886644, intensity: 0.45 },
+                    key: { color: 0xffb46b, intensity: 0.6 },   // 2800K warm amber
+                    fill: { color: 0x6688aa, intensity: 0.35 }  // Cool contrast
+                },
+                'overcast': {
+                    // Diffused daylight ~6500K - even, soft lighting
+                    ambient: { color: 0xe8e8f0, intensity: 0.5 },
+                    hemi: { skyColor: 0xddddee, groundColor: 0xaaaaaa, intensity: 0.7 },
+                    key: { color: 0xddeeff, intensity: 0.4 },
+                    fill: { color: 0xddeeff, intensity: 0.4 }
+                }
+            };
+
+            const p = presets[preset] || presets['studio'];
+
+            // Apply to lights (assuming order: ambient, hemi, front, key, fill, top, rim)
+            if (this.lights[0]) {
+                this.lights[0].color.setHex(p.ambient.color);
+                this.lights[0].intensity = p.ambient.intensity;
+            }
+            if (this.lights[1]) {
+                this.lights[1].color.setHex(p.hemi.skyColor);
+                this.lights[1].groundColor.setHex(p.hemi.groundColor);
+                this.lights[1].intensity = p.hemi.intensity;
+            }
+            if (this.keyLight) {
+                this.keyLight.color.setHex(p.key.color);
+                this.keyLight.intensity = p.key.intensity;
+            }
+            if (this.fillLight) {
+                this.fillLight.color.setHex(p.fill.color);
+                this.fillLight.intensity = p.fill.intensity;
+            }
         }
 
         // Adjust lighting based on LRV
@@ -1079,6 +1147,12 @@
                         applyPreset(child.material);
                     }
                 });
+            }
+        }
+
+        setLighting(presetName) {
+            if (this.lightingRig) {
+                this.lightingRig.applyPreset(presetName);
             }
         }
 
