@@ -129,7 +129,7 @@
         Model.Color.Hex,
         UndertoneHex: Model.Formats?.UndertoneHex,
         Strength: Model.Formats?.Undertone.Strength ?? UndertoneStrength.None,
-        OnClick: "openColorPreview()",
+        OnClick: "DetailsPage.openColorPreview()",
         ClickHint: Localizer["ClickToPreview"].Value,
         NeedsDarkText: Model.Color.NeedsDarkText);
     var hue = Model.Formats?.Hsl.H ?? 0;
@@ -716,14 +716,93 @@
     </section>
 }
 
+@* FAQ Section *@
+@{
+    var faqColorName = Model.Color.GetLocalizedName(currentCulture);
+    var faqRootColorName = Model.Color.RootColor.ToString().ToLower();
+    var faqCategoryName = Model.Color.Category.ToString();
+    var faqLrvValue = Model.Formats?.Lrv ?? 0;
+    var faqLrvLevel = ColorMath.ClassifyLrv(faqLrvValue);
+    var faqTempKelvin = Model.Temperature.Kelvin;
+    var faqUndertone = Model.Formats?.Undertone;
+    var faqIsWarm = faqUndertone?.Primary == PrimaryUndertone.Warm;
+    var faqIsCool = faqUndertone?.Primary == PrimaryUndertone.Cool;
+    var faqUndertoneDesc = Model.Formats?.UndertoneDescription ?? "";
+    var faqIsNeutralFamily = Model.Color.RootColor is RootColor.Grey or RootColor.White or RootColor.Black or RootColor.Beige;
+}
+<section class="faq-section mt-4xl">
+    <h2>@Localizer["FaqTitle"]</h2>
+    <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+
+        @* FAQ 1: What color is this? (ALWAYS shown) *@
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 itemprop="name">@Localizer["FaqWhatColor", Model.Color.Number]</h3>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p itemprop="text">@Localizer["FaqWhatColorAnswer", Model.Color.Number, faqColorName, faqRootColorName, faqCategoryName, faqLrvValue, faqTempKelvin]</p>
+            </div>
+        </div>
+
+        @* FAQ 2: What is <name> in RAL? (only if has name) *@
+        @if (!string.IsNullOrEmpty(faqColorName))
+        {
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqWhatIsNameInRal", faqColorName]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">@Localizer["FaqWhatIsNameInRalAnswer", faqColorName, Model.Color.Number, faqCategoryName]</p>
+                </div>
+            </div>
+        }
+
+        @* FAQ 3: Warm or cool? (only if not neutral) *@
+        @if (faqIsWarm || faqIsCool)
+        {
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqWarmCool", Model.Color.Number]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">
+                        @if (faqIsWarm)
+                        {
+                            @Localizer["FaqWarmAnswer", Model.Color.Number, faqColorName, faqTempKelvin, faqUndertoneDesc]
+                        }
+                        else
+                        {
+                            @Localizer["FaqCoolAnswer", Model.Color.Number, faqColorName, faqTempKelvin, faqUndertoneDesc]
+                        }
+                    </p>
+                </div>
+            </div>
+        }
+
+        @* FAQ 4: Light or dark? (for neutrals) *@
+        @if (faqIsNeutralFamily)
+        {
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqLightDark", Model.Color.Number]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">@Localizer["FaqLightDarkAnswer", Model.Color.Number, faqLrvValue, Localizer[$"Lrv{faqLrvLevel}"]]</p>
+                </div>
+            </div>
+        }
+
+        @* FAQ 5: Similar colors (if any exist) *@
+        @if (Model.SimilarColors?.Count > 0)
+        {
+            var topSimilar = Model.SimilarColors.Take(4)
+                .Select(c => $"RAL {c.Color.Number} {c.Color.GetLocalizedName(currentCulture)}");
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqSimilar", Model.Color.Number]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">@Localizer["FaqSimilarAnswer", faqColorName, string.Join(", ", topSimilar)]</p>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
 <section class="learn-metrics-section mt-4xl">
     <h2>@Localizer["LearnMetrics"]</h2>
     <p class="text-secondary">@Localizer["LearnMetricsIntro"]</p>
-    <button type="button" class="learn-metrics-toggle" aria-expanded="false" aria-controls="learn-metrics-content" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false'); document.getElementById('learn-metrics-content').classList.toggle('expanded');">
-        <span>@Localizer["ShowDefinitions"]</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-    </button>
-    <div id="learn-metrics-content" class="learn-metrics-content">
+    <div class="learn-metrics-content">
         <div class="metric-definition">
             <h3>@Localizer["LearnHue"]</h3>
             <p>@Localizer["LearnHueDesc"]</p>

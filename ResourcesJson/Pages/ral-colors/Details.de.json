@@ -138,5 +138,23 @@
   "ModelCube": "Würfel",
   "ModelCurvedSample": "S-Kurve",
   "ModelWindow": "Fensterrahmen",
-  "ModelDoor": "Tür"
+  "ModelDoor": "Tür",
+
+  "FaqTitle": "Häufig gestellte Fragen",
+  "FaqWhatColor": "Was für eine Farbe ist RAL {0}?",
+  "FaqWhatColorAnswer": "RAL {0} ist {1}, eine {2} Farbe in der RAL {3} Palette. Sie hat einen Lichtreflexionswert (LRV) von {4} und eine Farbtemperatur von ca. {5}K.",
+  "FaqWhatIsNameInRal": "Was ist {0} in RAL?",
+  "FaqWhatIsNameInRalAnswer": "{0} ist RAL {1} aus der RAL {2} Palette.",
+  "FaqWarmCool": "Ist RAL {0} eine warme oder kalte Farbe?",
+  "FaqWarmAnswer": "RAL {0} ({1}) ist eine warme Farbe mit einer Farbtemperatur von ca. {2}K. {3}",
+  "FaqCoolAnswer": "RAL {0} ({1}) ist eine kalte Farbe mit einer Farbtemperatur von ca. {2}K. {3}",
+  "FaqLightDark": "Ist RAL {0} hell oder dunkel?",
+  "FaqLightDarkAnswer": "RAL {0} hat einen Lichtreflexionswert (LRV) von {1}, was als {2} eingestuft wird. Der LRV misst, wie viel Licht eine Farbe reflektiert, auf einer Skala von 0 (reines Schwarz) bis 100 (reines Weiß).",
+  "FaqSimilar": "Welche Farben sind RAL {0} ähnlich?",
+  "FaqSimilarAnswer": "Farben, die {0} ähnlich sind: {1}. Diese Farben teilen ähnliche Farbton-, Sättigungs- und Helligkeitseigenschaften.",
+  "LrvVeryLow": "sehr dunkel (absorbiert das meiste Licht)",
+  "LrvLow": "dunkel",
+  "LrvModerate": "mittlere Helligkeit",
+  "LrvHigh": "hell",
+  "LrvVeryHigh": "sehr hell (reflektiert das meiste Licht)"
 }

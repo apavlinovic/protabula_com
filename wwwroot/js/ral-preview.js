@@ -901,7 +901,7 @@
                 this.model = new THREE.Mesh(geometry, this.material);
             } else {
                 // Default: beveled cube
-                const geometry = ModelFactory.createBeveledCube(1.0, 0.03, 10);
+                const geometry = ModelFactory.createBeveledCube(0.85, 0.03, 10);
                 this.material = this._createMaterial();
                 this.model = new THREE.Mesh(geometry, this.material);
             }
@@ -982,7 +982,7 @@
             // Calculate camera distance to fit model
             const maxDim = Math.max(size.x, size.y, size.z);
             const fov = this.camera.fov * (Math.PI / 180);
-            const distance = maxDim / (2 * Math.tan(fov / 2)) * 1.6;
+            const distance = maxDim / (2 * Math.tan(fov / 2)) * 2.2;
 
             // Position camera at an angle
             this.camera.position.set(
