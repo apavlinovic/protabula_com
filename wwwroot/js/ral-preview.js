@@ -514,6 +514,11 @@
             return group;
         }
 
+        // Create sphere geometry
+        static createSphere(radius = 0.5, segments = 64) {
+            return new THREE.SphereGeometry(radius, segments, segments);
+        }
+
         // Create S-curve sample geometry for material visualization
         static createCurvedSample(options = {}) {
             const {
@@ -897,6 +902,10 @@
                 this.model = ModelFactory.createDoor();
             } else if (modelOption === 'curved-sample') {
                 const geometry = ModelFactory.createCurvedSample();
+                this.material = this._createMaterial();
+                this.model = new THREE.Mesh(geometry, this.material);
+            } else if (modelOption === 'sphere') {
+                const geometry = ModelFactory.createSphere(0.5, 64);
                 this.material = this._createMaterial();
                 this.model = new THREE.Mesh(geometry, this.material);
             } else {

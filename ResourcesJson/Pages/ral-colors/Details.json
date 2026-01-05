@@ -136,6 +136,7 @@
   "FinishGloss": "Gloss",
   "ModelLabel": "Model",
   "ModelCube": "Cube",
+  "ModelSphere": "Sphere",
   "ModelCurvedSample": "S-Curve",
   "ModelWindow": "Window Frame",
   "ModelDoor": "Door",
