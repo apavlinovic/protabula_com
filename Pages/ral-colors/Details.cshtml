@@ -48,108 +48,7 @@
 }
 
 @section Head {
-    <style>
-        .lighting-gradient-container {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-        .lighting-gradient {
-            height: 60px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-        }
-        .lighting-labels {
-            display: flex;
-            justify-content: space-between;
-        }
-        .lighting-label-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-        .lighting-label-item:first-child { align-items: flex-start; }
-        .lighting-label-item:last-child { align-items: flex-end; }
-        .lighting-time {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        .sunlight-labels .lighting-label-item { gap: var(--spacing-xs); }
-        .sun-icon {
-            width: 36px;
-            height: 36px;
-            color: var(--text-muted);
-        }
-        @@media (max-width: 480px) {
-            .lighting-gradient { height: 48px; }
-            .lighting-time { font-size: 0.75rem; }
-            .sun-icon { width: 28px; height: 28px; }
-        }
-
-        /* Specular 3D Preview */
-        .specular-preview-container {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-lg);
-        }
-        .ral-preview-canvas {
-            width: 100%;
-            height: 500px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-            background: var(--bg-subtle);
-            overflow: hidden;
-        }
-        .ral-preview-canvas canvas {
-            display: block;
-            width: 100% !important;
-            height: 100% !important;
-        }
-        .specular-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--spacing-lg);
-        }
-        .specular-controls .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-        .specular-controls .control-group > label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        .btn-group {
-            display: inline-flex;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-        }
-        .btn-group .btn {
-            border-radius: 0;
-            border-right-width: 0;
-        }
-        .btn-group .btn:first-child {
-            border-top-left-radius: var(--border-radius);
-            border-bottom-left-radius: var(--border-radius);
-        }
-        .btn-group .btn:last-child {
-            border-top-right-radius: var(--border-radius);
-            border-bottom-right-radius: var(--border-radius);
-            border-right-width: 1px;
-        }
-        .btn-group-sm .btn {
-            padding: var(--spacing-xs) var(--spacing-sm);
-            font-size: 0.85rem;
-        }
-        @@media (max-width: 640px) {
-            .ral-preview-canvas { height: 380px; }
-            .specular-controls { flex-direction: column; }
-        }
-
-    </style>
+    <link rel="stylesheet" href="/css/details-page.css" />
     <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
@@ -247,10 +146,8 @@
             <span class="property-label">
                 <span class="metric-header">
                     @Localizer["UndertoneIntro"]
-                    <span class="info-tooltip" tabindex="0">
-                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                        <span class="tooltip-text">@Localizer["UndertoneTip"]</span>
-                    </span>
+                    @{ var undertoneTip = Localizer["UndertoneTip"].Value; }
+                    <partial name="Shared/_InfoTooltip" model="@(undertoneTip, (string?)null)" />
                 </span>
             </span>
             @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
@@ -273,10 +170,8 @@
             <span class="property-label">
                 <span class="metric-header">
                     @Localizer["PropTemperature"]
-                    <span class="info-tooltip" tabindex="0">
-                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                        <span class="tooltip-text">@Localizer["TemperatureTip"]</span>
-                    </span>
+                    @{ var temperatureTip = Localizer["TemperatureTip"].Value; }
+                    <partial name="Shared/_InfoTooltip" model="@(temperatureTip, (string?)null)" />
                 </span>
             </span>
             <partial name="Shared/_TemperatureBadge" model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
@@ -285,10 +180,8 @@
             <span class="property-label">
                 <span class="metric-header">
                     @Localizer["PropHue"]
-                    <span class="info-tooltip" tabindex="0">
-                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                        <span class="tooltip-text">@Localizer["HueTip"]</span>
-                    </span>
+                    @{ var hueTip = Localizer["HueTip"].Value; }
+                    <partial name="Shared/_InfoTooltip" model="@(hueTip, (string?)null)" />
                 </span>
             </span>
             <partial name="Shared/_HueDiagram" model="hue" />
@@ -297,10 +190,8 @@
             <span class="property-label">
                 <span class="metric-header">
                     @Localizer["PropSaturation"]
-                    <span class="info-tooltip" tabindex="0">
-                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                        <span class="tooltip-text">@Localizer["SaturationTip"]</span>
-                    </span>
+                    @{ var saturationTip = Localizer["SaturationTip"].Value; }
+                    <partial name="Shared/_InfoTooltip" model="@(saturationTip, (string?)null)" />
                 </span>
             </span>
             <partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" />
@@ -309,10 +200,8 @@
             <span class="property-label">
                 <span class="metric-header">
                     @Localizer["PropLrv"]
-                    <span class="info-tooltip" tabindex="0">
-                        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                        <span class="tooltip-text">@Localizer["LrvTip"]</span>
-                    </span>
+                    @{ var lrvTip = Localizer["LrvTip"].Value; }
+                    <partial name="Shared/_InfoTooltip" model="@(lrvTip, (string?)null)" />
                 </span>
             </span>
             <partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" />
@@ -391,7 +280,13 @@
     <p class="text-secondary text-sm"><em>@Localizer["SpecularDisclaimer"]</em></p>
 
     <div class="specular-preview-container">
-        <div id="ral-preview-canvas" class="ral-preview-canvas"></div>
+        <div id="ral-preview-canvas" class="ral-preview-canvas"
+             role="img"
+             aria-label="@Localizer["SpecularPreview", Model.Color.Number]"
+             data-color-hex="@Model.Color.Hex"
+             data-color-lrv="@(Model.Formats?.Lrv ?? 50)"
+             data-undertone-hex="@(Model.Formats?.UndertoneHex ?? "")"
+             data-undertone-strength="@(((int)(Model.Formats?.Undertone.Strength ?? UndertoneStrength.None)) / 4.0)"></div>
 
         <div class="specular-controls">
             <div class="control-group">
@@ -429,7 +324,7 @@
             <button class="btn btn-sm btn-secondary copy-url-btn"
                     data-url="@baseUrl/images/ral-colors/@(Model.Color.Slug).jpg"
                     data-copied-text="@Localizer["CopiedToClipboard"]"
-                    onclick="copyImageUrl(this)">
+                    onclick="DetailsPage.copyImageUrl(this)">
                 @Localizer["CopyImageUrl"]
             </button>
         </figcaption>
@@ -518,39 +413,26 @@
 
 <section class="contrast-section mt-2xl">
     <h2>@Localizer["ContrastComparison", Model.Color.Number]</h2>
+    @{
+        var contrastBackgrounds = new[] {
+            ("#FFFFFF", "BgWhite"),
+            ("#E0E0E0", "BgLightGrey"),
+            ("#9E9E9E", "BgGrey"),
+            ("#424242", "BgDarkGrey"),
+            ("#000000", "BgBlack")
+        };
+    }
     <div class="contrast-strip">
-        <div class="contrast-segment" style="background-color: #FFFFFF;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#FFFFFF')" onkeydown="handleContrastKeydown(event, '#FFFFFF')">
-            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
-        </div>
-        <div class="contrast-segment" style="background-color: #E0E0E0;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#E0E0E0')" onkeydown="handleContrastKeydown(event, '#E0E0E0')">
-            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
-        </div>
-        <div class="contrast-segment" style="background-color: #9E9E9E;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#9E9E9E')" onkeydown="handleContrastKeydown(event, '#9E9E9E')">
-            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
-        </div>
-        <div class="contrast-segment" style="background-color: #424242;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#424242')" onkeydown="handleContrastKeydown(event, '#424242')">
-            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
-        </div>
-        <div class="contrast-segment" style="background-color: #000000;"
-             role="button" tabindex="0"
-             onclick="openColorPreviewWithBg('#000000')" onkeydown="handleContrastKeydown(event, '#000000')">
-            <span class="contrast-swatch-circle" style="background-color: @Model.Color.Hex;"></span>
-        </div>
+        @foreach (var (bgColor, labelKey) in contrastBackgrounds)
+        {
+            <partial name="Shared/_ContrastSegment" model="(bgColor, Model.Color.Hex, Localizer[labelKey].Value)" />
+        }
     </div>
     <div class="contrast-labels">
-        <span>@Localizer["BgWhite"]</span>
-        <span>@Localizer["BgLightGrey"]</span>
-        <span>@Localizer["BgGrey"]</span>
-        <span>@Localizer["BgDarkGrey"]</span>
-        <span>@Localizer["BgBlack"]</span>
+        @foreach (var (_, labelKey) in contrastBackgrounds)
+        {
+            <span>@Localizer[labelKey]</span>
+        }
     </div>
 </section>
 
@@ -559,7 +441,7 @@
     <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
     <table class="color-details">
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/>
                 </svg>
@@ -568,7 +450,7 @@
             <td>@(string.IsNullOrEmpty(Model.Color.Name) ? "—" : Model.Color.Name)</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/>
                 </svg>
@@ -577,7 +459,7 @@
             <td>@(string.IsNullOrEmpty(Model.Color.NameDe) ? "—" : Model.Color.NameDe)</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/><circle cx="6.5" cy="12.5" r="0.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2Z"/>
                 </svg>
@@ -597,7 +479,7 @@
             </td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>
                 </svg>
@@ -623,7 +505,7 @@
             </td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4 9V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/><path d="M9 9v6"/><path d="M15 9v6"/><path d="M9 12h6"/>
                 </svg>
@@ -632,7 +514,7 @@
             <td>@Model.Color.Hex</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
                 </svg>
@@ -647,7 +529,7 @@
             </td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
                 </svg>
@@ -656,7 +538,7 @@
             <td><partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" /></td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>
                 </svg>
@@ -665,7 +547,7 @@
             <td>@Model.Formats?.RgbPercentString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
                 </svg>
@@ -674,7 +556,7 @@
             <td>@Model.Formats?.HsvString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
                 </svg>
@@ -683,7 +565,7 @@
             <td><partial name="Shared/_HueDiagram" model="hue" /></td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
                 </svg>
@@ -692,7 +574,7 @@
             <td><partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" /></td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="15" cy="6" r="3"/><path d="m22 2-1.5 1.5"/>
                 </svg>
@@ -701,7 +583,7 @@
             <td>@Model.Formats?.HslString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>
                 </svg>
@@ -717,7 +599,7 @@
             </td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect width="20" height="15" x="2" y="7" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/>
                 </svg>
@@ -726,7 +608,7 @@
             <td>@Model.Formats?.YiqString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 3v18"/><path d="M3 12h18"/><path d="m4 4 16 16"/>
                 </svg>
@@ -735,7 +617,7 @@
             <td>@Model.Formats?.XyzString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
                 </svg>
@@ -744,7 +626,7 @@
             <td><partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("L", Model.Formats?.Lab.L ?? 0))" /></td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
                 </svg>
@@ -753,7 +635,7 @@
             <td><partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("a", Model.Formats?.Lab.a ?? 0))" /></td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
                 </svg>
@@ -762,7 +644,7 @@
             <td><partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("b", Model.Formats?.Lab.b ?? 0))" /></td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
                 </svg>
@@ -771,7 +653,7 @@
             <td>@Model.Formats?.LabString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
                 </svg>
@@ -780,7 +662,7 @@
             <td>@Model.Formats?.LuvString</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect x="14" y="14" width="4" height="6" rx="2"/><rect x="6" y="4" width="4" height="16" rx="2"/><path d="M6 4h4"/><path d="M14 10h4"/>
                 </svg>
@@ -789,7 +671,7 @@
             <td>@Model.Formats?.Decimal</td>
         </tr>
         <tr>
-            <th>
+            <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/>
                 </svg>
@@ -870,207 +752,37 @@
 </a>
 
 @section Scripts {
-    <script>
-        let lastFocusedElement = null;
-
-        function openColorPreview() {
-            lastFocusedElement = document.activeElement;
-            const modal = document.getElementById('colorPreview');
-            modal.classList.add('active', 'fullscreen');
-            document.body.style.overflow = 'hidden';
-            modal.querySelector('.color-preview-close').focus();
-        }
-
-        function openColorPreviewWithBg(bgColor) {
-            const modal = document.getElementById('colorPreview');
-            modal.style.backgroundColor = bgColor;
-            document.querySelectorAll('.bg-option').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.bg === bgColor);
-            });
-            lastFocusedElement = document.activeElement;
-            modal.classList.add('active');
-            modal.classList.remove('fullscreen');
-            document.body.style.overflow = 'hidden';
-            modal.querySelector('.color-preview-close').focus();
-        }
-
-        function closeColorPreview(event) {
-            if (event.target.classList.contains('color-preview-overlay') ||
-                event.target.classList.contains('color-preview-fullscreen') ||
-                event.target.classList.contains('color-preview-close')) {
-                closeModal();
-            }
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('colorPreview');
-            modal.classList.remove('active', 'fullscreen');
-            document.body.style.overflow = '';
-            if (lastFocusedElement) lastFocusedElement.focus();
-        }
-
-        function changePreviewBg(color, button) {
-            document.getElementById('colorPreview').style.backgroundColor = color;
-            document.querySelectorAll('.bg-option').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            event.stopPropagation();
-        }
-
-        function handleColorKeydown(event) {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openColorPreview();
-            }
-        }
-
-        function handleContrastKeydown(event, bgColor) {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openColorPreviewWithBg(bgColor);
-            }
-        }
-
-        // Focus trap for modal
-        document.getElementById('colorPreview').addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                const focusable = this.querySelectorAll('button:not([style*="display: none"])');
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-
-                if (e.shiftKey && document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
-            }
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // Copy image URL to clipboard
-        function copyImageUrl(button) {
-            const url = button.dataset.url;
-            const originalText = button.textContent;
-            const copiedText = button.dataset.copiedText;
-
-            navigator.clipboard.writeText(url).then(function() {
-                button.textContent = copiedText;
-                button.disabled = true;
-                setTimeout(function() {
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }, 2000);
-            });
-        }
-    </script>
-
-    <!-- Three.js for 3D Material Preview -->
-    <script type="module" src="/js/three-loader.js"></script>
-    <script>
-        (function() {
-            const colorHex = '@Model.Color.Hex';
-            const colorLrv = @(Model.Formats?.Lrv ?? 50);
-            const undertoneHex = '@(Model.Formats?.UndertoneHex ?? "")';
-            // Strength: None=0, Subtle=0.25, Weak=0.5, Moderate=0.75, Strong=1.0
-            const undertoneStrength = @(((int)(Model.Formats?.Undertone.Strength ?? UndertoneStrength.None)) / 4.0);
-            let preview = null;
-
-            function initPreview() {
-                const container = document.getElementById('ral-preview-canvas');
-                if (!container || typeof RalPreview === 'undefined' || typeof THREE === 'undefined') return;
-
-                preview = RalPreview.create(container, {
-                    model: 'cube',
-                    finish: 'satin',
-                    color: {
-                        hex: colorHex,
-                        undertoneHex: undertoneHex || null,
-                        undertoneStrength: undertoneStrength
-                    },
-                    lrv: colorLrv,
-                    controls: { orbit: true, autoRotate: true, zoom: true, pan: false },
-                    background: 'transparent',
-                    powder: { intensity: 0.25, scale: 1.0 }
-                });
-
-                // Finish toggle buttons
-                document.querySelectorAll('[data-finish]').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        document.querySelectorAll('[data-finish]').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        preview.setFinish(this.dataset.finish);
-                    });
-                });
-
-                // Model toggle buttons
-                document.querySelectorAll('[data-model]').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        document.querySelectorAll('[data-model]').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-
-                        // Dispose and recreate with new model
-                        if (preview) preview.dispose();
-                        preview = RalPreview.create(container, {
-                            model: this.dataset.model,
-                            finish: document.querySelector('[data-finish].active')?.dataset.finish || 'satin',
-                            color: {
-                                hex: colorHex,
-                                undertoneHex: undertoneHex || null,
-                                undertoneStrength: undertoneStrength
-                            },
-                            lrv: colorLrv,
-                            controls: { orbit: true, autoRotate: true, zoom: true, pan: false },
-                            background: 'transparent',
-                            powder: { intensity: 0.25, scale: 1.0 }
-                        });
-                    });
-                });
-            }
-
-            // Wait for Three.js to load, then load ral-preview.js
-            window.addEventListener('three-ready', function() {
-                const script = document.createElement('script');
-                script.src = '/js/ral-preview.js';
-                script.onload = initPreview;
-                document.head.appendChild(script);
-            });
-        })();
-    </script>
+    <script src="/js/details-page.js" defer></script>
 }
 
 <!-- Full-page color preview modal -->
 <div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;"
-     role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"
-     onclick="closeColorPreview(event)">
+     role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle" aria-describedby="colorPreviewDesc"
+     onclick="DetailsPage.closeColorPreview(event)">
     <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
-    <button class="color-preview-close" onclick="closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
+    <p id="colorPreviewDesc" class="visually-hidden">RAL @Model.Color.Number @(Model.Color.Name ?? "")</p>
+    <button class="color-preview-close" onclick="DetailsPage.closeColorPreview(event)" aria-label="@Localizer["Close"]">&times;</button>
     <div class="color-preview-content">
         <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;"></div>
     </div>
     <div class="color-preview-controls">
-        <button class="bg-option active" data-bg="#FFFFFF" onclick="changePreviewBg('#FFFFFF', this)">
+        <button class="bg-option active" data-bg="#FFFFFF" onclick="DetailsPage.changePreviewBg('#FFFFFF', this)">
             <span class="bg-option-swatch" style="background-color: #FFFFFF;"><span style="background-color: @Model.Color.Hex;"></span></span>
             <span class="bg-option-label">@Localizer["BgWhite"]</span>
         </button>
-        <button class="bg-option" data-bg="#E0E0E0" onclick="changePreviewBg('#E0E0E0', this)">
+        <button class="bg-option" data-bg="#E0E0E0" onclick="DetailsPage.changePreviewBg('#E0E0E0', this)">
             <span class="bg-option-swatch" style="background-color: #E0E0E0;"><span style="background-color: @Model.Color.Hex;"></span></span>
             <span class="bg-option-label">@Localizer["BgLightGrey"]</span>
         </button>
-        <button class="bg-option" data-bg="#9E9E9E" onclick="changePreviewBg('#9E9E9E', this)">
+        <button class="bg-option" data-bg="#9E9E9E" onclick="DetailsPage.changePreviewBg('#9E9E9E', this)">
             <span class="bg-option-swatch" style="background-color: #9E9E9E;"><span style="background-color: @Model.Color.Hex;"></span></span>
             <span class="bg-option-label">@Localizer["BgGrey"]</span>
         </button>
-        <button class="bg-option" data-bg="#424242" onclick="changePreviewBg('#424242', this)">
+        <button class="bg-option" data-bg="#424242" onclick="DetailsPage.changePreviewBg('#424242', this)">
             <span class="bg-option-swatch" style="background-color: #424242;"><span style="background-color: @Model.Color.Hex;"></span></span>
             <span class="bg-option-label">@Localizer["BgDarkGrey"]</span>
         </button>
-        <button class="bg-option" data-bg="#000000" onclick="changePreviewBg('#000000', this)">
+        <button class="bg-option" data-bg="#000000" onclick="DetailsPage.changePreviewBg('#000000', this)">
             <span class="bg-option-swatch" style="background-color: #000000;"><span style="background-color: @Model.Color.Hex;"></span></span>
             <span class="bg-option-label">@Localizer["BgBlack"]</span>
         </button>

@@ -140,16 +140,6 @@ public class ColorImageService : IColorImageService
             : ColorMath.ParseHex("#B3B3B3"); // Slightly brighter neutral for dark colors (brighter output)
         var neutralBase = new Rgba32(nr, ng, nb);
 
-        // Calculate undertone resonance - how well the color's undertone matches warm outdoor light
-        // Amplify resonance for visible effect (raw resonance is typically ±0.2)
-        float undertoneResonance = ColorMath.CalculateUndertoneResonance(colorHex, SceneLightTemperature) * 3f;
-        undertoneResonance = Math.Clamp(undertoneResonance, -1f, 1f);
-
-        // Saturation modifier based on undertone resonance
-        // Positive: warm undertones glow in warm light, Negative: cool undertones muted
-        // Range: 0.8 to 1.2 - visible effect while maintaining realism
-        float saturationMod = 1.0f + undertoneResonance * 0.2f;
-
         // Strength lets you dial back tinting (0..1). Start with 1, reduce if needed.
         const float strength = 1.0f;
 
@@ -192,13 +182,6 @@ public class ColorImageService : IColorImageService
                     float tintedR = bR * ratioR;
                     float tintedG = bG * ratioG;
                     float tintedB = bB * ratioB;
-
-                    // Apply undertone-aware saturation adjustment
-                    // Modulate saturation around the grey point for more natural appearance
-                    float grey = (tintedR + tintedG + tintedB) / 3f;
-                    tintedR = grey + (tintedR - grey) * saturationMod;
-                    tintedG = grey + (tintedG - grey) * saturationMod;
-                    tintedB = grey + (tintedB - grey) * saturationMod;
 
                     // Blend by mask + strength
                     float k = Math.Clamp(m * strength, 0f, 1f);

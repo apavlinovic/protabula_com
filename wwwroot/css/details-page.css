@@ -1,0 +1,279 @@
+/**
+ * Details Page Styles
+ * Styles specific to the RAL color details page
+ */
+
+/* CSS Custom Properties */
+:root {
+    --preview-height-desktop: 500px;
+    --preview-height-mobile: 380px;
+    --lighting-gradient-height: 60px;
+    --lighting-gradient-height-mobile: 48px;
+}
+
+/* Lighting Gradient Preview */
+.lighting-gradient-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.lighting-gradient {
+    height: var(--lighting-gradient-height);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.lighting-labels {
+    display: flex;
+    justify-content: space-between;
+}
+
+.lighting-label-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.lighting-label-item:first-child {
+    align-items: flex-start;
+}
+
+.lighting-label-item:last-child {
+    align-items: flex-end;
+}
+
+.lighting-time {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.sunlight-labels .lighting-label-item {
+    gap: var(--spacing-xs);
+}
+
+.sun-icon {
+    width: 36px;
+    height: 36px;
+    color: var(--text-muted);
+}
+
+/* Specular 3D Preview */
+.specular-preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.ral-preview-canvas {
+    width: 100%;
+    height: var(--preview-height-desktop);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    background: var(--bg-subtle);
+    overflow: hidden;
+}
+
+#ral-preview-canvas > canvas,
+.ral-preview-canvas > canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.specular-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+}
+
+.specular-controls .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.specular-controls .control-group > label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Button Groups */
+.btn-group {
+    display: inline-flex;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.btn-group .btn {
+    border-radius: 0;
+    border-right-width: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    border-right-width: 1px;
+}
+
+.btn-group-sm .btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+}
+
+/* Focus Indicators for Accessibility */
+.info-tooltip:focus-visible,
+.contrast-segment:focus-visible,
+.learn-metrics-toggle:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--focus-color, #4a90d9);
+    outline-offset: 2px;
+}
+
+/* Visually Hidden (for screen readers) */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Contrast Strip and Segments */
+.contrast-strip {
+    display: flex;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.contrast-segment {
+    flex: 1;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity var(--transition);
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+.contrast-segment:hover {
+    opacity: 0.85;
+}
+
+.contrast-swatch-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: transform var(--transition);
+}
+
+.contrast-segment:hover .contrast-swatch-circle {
+    transform: scale(1.15);
+}
+
+/* Info Tooltip */
+.info-tooltip {
+    position: relative;
+    display: inline-flex;
+    cursor: help;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.info-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: color var(--transition);
+}
+
+.info-tooltip:hover .info-icon {
+    color: var(--accent);
+}
+
+.info-tooltip .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 100;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 200px;
+    max-width: 280px;
+    padding: 8px 12px;
+    background: var(--text-primary);
+    color: var(--body-bg);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-transform: none;
+    letter-spacing: normal;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+
+.info-tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--text-primary) transparent transparent transparent;
+}
+
+.info-tooltip:hover .tooltip-text,
+.info-tooltip:focus .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+    .ral-preview-canvas {
+        height: var(--preview-height-mobile);
+    }
+
+    .specular-controls {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .lighting-gradient {
+        height: var(--lighting-gradient-height-mobile);
+    }
+
+    .lighting-time {
+        font-size: 0.75rem;
+    }
+
+    .sun-icon {
+        width: 28px;
+        height: 28px;
+    }
+}

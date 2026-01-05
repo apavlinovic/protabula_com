@@ -1,0 +1,11 @@
+@* Contrast Segment Partial - Accessible button for contrast comparison *@
+@model (string BgColor, string SwatchColor, string Label)
+
+<button type="button"
+        class="contrast-segment"
+        style="background-color: @Model.BgColor;"
+        aria-label="@Model.Label"
+        data-bg="@Model.BgColor">
+    <span class="contrast-swatch-circle" style="background-color: @Model.SwatchColor;"></span>
+    <span class="visually-hidden">@Model.Label</span>
+</button>
