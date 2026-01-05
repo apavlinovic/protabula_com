@@ -67,7 +67,13 @@ else
 
 app.UseForwardedHeaders();
 app.UseHttpsRedirection();
-app.UseResponseCompression();
+
+// Only enable response compression in non-development environments
+// (conflicts with dotnet watch browser refresh script injection)
+if (!app.Environment.IsDevelopment())
+{
+    app.UseResponseCompression();
+}
 
 // Security headers
 app.Use(async (context, next) =>

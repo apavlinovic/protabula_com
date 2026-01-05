@@ -88,6 +88,67 @@
             .sun-icon { width: 28px; height: 28px; }
         }
 
+        /* Specular 3D Preview */
+        .specular-preview-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        .ral-preview-canvas {
+            width: 100%;
+            height: 500px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-subtle);
+            overflow: hidden;
+        }
+        .ral-preview-canvas canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .specular-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-lg);
+        }
+        .specular-controls .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .specular-controls .control-group > label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .btn-group {
+            display: inline-flex;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        .btn-group .btn {
+            border-radius: 0;
+            border-right-width: 0;
+        }
+        .btn-group .btn:first-child {
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+        }
+        .btn-group .btn:last-child {
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            border-right-width: 1px;
+        }
+        .btn-group-sm .btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: 0.85rem;
+        }
+        @@media (max-width: 640px) {
+            .ral-preview-canvas { height: 380px; }
+            .specular-controls { flex-direction: column; }
+        }
+
     </style>
     <script type="application/ld+json">
     {
@@ -325,6 +386,34 @@
     </div>
 </section>
 
+<section class="specular-preview-section mt-2xl">
+    <h2>@Localizer["SpecularPreview", Model.Color.Number]</h2>
+    <p class="text-secondary text-sm"><em>@Localizer["SpecularDisclaimer"]</em></p>
+
+    <div class="specular-preview-container">
+        <div id="ral-preview-canvas" class="ral-preview-canvas"></div>
+
+        <div class="specular-controls">
+            <div class="control-group">
+                <label>@Localizer["FinishLabel"]</label>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-secondary" data-finish="matte">@Localizer["FinishMatte"]</button>
+                    <button type="button" class="btn btn-secondary active" data-finish="satin">@Localizer["FinishSatin"]</button>
+                    <button type="button" class="btn btn-secondary" data-finish="gloss">@Localizer["FinishGloss"]</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <label>@Localizer["ModelLabel"]</label>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-secondary active" data-model="cube">@Localizer["ModelCube"]</button>
+                    <button type="button" class="btn btn-secondary" data-model="curved-sample">@Localizer["ModelCurvedSample"]</button>
+                    <button type="button" class="btn btn-secondary" data-model="window-frame">@Localizer["ModelWindow"]</button>
+                    <button type="button" class="btn btn-secondary" data-model="door">@Localizer["ModelDoor"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section class="color-share-section mt-2xl">
     <h2>@Localizer["ColorImageTitle", Model.Color.Number]</h2>
@@ -879,6 +968,79 @@
                 }, 2000);
             });
         }
+    </script>
+
+    <!-- Three.js for 3D Material Preview -->
+    <script type="module" src="/js/three-loader.js"></script>
+    <script>
+        (function() {
+            const colorHex = '@Model.Color.Hex';
+            const colorLrv = @(Model.Formats?.Lrv ?? 50);
+            const undertoneHex = '@(Model.Formats?.UndertoneHex ?? "")';
+            // Strength: None=0, Subtle=0.25, Weak=0.5, Moderate=0.75, Strong=1.0
+            const undertoneStrength = @(((int)(Model.Formats?.Undertone.Strength ?? UndertoneStrength.None)) / 4.0);
+            let preview = null;
+
+            function initPreview() {
+                const container = document.getElementById('ral-preview-canvas');
+                if (!container || typeof RalPreview === 'undefined' || typeof THREE === 'undefined') return;
+
+                preview = RalPreview.create(container, {
+                    model: 'cube',
+                    finish: 'satin',
+                    color: {
+                        hex: colorHex,
+                        undertoneHex: undertoneHex || null,
+                        undertoneStrength: undertoneStrength
+                    },
+                    lrv: colorLrv,
+                    controls: { orbit: true, autoRotate: true, zoom: true, pan: false },
+                    background: 'transparent',
+                    powder: { intensity: 0.25, scale: 1.0 }
+                });
+
+                // Finish toggle buttons
+                document.querySelectorAll('[data-finish]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('[data-finish]').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        preview.setFinish(this.dataset.finish);
+                    });
+                });
+
+                // Model toggle buttons
+                document.querySelectorAll('[data-model]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('[data-model]').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+
+                        // Dispose and recreate with new model
+                        if (preview) preview.dispose();
+                        preview = RalPreview.create(container, {
+                            model: this.dataset.model,
+                            finish: document.querySelector('[data-finish].active')?.dataset.finish || 'satin',
+                            color: {
+                                hex: colorHex,
+                                undertoneHex: undertoneHex || null,
+                                undertoneStrength: undertoneStrength
+                            },
+                            lrv: colorLrv,
+                            controls: { orbit: true, autoRotate: true, zoom: true, pan: false },
+                            background: 'transparent',
+                            powder: { intensity: 0.25, scale: 1.0 }
+                        });
+                    });
+                });
+            }
+
+            // Wait for Three.js to load, then load ral-preview.js
+            window.addEventListener('three-ready', function() {
+                const script = document.createElement('script');
+                script.src = '/js/ral-preview.js';
+                script.onload = initPreview;
+                document.head.appendChild(script);
+            });
+        })();
     </script>
 }
 

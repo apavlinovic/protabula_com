@@ -12,13 +12,13 @@
     var isClickable = !string.IsNullOrEmpty(onClick);
 }
 
-<div class="material-sample @(isClickable ? "clickable" : "") @(needsDarkText ? "dark-text" : "")"
-     id="@tileId"
-     data-strength="@strength"
-     style="--color: @hex; --undertone: @undertoneHex;"
-     @if (isClickable) {
-        <text>role="button" tabindex="0" onclick="@onClick" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();@onClick}"</text>
-     }>
+<div class="material-sample @(isClickable ? "clickable" : "") @(needsDarkText ? "dark-text" : "")" id="@tileId"
+    data-strength="@strength" style="--color: @hex; --undertone: @undertoneHex;" @if (isClickable) {
+    <text>role="button"
+    tabindex="0" onclick="@onClick" onkeydown="if(event.key==='Enter'||event.key==='
+    '){event.preventDefault();@onClick}"</text>
+        }
+    >
     <div class="sample-stage">
         <div class="sample-card">
             <!-- Physical depth layers -->
@@ -51,108 +51,109 @@
 </div>
 
 <script>
-(function() {
-    const sample = document.getElementById('@tileId');
-    if (!sample || sample.dataset.init) return;
-    sample.dataset.init = '1';
+    (function () {
+        const sample = document.getElementById('@tileId');
+        if (!sample || sample.dataset.init) return;
+        sample.dataset.init = '1';
 
-    const card = sample.querySelector('.sample-card');
-    const specular = sample.querySelector('.surface-specular');
-    const reflection = sample.querySelector('.surface-reflection');
-    const stage = sample.querySelector('.sample-stage');
+        const card = sample.querySelector('.sample-card');
+        const specular = sample.querySelector('.surface-specular');
+        const reflection = sample.querySelector('.surface-reflection');
+        const stage = sample.querySelector('.sample-stage');
 
-    let bounds = null;
-    let animationId = null;
-    let currentX = 0, currentY = 0;
-    let targetX = 0, targetY = 0;
+        let bounds = null;
+        let animationId = null;
+        let currentX = 0, currentY = 0;
+        let targetX = 0, targetY = 0;
 
-    const lerp = (a, b, t) => a + (b - a) * t;
+        const lerp = (a, b, t) => a + (b - a) * t;
 
-    const isSettled = () => {
-        return Math.abs(currentX - targetX) < 0.01 && Math.abs(currentY - targetY) < 0.01;
-    };
+        const isSettled = () => {
+            return Math.abs(currentX - targetX) < 0.01 && Math.abs(currentY - targetY) < 0.01;
+        };
 
-    const render = () => {
-        // Apply 3D rotation
-        card.style.transform = `rotateY(${currentX}deg) rotateX(${-currentY}deg)`;
+        const render = () => {
+            // Apply 3D rotation
+            card.style.transform = `rotateY(${currentX}deg) rotateX(${-currentY}deg)`;
 
-        // Move specular highlight - starts at top center (50% 0%), shifts with tilt
-        const specX = 50 - currentX * 2;
-        const specY = 0 + currentY * 1.5;
-        specular.style.background = `radial-gradient(ellipse 100% 100% at ${specX}% ${Math.max(0, specY)}%,
-            rgba(255,255,255,0.22) 0%,
-            rgba(255,255,255,0.08) 30%,
-            transparent 60%)`;
+            // Move specular highlight - starts at top center (50% 0%), shifts with tilt
+            const specX = 50 - currentX * 2;
+            const specY = 0 + currentY * 1.5;
+            specular.style.background = `radial-gradient(ellipse 100% 100% at ${specX}% ${Math.max(0, specY)}%,
+            rgba(255,255,255,0.2) 0%,
+            rgba(255,255,255,0.05) 30%,
+            transparent 60%,
+            rgba(0,0,0,0.15) 90%)`;
 
-        // Reflection shifts
-        reflection.style.background = `linear-gradient(to top,
+            // Reflection shifts
+            reflection.style.background = `linear-gradient(to top,
             rgba(255,255,255,0.08) 0%,
             transparent ${40 - currentY}%)`;
-        reflection.style.transform = `translateX(${currentX * 0.5}px)`;
-    };
+            reflection.style.transform = `translateX(${currentX * 0.5}px)`;
+        };
 
-    const animate = () => {
-        currentX = lerp(currentX, targetX, 0.1);
-        currentY = lerp(currentY, targetY, 0.1);
+        const animate = () => {
+            currentX = lerp(currentX, targetX, 0.1);
+            currentY = lerp(currentY, targetY, 0.1);
 
-        render();
-
-        // Stop animation when settled
-        if (isSettled()) {
-            currentX = targetX;
-            currentY = targetY;
             render();
-            animationId = null;
-            return;
-        }
 
-        animationId = requestAnimationFrame(animate);
-    };
+            // Stop animation when settled
+            if (isSettled()) {
+                currentX = targetX;
+                currentY = targetY;
+                render();
+                animationId = null;
+                return;
+            }
 
-    const startAnimation = () => {
-        if (!animationId) {
             animationId = requestAnimationFrame(animate);
-        }
-    };
+        };
 
-    stage.addEventListener('mouseenter', () => {
-        bounds = stage.getBoundingClientRect();
-    });
+        const startAnimation = () => {
+            if (!animationId) {
+                animationId = requestAnimationFrame(animate);
+            }
+        };
 
-    stage.addEventListener('mouseleave', () => {
-        targetX = 0;
-        targetY = 0;
-        startAnimation();
-    });
+        stage.addEventListener('mouseenter', () => {
+            bounds = stage.getBoundingClientRect();
+        });
 
-    stage.addEventListener('mousemove', (e) => {
-        if (!bounds) bounds = stage.getBoundingClientRect();
-        const x = (e.clientX - bounds.left) / bounds.width;
-        const y = (e.clientY - bounds.top) / bounds.height;
-        targetX = (x - 0.5) * 24;
-        targetY = (y - 0.5) * 16;
-        startAnimation();
-    });
+        stage.addEventListener('mouseleave', () => {
+            targetX = 0;
+            targetY = 0;
+            startAnimation();
+        });
 
-    // Touch support
-    stage.addEventListener('touchstart', () => {
-        bounds = stage.getBoundingClientRect();
-    }, { passive: true });
+        stage.addEventListener('mousemove', (e) => {
+            if (!bounds) bounds = stage.getBoundingClientRect();
+            const x = (e.clientX - bounds.left) / bounds.width;
+            const y = (e.clientY - bounds.top) / bounds.height;
+            targetX = (x - 0.5) * 24;
+            targetY = (y - 0.5) * 16;
+            startAnimation();
+        });
 
-    stage.addEventListener('touchend', () => {
-        targetX = 0;
-        targetY = 0;
-        startAnimation();
-    });
+        // Touch support
+        stage.addEventListener('touchstart', () => {
+            bounds = stage.getBoundingClientRect();
+        }, { passive: true });
 
-    stage.addEventListener('touchmove', (e) => {
-        if (!bounds) bounds = stage.getBoundingClientRect();
-        const touch = e.touches[0];
-        const x = (touch.clientX - bounds.left) / bounds.width;
-        const y = (touch.clientY - bounds.top) / bounds.height;
-        targetX = (x - 0.5) * 24;
-        targetY = (y - 0.5) * 16;
-        startAnimation();
-    }, { passive: true });
-})();
+        stage.addEventListener('touchend', () => {
+            targetX = 0;
+            targetY = 0;
+            startAnimation();
+        });
+
+        stage.addEventListener('touchmove', (e) => {
+            if (!bounds) bounds = stage.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = (touch.clientX - bounds.left) / bounds.width;
+            const y = (touch.clientY - bounds.top) / bounds.height;
+            targetX = (x - 0.5) * 24;
+            targetY = (y - 0.5) * 16;
+            startAnimation();
+        }, { passive: true });
+    })();
 </script>

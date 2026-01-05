@@ -126,5 +126,17 @@
   "LearnTemperatureDesc": "Die Farbtemperatur, gemessen in Kelvin (K), beschreibt, ob eine Farbe warm (niedrigerer K-Wert, orange/rote Töne) oder kühl (höherer K-Wert, blaue Töne) wirkt. Dieses Konzept stammt von der Schwarzkörperstrahlung - wenn Metall erhitzt wird, glüht es von Rot (≈2000K) über Weiß (≈5500K) bis Blau (≈10000K). Warme Farben schaffen gemütliche, einladende Atmosphären, während kühle Farben ruhig und professionell wirken.",
   "LearnUndertone": "Unterton",
   "LearnUndertoneDesc": "Der Unterton ist der subtile sekundäre Farbton, der beeinflusst, wie eine Farbe erscheint und mit anderen Farben interagiert. Selbst scheinbar neutrale Farben haben oft warme (gelb, orange, rot) oder kühle (blau, grün, violett) Untertöne. Das Verständnis von Untertönen ist essentiell für die Farbkoordination - Farben mit passenden Untertönen harmonieren tendenziell besser miteinander.",
-  "ShowDefinitions": "Definitionen anzeigen"
+  "ShowDefinitions": "Definitionen anzeigen",
+
+  "SpecularPreview": "3D-Materialvorschau für RAL {0}",
+  "SpecularDisclaimer": "Dies ist eine simulierte Vorschau von pulverbeschichtetem Aluminium. Das tatsächliche Erscheinungsbild kann je nach Lichtverhältnissen, Oberflächenstruktur und Herstellungsverfahren variieren.",
+  "FinishLabel": "Oberfläche",
+  "FinishMatte": "Matt",
+  "FinishSatin": "Seidenglanz",
+  "FinishGloss": "Hochglanz",
+  "ModelLabel": "Modell",
+  "ModelCube": "Würfel",
+  "ModelCurvedSample": "S-Kurve",
+  "ModelWindow": "Fensterrahmen",
+  "ModelDoor": "Tür"
 }

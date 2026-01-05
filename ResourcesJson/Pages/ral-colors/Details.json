@@ -126,5 +126,17 @@
   "LearnTemperatureDesc": "Color temperature, measured in Kelvin (K), describes whether a color feels warm (lower K, orange/red tones) or cool (higher K, blue tones). This concept comes from blackbody radiation - as metal heats up, it glows from red (≈2000K) through white (≈5500K) to blue (≈10000K). Warm colors create cozy, inviting atmospheres while cool colors feel calm and professional.",
   "LearnUndertone": "Undertone",
   "LearnUndertoneDesc": "Undertone is the subtle secondary hue that influences how a color appears and interacts with other colors. Even seemingly neutral colors often have warm (yellow, orange, red) or cool (blue, green, violet) undertones. Understanding undertones is essential for color coordination - colors with matching undertones tend to harmonize better together.",
-  "ShowDefinitions": "Show definitions"
+  "ShowDefinitions": "Show definitions",
+
+  "SpecularPreview": "3D Material Preview for RAL {0}",
+  "SpecularDisclaimer": "This is a simulated preview of powder-coated aluminum. Actual appearance may vary based on lighting conditions, surface texture, and manufacturing process.",
+  "FinishLabel": "Finish",
+  "FinishMatte": "Matte",
+  "FinishSatin": "Satin",
+  "FinishGloss": "Gloss",
+  "ModelLabel": "Model",
+  "ModelCube": "Cube",
+  "ModelCurvedSample": "S-Curve",
+  "ModelWindow": "Window Frame",
+  "ModelDoor": "Door"
 }
