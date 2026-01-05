@@ -526,3 +526,33 @@ hr {
 .color-filter:focus-within .color-filter-icon {
     color: var(--accent);
 }
+
+/* Root color filter chips */
+.root-color-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-chip {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    background: var(--bg-muted);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    border: 1px solid var(--border-color);
+}
+
+.filter-chip:hover {
+    background: var(--bg-hover);
+    text-decoration: none;
+}
+
+.filter-chip.active {
+    background: var(--accent);
+    color: var(--text-on-primary);
+    border-color: var(--accent);
+}

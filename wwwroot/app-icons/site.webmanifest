@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Protabula",
+  "short_name": "ProT",
   "icons": [
     {
       "src": "/app-icons/web-app-manifest-192x192.png",

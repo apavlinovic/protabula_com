@@ -1,7 +1,11 @@
 {
   "Title": "RAL Colors Chart - Complete Color List",
+  "TitleFiltered": "All RAL {0} Colors",
   "MetaDescription": "Complete RAL color chart with HEX and RGB codes. Browse all RAL Classic, RAL Effect, and RAL Design System Plus colors with search and comparison tools.",
+  "MetaDescriptionFiltered": "Browse all RAL {0} colors across Classic, Effect, and Design System Plus palettes. Find color codes, previews, and comparisons.",
   "Intro": "On this page you will find the colour shades of all three RAL colour palettes - RAL CLASSIC, RAL EFFECT and RAL DESIGN SYSTEM plus.",
   "SearchPlaceholder": "Search by name or number...",
-  "NoResults": "No colors found matching your search."
+  "NoResults": "No colors found matching your search.",
+  "FilterAll": "All Colors",
+  "FilterByRootColor": "Filter by color family"
 }

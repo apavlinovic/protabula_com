@@ -165,5 +165,7 @@
   "LrvLow": "dark",
   "LrvModerate": "medium brightness",
   "LrvHigh": "light",
-  "LrvVeryHigh": "very light (reflects most light)"
+  "LrvVeryHigh": "very light (reflects most light)",
+  "ExploreSimilarShades": "Explore all RAL {0} shades →",
+  "ExploreCategory": "Browse all {0} colors →"
 }

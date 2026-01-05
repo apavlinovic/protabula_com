@@ -165,5 +165,7 @@
   "LrvLow": "dunkel",
   "LrvModerate": "mittlere Helligkeit",
   "LrvHigh": "hell",
-  "LrvVeryHigh": "sehr hell (reflektiert das meiste Licht)"
+  "LrvVeryHigh": "sehr hell (reflektiert das meiste Licht)",
+  "ExploreSimilarShades": "Alle RAL {0}-Töne entdecken →",
+  "ExploreCategory": "Alle {0} Farben durchsuchen →"
 }

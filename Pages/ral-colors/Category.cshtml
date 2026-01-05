@@ -1,4 +1,4 @@
-@page "/ral-colors/{category:regex(^(classic|design-plus|effect)$)}"
+@page "/ral-colors/{category:regex(^(classic|design-plus|effect)$)}/{rootColor?}"
 @using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization
 @using protabula_com.Models
@@ -7,17 +7,10 @@
 @{
     var categoryKey = Model.Category?.ToString() ?? "";
     var culture = CultureInfo.CurrentUICulture.Name;
-    ViewData["Title"] = Localizer[$"Title{categoryKey}"].Value;
-    ViewData["MetaDescription"] = Localizer[$"MetaDescription{categoryKey}"].Value;
-    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
-    {
-        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = culture }),
-        (Localizer[$"Title{categoryKey}"].Value, null, null)
-    };
-
     var currentCulture = culture;
     var request = ViewContext.HttpContext.Request;
     var baseUrl = $"{request.Scheme}://{request.Host}";
+
     var categorySlug = Model.Category switch
     {
         RalCategory.Classic => "classic",
@@ -25,6 +18,37 @@
         RalCategory.Effect => "effect",
         _ => ""
     };
+    var rootColorSlug = Model.SelectedRootColor?.ToString().ToLowerInvariant();
+
+    var categoryName = Localizer[$"Title{categoryKey}"].Value;
+    var rootColorName = Model.SelectedRootColor.HasValue
+        ? Localizer[$"RootColor{Model.SelectedRootColor}"].Value
+        : null;
+
+    // Page title: "RAL Classic Colors" or "RAL Classic Grey Colors"
+    ViewData["Title"] = Model.SelectedRootColor.HasValue && rootColorName != null
+        ? Localizer["TitleFiltered", categoryName, rootColorName].Value
+        : categoryName;
+
+    ViewData["MetaDescription"] = Model.SelectedRootColor.HasValue && rootColorName != null
+        ? Localizer["MetaDescriptionFiltered", categoryName, rootColorName].Value
+        : Localizer[$"MetaDescription{categoryKey}"].Value;
+
+    var breadcrumbs = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = culture }),
+        (categoryName, "/ral-colors/Category", new Dictionary<string, string> { ["culture"] = culture, ["category"] = categorySlug })
+    };
+    if (Model.SelectedRootColor.HasValue)
+    {
+        breadcrumbs.Add((rootColorName!, null, null));
+    }
+    else
+    {
+        // Remove the link from last breadcrumb when not filtered
+        breadcrumbs[^1] = (categoryName, null, null);
+    }
+    ViewData["Breadcrumbs"] = breadcrumbs;
 }
 
 @section Head {
@@ -32,9 +56,9 @@
     {
         "@@context": "https://schema.org",
         "@@type": "CollectionPage",
-        "name": "@Localizer[$"Title{categoryKey}"].Value",
-        "description": "@Localizer[$"MetaDescription{categoryKey}"].Value",
-        "url": "@baseUrl/@currentCulture/ral-colors/@categorySlug",
+        "name": "@ViewData["Title"]",
+        "description": "@ViewData["MetaDescription"]",
+        "url": "@baseUrl/@currentCulture/ral-colors/@categorySlug@(rootColorSlug != null ? $"/{rootColorSlug}" : "")",
         "isPartOf": {
             "@@type": "WebSite",
             "name": "Protabula",
@@ -42,7 +66,7 @@
         },
         "about": {
             "@@type": "Thing",
-            "name": "RAL @categoryKey Colors"
+            "name": "@ViewData["Title"]"
         },
         "numberOfItems": @Model.Colors.Count
     }
@@ -51,6 +75,27 @@
 
 <h1>@ViewData["Title"]</h1>
 <p>@Localizer[$"Intro{categoryKey}"]</p>
+
+@if (Model.AvailableRootColors.Count > 1)
+{
+    <nav class="root-color-filters" aria-label="@Localizer["FilterByRootColor"]">
+        <a href="/@currentCulture/ral-colors/@categorySlug"
+           class="filter-chip @(Model.SelectedRootColor == null ? "active" : "")">
+            @Localizer["FilterAll"]
+        </a>
+        @foreach (var rootColor in Model.AvailableRootColors)
+        {
+            var chipSlug = rootColor.ToString().ToLowerInvariant();
+            <a asp-page="/ral-colors/Category"
+               asp-route-culture="@currentCulture"
+               asp-route-category="@categorySlug"
+               asp-route-rootColor="@chipSlug"
+               class="filter-chip @(Model.SelectedRootColor == rootColor ? "active" : "")">
+                @Localizer[$"RootColor{rootColor}"]
+            </a>
+        }
+    </nav>
+}
 
 <partial name="Shared/_ColorFilter" />
 

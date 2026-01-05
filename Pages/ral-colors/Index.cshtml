@@ -1,20 +1,40 @@
-@page "/ral-colors"
+@page "/ral-colors/{color:regex(^(yellow|orange|red|green|blue|violet|grey|brown|white|black|pink|rose|beige)$)?}"
 @using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization
 @using protabula_com.Models
 @inject IViewLocalizer Localizer
 @model RalColorsModel
 @{
-    ViewData["Title"] = Localizer["Title"].Value;
-    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
-    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
-    {
-        (Localizer["Title"].Value, null, null)
-    };
-
     var currentCulture = CultureInfo.CurrentUICulture.Name;
     var request = ViewContext.HttpContext.Request;
     var baseUrl = $"{request.Scheme}://{request.Host}";
+
+    var rootColorName = Model.SelectedRootColor.HasValue
+        ? Localizer[$"RootColor{Model.SelectedRootColor}"].Value
+        : null;
+    var rootColorSlug = Model.SelectedRootColor?.ToString().ToLowerInvariant();
+
+    // Page title: "RAL Colors" or "RAL Grey Colors"
+    ViewData["Title"] = Model.SelectedRootColor.HasValue && rootColorName != null
+        ? Localizer["TitleFiltered", rootColorName].Value
+        : Localizer["Title"].Value;
+
+    ViewData["MetaDescription"] = Model.SelectedRootColor.HasValue && rootColorName != null
+        ? Localizer["MetaDescriptionFiltered", rootColorName].Value
+        : Localizer["MetaDescription"].Value;
+
+    var baseTitle = Localizer["Title"].Value;
+    var breadcrumbs = new List<(string, string?, object?)>();
+    if (Model.SelectedRootColor.HasValue)
+    {
+        breadcrumbs.Add((baseTitle, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = currentCulture }));
+        breadcrumbs.Add((rootColorName!, null, null));
+    }
+    else
+    {
+        breadcrumbs.Add((baseTitle, null, null));
+    }
+    ViewData["Breadcrumbs"] = breadcrumbs;
 }
 
 @section Head {
@@ -22,9 +42,9 @@
     {
         "@@context": "https://schema.org",
         "@@type": "CollectionPage",
-        "name": "@Localizer["Title"].Value",
-        "description": "@Localizer["MetaDescription"].Value",
-        "url": "@baseUrl/@currentCulture/ral-colors",
+        "name": "@ViewData["Title"]",
+        "description": "@ViewData["MetaDescription"]",
+        "url": "@baseUrl/@currentCulture/ral-colors@(rootColorSlug != null ? $"/{rootColorSlug}" : "")",
         "isPartOf": {
             "@@type": "WebSite",
             "name": "Protabula",
@@ -32,7 +52,7 @@
         },
         "about": {
             "@@type": "Thing",
-            "name": "RAL Colors"
+            "name": "@ViewData["Title"]"
         },
         "numberOfItems": @Model.Colors.Count
     }
@@ -41,6 +61,26 @@
 
 <h1>@ViewData["Title"]</h1>
 <p>@Localizer["Intro"]</p>
+
+@if (Model.AvailableRootColors.Count > 1)
+{
+    <nav class="root-color-filters" aria-label="@Localizer["FilterByRootColor"]">
+        <a href="/@currentCulture/ral-colors"
+           class="filter-chip @(Model.SelectedRootColor == null ? "active" : "")">
+            @Localizer["FilterAll"]
+        </a>
+        @foreach (var rootColor in Model.AvailableRootColors)
+        {
+            var chipSlug = rootColor.ToString().ToLowerInvariant();
+            <a asp-page="/ral-colors/Index"
+               asp-route-culture="@currentCulture"
+               asp-route-color="@chipSlug"
+               class="filter-chip @(Model.SelectedRootColor == rootColor ? "active" : "")">
+                @Localizer[$"RootColor{rootColor}"]
+            </a>
+        }
+    </nav>
+}
 
 <partial name="Shared/_ColorFilter" />
 

@@ -2,12 +2,16 @@
   "TitleClassic": "RAL Classic Farben",
   "TitleDesignPlus": "RAL Design System Plus Farben",
   "TitleEffect": "RAL Effect Farben",
+  "TitleFiltered": "Alle {1} {0}",
   "MetaDescriptionClassic": "Alle RAL Classic Farben durchsuchen. Der ursprüngliche RAL-Farbstandard mit 216 Farben für industrielle Beschichtung und Design.",
   "MetaDescriptionDesignPlus": "Alle RAL Design System Plus Farben durchsuchen. Eine erweiterte Palette von 1.825 Farben für Architekten und Designer.",
   "MetaDescriptionEffect": "Alle RAL Effect Farben durchsuchen. 490 Metallic- und Unifarben für spezielle Beschichtungseffekte.",
+  "MetaDescriptionFiltered": "{1} Farben in der {0} Kollektion durchsuchen. Farbcodes, Vorschauen und Vergleiche finden.",
   "IntroClassic": "Die RAL Classic Kollektion enthält 216 Farben und ist der ursprüngliche RAL-Farbstandard, der weltweit in Industrie und Handel verwendet wird.",
   "IntroDesignPlus": "RAL Design System Plus bietet 1.825 Farben, systematisch nach Farbton, Helligkeit und Buntheit geordnet, für Architekten, Designer und Farbexperten.",
   "IntroEffect": "RAL Effect enthält 490 Farben, darunter 70 Metallic-Farben, für innovative Beschichtungseffekte und Spezialanwendungen.",
   "SearchPlaceholder": "Farben suchen...",
-  "NoResults": "Keine Farben gefunden."
+  "NoResults": "Keine Farben gefunden.",
+  "FilterAll": "Alle Farben",
+  "FilterByRootColor": "Nach Farbfamilie filtern"
 }

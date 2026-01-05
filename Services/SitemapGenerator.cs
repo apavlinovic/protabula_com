@@ -1,5 +1,6 @@
 using System.Text;
 using System.Xml;
+using protabula_com.Models;
 
 namespace protabula_com.Services;
 
@@ -54,6 +55,44 @@ public sealed class SitemapGenerator : ISitemapGenerator
             WriteUrlWithAlternates(writer, baseUrl, page);
         }
 
+        // Index + root color filtered pages (e.g., ral-colors/grey - all grey colors)
+        var allRootColors = colors
+            .Where(c => c.RootColor != RootColor.Unknown)
+            .Select(c => c.RootColor)
+            .Distinct()
+            .OrderBy(r => r.ToString())
+            .ToList();
+
+        foreach (var rootColor in allRootColors)
+        {
+            var rootColorSlug = rootColor.ToString().ToLowerInvariant();
+            var path = $"ral-colors/{rootColorSlug}";
+            WriteUrlWithAlternates(writer, baseUrl, path);
+        }
+
+        // Category + root color filtered pages (e.g., ral-colors/classic/grey)
+        var categoryRootColors = colors
+            .Where(c => c.RootColor != RootColor.Unknown)
+            .GroupBy(c => (c.Category, c.RootColor))
+            .Select(g => g.Key)
+            .ToList();
+
+        foreach (var (category, rootColor) in categoryRootColors)
+        {
+            var categorySlug = category switch
+            {
+                RalCategory.Classic => "classic",
+                RalCategory.DesignPlus => "design-plus",
+                RalCategory.Effect => "effect",
+                _ => null
+            };
+            if (categorySlug == null) continue;
+
+            var rootColorSlug = rootColor.ToString().ToLowerInvariant();
+            var path = $"ral-colors/{categorySlug}/{rootColorSlug}";
+            WriteUrlWithAlternates(writer, baseUrl, path);
+        }
+
         // Color detail pages with images
         var validScenes = _colorImageService.GetValidScenes();
         foreach (var color in colors)
@@ -76,7 +115,7 @@ public sealed class SitemapGenerator : ISitemapGenerator
                 images.Add(($"{baseUrl}/images/ral-scenes/{color.Slug}-{scene}.jpg", sceneTitle, sceneTitle));
             }
 
-            WriteUrlWithAlternates(writer, baseUrl, path, images);
+            WriteUrlWithAlternates(writer, baseUrl, path, images, color.Category);
         }
 
         writer.WriteEndElement(); // urlset
@@ -90,7 +129,8 @@ public sealed class SitemapGenerator : ISitemapGenerator
         XmlWriter writer,
         string baseUrl,
         string path,
-        IList<(string Url, string Title, string Caption)>? images = null)
+        IList<(string Url, string Title, string Caption)>? images = null,
+        RalCategory? category = null)
     {
         foreach (var culture in SupportedCultures)
         {
@@ -101,7 +141,7 @@ public sealed class SitemapGenerator : ISitemapGenerator
             writer.WriteStartElement("url");
             writer.WriteElementString("loc", url);
             writer.WriteElementString("changefreq", "weekly");
-            writer.WriteElementString("priority", GetPriority(path));
+            writer.WriteElementString("priority", GetPriority(path, category));
 
             // Add hreflang alternates
             foreach (var altCulture in SupportedCultures)
@@ -151,7 +191,7 @@ public sealed class SitemapGenerator : ISitemapGenerator
             char.ToUpperInvariant(word[0]) + word[1..]));
     }
 
-    private static string GetPriority(string path)
+    private static string GetPriority(string path, RalCategory? category = null)
     {
         return path switch
         {
@@ -163,7 +203,8 @@ public sealed class SitemapGenerator : ISitemapGenerator
             _ when path.StartsWith("ral-colors/converter") ||
                    path.StartsWith("ral-colors/compare") ||
                    path.StartsWith("ral-colors/picker") => "0.7",
-            _ => "0.6"
+            _ when category == RalCategory.Classic => "0.7",
+            _ => "0.5"
         };
     }
 }

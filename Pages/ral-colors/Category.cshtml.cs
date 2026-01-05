@@ -14,8 +14,10 @@ public class CategoryModel : PageModel
 
     public RalCategory? Category { get; private set; }
     public IReadOnlyList<RalColor> Colors { get; private set; } = Array.Empty<RalColor>();
+    public RootColor? SelectedRootColor { get; private set; }
+    public IReadOnlyList<RootColor> AvailableRootColors { get; private set; } = Array.Empty<RootColor>();
 
-    public async Task<IActionResult> OnGetAsync(string category)
+    public async Task<IActionResult> OnGetAsync(string category, string? rootColor = null)
     {
         Category = ParseCategory(category);
 
@@ -24,8 +26,35 @@ public class CategoryModel : PageModel
             return NotFound();
         }
 
+        // Parse rootColor if provided
+        if (!string.IsNullOrEmpty(rootColor))
+        {
+            if (Enum.TryParse<RootColor>(rootColor, ignoreCase: true, out var parsed)
+                && parsed != RootColor.Unknown)
+            {
+                SelectedRootColor = parsed;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         var allColors = await _loader.LoadAsync();
-        Colors = allColors.Where(c => c.Category == Category.Value).ToList();
+        var categoryColors = allColors.Where(c => c.Category == Category.Value).ToList();
+
+        // Get available root colors in this category (for UI)
+        AvailableRootColors = categoryColors
+            .Select(c => c.RootColor)
+            .Where(r => r != RootColor.Unknown)
+            .Distinct()
+            .OrderBy(r => r.ToString())
+            .ToList();
+
+        // Apply root color filter if selected
+        Colors = SelectedRootColor.HasValue
+            ? categoryColors.Where(c => c.RootColor == SelectedRootColor.Value).ToList()
+            : categoryColors;
 
         return Page();
     }

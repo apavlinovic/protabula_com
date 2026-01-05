@@ -873,6 +873,11 @@ categorySlug }),
             <td>@Model.Formats?.HunterLabString</td>
         </tr>
     </table>
+    <p class="mt-lg">
+        <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="@categorySlug" class="text-link">
+            @Localizer["ExploreCategory", categoryName]
+        </a>
+    </p>
 </section>
 
 
@@ -906,6 +911,11 @@ categorySlug }),
                 <partial name="_ColorTile" model="similar.Color" />
             }
         </div>
+        <p class="mt-lg">
+            <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="@Model.Color.RootColor.ToString().ToLowerInvariant()" class="text-link">
+                @Localizer["ExploreSimilarShades", Localizer[$"RootColor{Model.Color.RootColor}"].Value]
+            </a>
+        </p>
     </section>
 }
 

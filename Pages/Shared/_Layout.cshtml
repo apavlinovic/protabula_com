@@ -59,7 +59,7 @@
 
 <head>
     <script>
-        (function() {
+        (function () {
             var theme = localStorage.getItem('theme') ||
                 (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.setAttribute('data-theme', theme);
@@ -78,7 +78,7 @@
     <link rel="icon" type="image/svg+xml" href="/app-icons/favicon.svg" />
     <link rel="shortcut icon" href="/app-icons/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/app-icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="MyWebSite" />
+    <meta name="apple-mobile-web-app-title" content="Protabula" />
     <link rel="manifest" href="/app-icons/site.webmanifest" />
 
     <!-- Canonical and hreflang -->
@@ -123,23 +123,30 @@
                 </a>
 
                 <button class="theme-toggle" onclick="toggleTheme()" aria-label="@Localizer["ToggleDarkMode"]">
-                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="4"/>
-                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4" />
+                        <path
+                            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
                     </svg>
-                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-                    </svg>
-                </button>
-
-                <button class="nav-search-button" id="search-trigger" aria-label="@Localizer["SearchPlaceholder"]" data-culture="@currentCulture" data-placeholder="@Localizer["SearchPlaceholder"]" data-no-results="@Localizer["SearchNoResults"]">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.3-4.3"/>
+                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
                     </svg>
                 </button>
 
-                <button class="nav-hamburger" aria-label="@Localizer["MenuToggle"]" aria-expanded="false" aria-controls="nav-menu">
+                <button class="nav-search-button" id="search-trigger" aria-label="@Localizer["SearchPlaceholder"]"
+                    data-culture="@currentCulture" data-placeholder="@Localizer["SearchPlaceholder"]"
+                    data-no-results="@Localizer["SearchNoResults"]">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </button>
+
+                <button class="nav-hamburger" aria-label="@Localizer["MenuToggle"]" aria-expanded="false"
+                    aria-controls="nav-menu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -149,23 +156,31 @@
                     <div class="nav-dropdown">
                         <button class="nav-dropdown-toggle" aria-expanded="false" aria-controls="ral-dropdown">
                             @Localizer["RalColors"]
-                            <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="m6 9 6 6 6-6"/>
+                            <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="m6 9 6 6 6-6" />
                             </svg>
                         </button>
                         <div class="nav-dropdown-menu" id="ral-dropdown">
                             <div class="dropdown-section">
                                 <span class="dropdown-section-title">@Localizer["Categories"]</span>
-                                <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["AllColors"]</a>
-                                <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@currentCulture">@Localizer["RalClassic"]</a>
-                                <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@currentCulture">@Localizer["RalDesignPlus"]</a>
-                                <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@currentCulture">@Localizer["RalEffect"]</a>
+                                <a asp-page="/ral-colors/Index"
+                                    asp-route-culture="@currentCulture">@Localizer["AllColors"]</a>
+                                <a asp-page="/ral-colors/Category" asp-route-category="classic"
+                                    asp-route-culture="@currentCulture">@Localizer["RalClassic"]</a>
+                                <a asp-page="/ral-colors/Category" asp-route-category="design-plus"
+                                    asp-route-culture="@currentCulture">@Localizer["RalDesignPlus"]</a>
+                                <a asp-page="/ral-colors/Category" asp-route-category="effect"
+                                    asp-route-culture="@currentCulture">@Localizer["RalEffect"]</a>
                             </div>
                             <div class="dropdown-section">
                                 <span class="dropdown-section-title">@Localizer["Tools"]</span>
-                                <a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["Converter"]</a>
-                                <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["Compare"]</a>
-                                <a asp-page="/ral-colors/Picker" asp-route-culture="@currentCulture">@Localizer["Picker"]</a>
+                                <a asp-page="/ral-colors/Converter"
+                                    asp-route-culture="@currentCulture">@Localizer["Converter"]</a>
+                                <a asp-page="/ral-colors/Compare"
+                                    asp-route-culture="@currentCulture">@Localizer["Compare"]</a>
+                                <a asp-page="/ral-colors/Picker"
+                                    asp-route-culture="@currentCulture">@Localizer["Picker"]</a>
                             </div>
                         </div>
                     </div>
@@ -192,37 +207,53 @@
                     <div class="footer-section">
                         <h3>@Localizer["FooterRalColors"]</h3>
                         <ul>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture">@Localizer["FooterAllColors"]</a></li>
-                            <li><a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@currentCulture">@Localizer["FooterClassic"]</a></li>
-                            <li><a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@currentCulture">@Localizer["FooterDesignPlus"]</a></li>
-                            <li><a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@currentCulture">@Localizer["FooterEffect"]</a></li>
+                            <li><a asp-page="/ral-colors/Index"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterAllColors"]</a></li>
+                            <li><a asp-page="/ral-colors/Category" asp-route-category="classic"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterClassic"]</a></li>
+                            <li><a asp-page="/ral-colors/Category" asp-route-category="design-plus"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterDesignPlus"]</a></li>
+                            <li><a asp-page="/ral-colors/Category" asp-route-category="effect"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterEffect"]</a></li>
                         </ul>
                     </div>
                     <div class="footer-section">
                         <h3>@Localizer["FooterBrowseByColor"]</h3>
                         <ul>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="yellow">@Localizer["FooterYellow"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="orange">@Localizer["FooterOrange"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="red">@Localizer["FooterRed"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="green">@Localizer["FooterGreen"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="blue">@Localizer["FooterBlue"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="grey">@Localizer["FooterGrey"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="brown">@Localizer["FooterBrown"]</a></li>
-                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="white">@Localizer["FooterWhite"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="yellow">@Localizer["FooterYellow"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="orange">@Localizer["FooterOrange"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="red">@Localizer["FooterRed"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="green">@Localizer["FooterGreen"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="blue">@Localizer["FooterBlue"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="grey">@Localizer["FooterGrey"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="brown">@Localizer["FooterBrown"]</a></li>
+                            <li><a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                                    asp-route-color="white">@Localizer["FooterWhite"]</a></li>
                         </ul>
                     </div>
                     <div class="footer-section">
                         <h3>@Localizer["FooterTools"]</h3>
                         <ul>
-                            <li><a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture">@Localizer["FooterConverter"]</a></li>
-                            <li><a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture">@Localizer["FooterCompare"]</a></li>
-                            <li><a asp-page="/ral-colors/Picker" asp-route-culture="@currentCulture">@Localizer["FooterPicker"]</a></li>
+                            <li><a asp-page="/ral-colors/Converter"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterConverter"]</a></li>
+                            <li><a asp-page="/ral-colors/Compare"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterCompare"]</a></li>
+                            <li><a asp-page="/ral-colors/Picker"
+                                    asp-route-culture="@currentCulture">@Localizer["FooterPicker"]</a></li>
                         </ul>
                     </div>
                     <div class="footer-section">
                         <h3>@Localizer["FooterInfo"]</h3>
                         <ul>
-                            <li><a asp-area="" asp-page="/Privacy" asp-route-culture="@currentCulture">@Localizer["Privacy"]</a></li>
+                            <li><a asp-area="" asp-page="/Privacy"
+                                    asp-route-culture="@currentCulture">@Localizer["Privacy"]</a></li>
                             <li><a href="/sitemap.xml">@Localizer["FooterSitemap"]</a></li>
                         </ul>
                     </div>
@@ -267,12 +298,12 @@
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-F44664FXGL"></script>
         <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
 
-  gtag('config', 'G-F44664FXGL');
-</script>
+            gtag('config', 'G-F44664FXGL');
+        </script>
         @await RenderSectionAsync("Scripts", required: false)
     </div>
 </body>
