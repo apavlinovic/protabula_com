@@ -199,263 +199,456 @@
     // ============================================
 
     class ModelFactory {
-        // Create window frame geometry
+        // Create window frame with realistic details
         static createWindowFrame(options = {}) {
             const {
                 width = 1.0,
                 height = 1.4,
-                frameDepth = 0.07,
-                frameWidth = 0.055,
-                mullionWidth = 0.035
+                frameDepth = 0.075,
+                frameWidth = 0.06,
+                sashWidth = 0.045,
+                sashDepth = 0.05
             } = options;
 
             const group = new THREE.Group();
 
-            // Frame material placeholder (will be set by PreviewInstance)
+            // Materials
             const frameMaterial = new THREE.MeshPhysicalMaterial({ color: 0x888888 });
-
-            // Glass material
             const glassMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x88ccff,
+                color: 0xffffff,
                 transparent: true,
-                opacity: 0.25,
+                opacity: 0.15,
                 roughness: 0.05,
-                metalness: 0,
-                transmission: 0.85,
-                thickness: 0.006,
-                side: THREE.DoubleSide
+                metalness: 0.1,
+                reflectivity: 0.9,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.05,
+                side: THREE.DoubleSide,
+                depthWrite: false
             });
-
-            // Gasket material
             const gasketMaterial = new THREE.MeshStandardMaterial({
                 color: 0x1a1a1a,
-                roughness: 0.85,
+                roughness: 0.9,
                 metalness: 0
             });
-
-            const hw = width / 2;
-            const hh = height / 2;
-            const hd = frameDepth / 2;
-
-            // Helper to create frame segment
-            const createFrameSegment = (w, h, d) => {
-                return new THREE.BoxGeometry(w, h, d, 2, 2, 2);
-            };
-
-            // Top rail
-            const topRail = new THREE.Mesh(
-                createFrameSegment(width, frameWidth, frameDepth),
-                frameMaterial
-            );
-            topRail.position.set(0, hh - frameWidth / 2, 0);
-            topRail.userData.isFrame = true;
-            group.add(topRail);
-
-            // Bottom rail
-            const bottomRail = new THREE.Mesh(
-                createFrameSegment(width, frameWidth, frameDepth),
-                frameMaterial
-            );
-            bottomRail.position.set(0, -hh + frameWidth / 2, 0);
-            bottomRail.userData.isFrame = true;
-            group.add(bottomRail);
-
-            // Left stile
-            const leftStile = new THREE.Mesh(
-                createFrameSegment(frameWidth, height - frameWidth * 2, frameDepth),
-                frameMaterial
-            );
-            leftStile.position.set(-hw + frameWidth / 2, 0, 0);
-            leftStile.userData.isFrame = true;
-            group.add(leftStile);
-
-            // Right stile
-            const rightStile = new THREE.Mesh(
-                createFrameSegment(frameWidth, height - frameWidth * 2, frameDepth),
-                frameMaterial
-            );
-            rightStile.position.set(hw - frameWidth / 2, 0, 0);
-            rightStile.userData.isFrame = true;
-            group.add(rightStile);
-
-            // Central horizontal mullion
-            const mullion = new THREE.Mesh(
-                createFrameSegment(width - frameWidth * 2, mullionWidth, frameDepth * 0.75),
-                frameMaterial
-            );
-            mullion.position.set(0, 0, 0);
-            mullion.userData.isFrame = true;
-            group.add(mullion);
-
-            // Glass panes
-            const glassWidth = width - frameWidth * 2 - 0.008;
-            const glassHeight = (height - frameWidth * 2 - mullionWidth) / 2 - 0.004;
-
-            // Upper glass pane
-            const upperGlass = new THREE.Mesh(
-                new THREE.PlaneGeometry(glassWidth, glassHeight),
-                glassMaterial
-            );
-            upperGlass.position.set(0, glassHeight / 2 + mullionWidth / 2 + 0.002, -hd + 0.015);
-            group.add(upperGlass);
-
-            // Lower glass pane
-            const lowerGlass = new THREE.Mesh(
-                new THREE.PlaneGeometry(glassWidth, glassHeight),
-                glassMaterial
-            );
-            lowerGlass.position.set(0, -glassHeight / 2 - mullionWidth / 2 - 0.002, -hd + 0.015);
-            group.add(lowerGlass);
-
-            // Gasket strips (thin lines around glass)
-            const gasketThickness = 0.004;
-            const gasketDepth = 0.008;
-
-            const createGasketStrip = (w, h, x, y) => {
-                const strip = new THREE.Mesh(
-                    new THREE.BoxGeometry(w, h, gasketDepth),
-                    gasketMaterial
-                );
-                strip.position.set(x, y, -hd + 0.008);
-                return strip;
-            };
-
-            // Upper pane gaskets
-            const upperY = glassHeight / 2 + mullionWidth / 2 + 0.002;
-            group.add(createGasketStrip(glassWidth + gasketThickness * 2, gasketThickness, 0, upperY + glassHeight / 2)); // top
-            group.add(createGasketStrip(glassWidth + gasketThickness * 2, gasketThickness, 0, upperY - glassHeight / 2)); // bottom
-            group.add(createGasketStrip(gasketThickness, glassHeight, -glassWidth / 2 - gasketThickness / 2, upperY)); // left
-            group.add(createGasketStrip(gasketThickness, glassHeight, glassWidth / 2 + gasketThickness / 2, upperY)); // right
-
-            // Lower pane gaskets
-            const lowerY = -glassHeight / 2 - mullionWidth / 2 - 0.002;
-            group.add(createGasketStrip(glassWidth + gasketThickness * 2, gasketThickness, 0, lowerY + glassHeight / 2)); // top
-            group.add(createGasketStrip(glassWidth + gasketThickness * 2, gasketThickness, 0, lowerY - glassHeight / 2)); // bottom
-            group.add(createGasketStrip(gasketThickness, glassHeight, -glassWidth / 2 - gasketThickness / 2, lowerY)); // left
-            group.add(createGasketStrip(gasketThickness, glassHeight, glassWidth / 2 + gasketThickness / 2, lowerY)); // right
-
-            return group;
-        }
-
-        // Create door geometry
-        static createDoor(options = {}) {
-            const {
-                width = 0.9,
-                height = 2.0,
-                depth = 0.045,
-                frameWidth = 0.06,
-                panelInset = 0.008
-            } = options;
-
-            const group = new THREE.Group();
-
-            // Frame material placeholder (will be set by PreviewInstance)
-            const frameMaterial = new THREE.MeshPhysicalMaterial({ color: 0x888888 });
-
-            // Handle material
             const handleMaterial = new THREE.MeshStandardMaterial({
                 color: 0xc0c0c0,
                 roughness: 0.3,
                 metalness: 0.9
             });
 
-            const hw = width / 2;
-            const hh = height / 2;
-            const hd = depth / 2;
-
-            // Helper to create frame/panel segment
-            const createSegment = (w, h, d) => {
-                return new THREE.BoxGeometry(w, h, d, 2, 2, 2);
+            // Helper: Create L-shaped frame profile and extrude along path
+            const createFrameProfile = (profileWidth, profileDepth, stepDepth = 0.015) => {
+                const shape = new THREE.Shape();
+                // L-shaped profile with step for glass
+                shape.moveTo(0, 0);
+                shape.lineTo(profileWidth, 0);
+                shape.lineTo(profileWidth, profileDepth - stepDepth);
+                shape.lineTo(profileWidth - stepDepth, profileDepth - stepDepth);
+                shape.lineTo(profileWidth - stepDepth, profileDepth);
+                shape.lineTo(0, profileDepth);
+                shape.lineTo(0, 0);
+                return shape;
             };
 
-            // Main door panel (solid)
-            const mainPanel = new THREE.Mesh(
-                createSegment(width - frameWidth * 2, height - frameWidth * 2, depth - panelInset * 2),
-                frameMaterial
-            );
-            mainPanel.position.set(0, 0, 0);
-            mainPanel.userData.isFrame = true;
-            group.add(mainPanel);
+            // Helper: Create extruded frame segment
+            const createExtrudedSegment = (length, profileWidth, profileDepth, material) => {
+                const shape = createFrameProfile(profileWidth, profileDepth);
+                const geometry = new THREE.ExtrudeGeometry(shape, {
+                    steps: 1,
+                    depth: length,
+                    bevelEnabled: false
+                });
+                geometry.rotateX(Math.PI / 2);
+                geometry.translate(-profileWidth / 2, 0, 0);
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.userData.isFrame = true;
+                return mesh;
+            };
 
-            // Top rail
-            const topRail = new THREE.Mesh(
-                createSegment(width, frameWidth, depth),
-                frameMaterial
-            );
-            topRail.position.set(0, hh - frameWidth / 2, 0);
-            topRail.userData.isFrame = true;
-            group.add(topRail);
+            // Helper: Create simple box segment
+            const createBox = (w, h, d, material, isFrame = true) => {
+                const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+                mesh.userData.isFrame = isFrame;
+                return mesh;
+            };
 
-            // Bottom rail
-            const bottomRail = new THREE.Mesh(
-                createSegment(width, frameWidth, depth),
-                frameMaterial
-            );
-            bottomRail.position.set(0, -hh + frameWidth / 2, 0);
-            bottomRail.userData.isFrame = true;
-            group.add(bottomRail);
+            const hw = width / 2;
+            const hh = height / 2;
 
-            // Left stile
-            const leftStile = new THREE.Mesh(
-                createSegment(frameWidth, height - frameWidth * 2, depth),
-                frameMaterial
-            );
-            leftStile.position.set(-hw + frameWidth / 2, 0, 0);
-            leftStile.userData.isFrame = true;
-            group.add(leftStile);
+            // === OUTER FRAME ===
+            // Using simple boxes for cleaner look, positioned to create frame
 
-            // Right stile
-            const rightStile = new THREE.Mesh(
-                createSegment(frameWidth, height - frameWidth * 2, depth),
-                frameMaterial
-            );
-            rightStile.position.set(hw - frameWidth / 2, 0, 0);
-            rightStile.userData.isFrame = true;
-            group.add(rightStile);
+            // Top frame
+            const topFrame = createBox(width, frameWidth, frameDepth, frameMaterial);
+            topFrame.position.set(0, hh - frameWidth / 2, 0);
+            group.add(topFrame);
 
-            // Door handle (lever style)
-            const handleBaseRadius = 0.025;
-            const handleBaseDepth = 0.015;
-            const leverLength = 0.12;
-            const leverRadius = 0.012;
+            // Bottom frame (sill - slightly deeper)
+            const bottomFrame = createBox(width + 0.02, frameWidth, frameDepth + 0.02, frameMaterial);
+            bottomFrame.position.set(0, -hh + frameWidth / 2, 0.01);
+            group.add(bottomFrame);
 
-            // Handle backplate
-            const handleBackplate = new THREE.Mesh(
-                new THREE.CylinderGeometry(handleBaseRadius * 1.5, handleBaseRadius * 1.5, handleBaseDepth, 16),
+            // Left frame
+            const leftFrame = createBox(frameWidth, height - frameWidth * 2, frameDepth, frameMaterial);
+            leftFrame.position.set(-hw + frameWidth / 2, 0, 0);
+            group.add(leftFrame);
+
+            // Right frame
+            const rightFrame = createBox(frameWidth, height - frameWidth * 2, frameDepth, frameMaterial);
+            rightFrame.position.set(hw - frameWidth / 2, 0, 0);
+            group.add(rightFrame);
+
+            // === SASH (inner frame that holds glass) ===
+            const sashInnerWidth = width - frameWidth * 2 - 0.008;
+            const sashInnerHeight = height - frameWidth * 2 - 0.008;
+            const sashOffset = frameDepth / 2 - sashDepth / 2 - 0.005;
+
+            // Sash top
+            const sashTop = createBox(sashInnerWidth, sashWidth, sashDepth, frameMaterial);
+            sashTop.position.set(0, hh - frameWidth - sashWidth / 2 - 0.004, sashOffset);
+            group.add(sashTop);
+
+            // Sash bottom
+            const sashBottom = createBox(sashInnerWidth, sashWidth, sashDepth, frameMaterial);
+            sashBottom.position.set(0, -hh + frameWidth + sashWidth / 2 + 0.004, sashOffset);
+            group.add(sashBottom);
+
+            // Sash left
+            const sashLeft = createBox(sashWidth, sashInnerHeight - sashWidth * 2, sashDepth, frameMaterial);
+            sashLeft.position.set(-hw + frameWidth + sashWidth / 2 + 0.004, 0, sashOffset);
+            group.add(sashLeft);
+
+            // Sash right
+            const sashRight = createBox(sashWidth, sashInnerHeight - sashWidth * 2, sashDepth, frameMaterial);
+            sashRight.position.set(hw - frameWidth - sashWidth / 2 - 0.004, 0, sashOffset);
+            group.add(sashRight);
+
+            // Horizontal mullion (divider)
+            const mullion = createBox(sashInnerWidth - sashWidth * 2, sashWidth * 0.7, sashDepth, frameMaterial);
+            mullion.position.set(0, 0, sashOffset);
+            group.add(mullion);
+
+            // === GLASS PANES ===
+            const glassWidth = sashInnerWidth - sashWidth * 2 - 0.01;
+            const glassHeight = (sashInnerHeight - sashWidth * 2 - sashWidth * 0.7) / 2 - 0.005;
+            const glassZ = sashOffset;
+
+            // Upper glass
+            const upperGlass = new THREE.Mesh(new THREE.PlaneGeometry(glassWidth, glassHeight), glassMaterial);
+            upperGlass.position.set(0, glassHeight / 2 + sashWidth * 0.35 + 0.003, glassZ);
+            group.add(upperGlass);
+
+            // Lower glass
+            const lowerGlass = new THREE.Mesh(new THREE.PlaneGeometry(glassWidth, glassHeight), glassMaterial);
+            lowerGlass.position.set(0, -glassHeight / 2 - sashWidth * 0.35 - 0.003, glassZ);
+            group.add(lowerGlass);
+
+            // === GASKETS (rubber seals around glass) ===
+            const gasketSize = 0.004;
+            const createGasket = (w, h, x, y) => {
+                const gasket = new THREE.Mesh(
+                    new THREE.BoxGeometry(w, h, gasketSize),
+                    gasketMaterial
+                );
+                gasket.position.set(x, y, glassZ + sashDepth / 2 - gasketSize);
+                return gasket;
+            };
+
+            // Upper pane gaskets
+            const uy = glassHeight / 2 + sashWidth * 0.35 + 0.003;
+            group.add(createGasket(glassWidth + gasketSize * 2, gasketSize, 0, uy + glassHeight / 2));
+            group.add(createGasket(glassWidth + gasketSize * 2, gasketSize, 0, uy - glassHeight / 2));
+            group.add(createGasket(gasketSize, glassHeight, -glassWidth / 2 - gasketSize / 2, uy));
+            group.add(createGasket(gasketSize, glassHeight, glassWidth / 2 + gasketSize / 2, uy));
+
+            // Lower pane gaskets
+            const ly = -glassHeight / 2 - sashWidth * 0.35 - 0.003;
+            group.add(createGasket(glassWidth + gasketSize * 2, gasketSize, 0, ly + glassHeight / 2));
+            group.add(createGasket(glassWidth + gasketSize * 2, gasketSize, 0, ly - glassHeight / 2));
+            group.add(createGasket(gasketSize, glassHeight, -glassWidth / 2 - gasketSize / 2, ly));
+            group.add(createGasket(gasketSize, glassHeight, glassWidth / 2 + gasketSize / 2, ly));
+
+            // === WINDOW HANDLE ===
+            const handleX = hw - frameWidth - sashWidth - 0.02;
+            const handleY = -0.05;
+            const handleZ = sashOffset + sashDepth / 2;
+
+            // Handle base plate
+            const basePlate = new THREE.Mesh(
+                new THREE.BoxGeometry(0.025, 0.08, 0.008),
                 handleMaterial
             );
-            handleBackplate.rotation.x = Math.PI / 2;
-            handleBackplate.position.set(hw - frameWidth - 0.08, 0, hd + handleBaseDepth / 2);
-            group.add(handleBackplate);
+            basePlate.position.set(handleX, handleY, handleZ + 0.004);
+            group.add(basePlate);
 
-            // Handle cylinder (rosette)
-            const handleRosette = new THREE.Mesh(
-                new THREE.CylinderGeometry(handleBaseRadius, handleBaseRadius, handleBaseDepth * 2, 16),
+            // Handle lever
+            const lever = new THREE.Mesh(
+                new THREE.BoxGeometry(0.012, 0.06, 0.015),
                 handleMaterial
             );
-            handleRosette.rotation.x = Math.PI / 2;
-            handleRosette.position.set(hw - frameWidth - 0.08, 0, hd + handleBaseDepth * 1.5);
-            group.add(handleRosette);
+            lever.position.set(handleX, handleY + 0.04, handleZ + 0.012);
+            group.add(lever);
 
-            // Lever handle
-            const handleLever = new THREE.Mesh(
-                new THREE.CapsuleGeometry(leverRadius, leverLength, 4, 8),
+            // Handle grip (rotated down for closed position)
+            const grip = new THREE.Mesh(
+                new THREE.CapsuleGeometry(0.008, 0.05, 4, 8),
                 handleMaterial
             );
-            handleLever.rotation.z = Math.PI / 2;
-            handleLever.position.set(hw - frameWidth - 0.08 - leverLength / 2 - leverRadius, 0, hd + handleBaseDepth * 2.5);
-            group.add(handleLever);
+            grip.rotation.x = Math.PI / 2;
+            grip.position.set(handleX, handleY + 0.07, handleZ + 0.035);
+            group.add(grip);
 
-            // Handle end (ball)
-            const handleEnd = new THREE.Mesh(
-                new THREE.SphereGeometry(leverRadius * 1.3, 12, 8),
+            // === DRAINAGE SLOTS (bottom frame detail) ===
+            const slotMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8 });
+            for (let i = -1; i <= 1; i += 2) {
+                const slot = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.025, 0.004, 0.01),
+                    slotMaterial
+                );
+                slot.position.set(i * 0.15, -hh + frameWidth / 2, frameDepth / 2 + 0.005);
+                group.add(slot);
+            }
+
+            return group;
+        }
+
+        // Create modern door with vertical glass slot
+        static createDoor(options = {}) {
+            const {
+                width = 1.0,
+                height = 2.1,
+                doorDepth = 0.055,
+                frameWidth = 0.065,
+                frameDepth = 0.12
+            } = options;
+
+            const group = new THREE.Group();
+
+            // === MATERIALS ===
+            const frameMaterial = new THREE.MeshPhysicalMaterial({ color: 0x888888 });
+            const glassMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x88bbdd,
+                transparent: true,
+                opacity: 0.25,
+                roughness: 0.02,
+                metalness: 0.05,
+                clearcoat: 0.8,
+                clearcoatRoughness: 0.1,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            const handleMaterial = new THREE.MeshStandardMaterial({
+                color: 0x303030,
+                roughness: 0.3,
+                metalness: 0.9
+            });
+            const gasketMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a1a1a,
+                roughness: 0.9,
+                metalness: 0
+            });
+            const thresholdMaterial = new THREE.MeshStandardMaterial({
+                color: 0x606060,
+                roughness: 0.4,
+                metalness: 0.85
+            });
+
+            // Helper: Create box mesh
+            const createBox = (w, h, d, material, isFrame = true) => {
+                const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+                mesh.userData.isFrame = isFrame;
+                return mesh;
+            };
+
+            const hw = width / 2;
+            const hh = height / 2;
+            const doorOffset = frameDepth / 2 - doorDepth / 2 - 0.02;
+
+            // === DOOR FRAME (fixed part) ===
+            // Top frame
+            const topFrame = createBox(width + frameWidth * 2, frameWidth, frameDepth, frameMaterial);
+            topFrame.position.set(0, hh + frameWidth / 2, 0);
+            group.add(topFrame);
+
+            // Left frame
+            const leftFrame = createBox(frameWidth, height, frameDepth, frameMaterial);
+            leftFrame.position.set(-hw - frameWidth / 2, 0, 0);
+            group.add(leftFrame);
+
+            // Right frame
+            const rightFrame = createBox(frameWidth, height, frameDepth, frameMaterial);
+            rightFrame.position.set(hw + frameWidth / 2, 0, 0);
+            group.add(rightFrame);
+
+            // === THRESHOLD (bottom) ===
+            const threshold = createBox(width + frameWidth * 2 + 0.02, 0.025, frameDepth + 0.04, thresholdMaterial, false);
+            threshold.position.set(0, -hh - 0.0125, 0.02);
+            group.add(threshold);
+
+            // === DOOR LEAF (modern flat panel) ===
+            const leafWidth = width - 0.006;
+            const leafHeight = height - 0.008;
+
+            // Main door panel (flush, modern look)
+            const doorPanel = createBox(leafWidth, leafHeight, doorDepth, frameMaterial);
+            doorPanel.position.set(0, 0, doorOffset);
+            group.add(doorPanel);
+
+            // === VERTICAL GLASS SLOT ===
+            const glassSlotWidth = 0.12;
+            const glassSlotHeight = leafHeight * 0.7;
+            const glassSlotX = hw - 0.22;
+            const glassSlotY = leafHeight * 0.08;
+            const glassInset = 0.012;
+
+            // Cut-out frame around glass (creates depth illusion)
+            // Left edge
+            const glassFrameLeft = createBox(glassInset, glassSlotHeight, doorDepth + 0.002, frameMaterial);
+            glassFrameLeft.position.set(glassSlotX - glassSlotWidth / 2 - glassInset / 2, glassSlotY, doorOffset);
+            group.add(glassFrameLeft);
+
+            // Right edge
+            const glassFrameRight = createBox(glassInset, glassSlotHeight, doorDepth + 0.002, frameMaterial);
+            glassFrameRight.position.set(glassSlotX + glassSlotWidth / 2 + glassInset / 2, glassSlotY, doorOffset);
+            group.add(glassFrameRight);
+
+            // Top edge
+            const glassFrameTop = createBox(glassSlotWidth + glassInset * 2, glassInset, doorDepth + 0.002, frameMaterial);
+            glassFrameTop.position.set(glassSlotX, glassSlotY + glassSlotHeight / 2 + glassInset / 2, doorOffset);
+            group.add(glassFrameTop);
+
+            // Bottom edge
+            const glassFrameBottom = createBox(glassSlotWidth + glassInset * 2, glassInset, doorDepth + 0.002, frameMaterial);
+            glassFrameBottom.position.set(glassSlotX, glassSlotY - glassSlotHeight / 2 - glassInset / 2, doorOffset);
+            group.add(glassFrameBottom);
+
+            // Glass pane (set back slightly)
+            const glass = new THREE.Mesh(
+                new THREE.PlaneGeometry(glassSlotWidth, glassSlotHeight),
+                glassMaterial
+            );
+            glass.position.set(glassSlotX, glassSlotY, doorOffset - doorDepth / 2 + 0.008);
+            group.add(glass);
+
+            // Inner glass gasket
+            const gasketWidth = 0.003;
+            const innerGasketTop = createBox(glassSlotWidth, gasketWidth, gasketWidth, gasketMaterial, false);
+            innerGasketTop.position.set(glassSlotX, glassSlotY + glassSlotHeight / 2 - gasketWidth / 2, doorOffset + doorDepth / 2 + 0.001);
+            group.add(innerGasketTop);
+
+            const innerGasketBottom = createBox(glassSlotWidth, gasketWidth, gasketWidth, gasketMaterial, false);
+            innerGasketBottom.position.set(glassSlotX, glassSlotY - glassSlotHeight / 2 + gasketWidth / 2, doorOffset + doorDepth / 2 + 0.001);
+            group.add(innerGasketBottom);
+
+            const innerGasketLeft = createBox(gasketWidth, glassSlotHeight - gasketWidth * 2, gasketWidth, gasketMaterial, false);
+            innerGasketLeft.position.set(glassSlotX - glassSlotWidth / 2 + gasketWidth / 2, glassSlotY, doorOffset + doorDepth / 2 + 0.001);
+            group.add(innerGasketLeft);
+
+            const innerGasketRight = createBox(gasketWidth, glassSlotHeight - gasketWidth * 2, gasketWidth, gasketMaterial, false);
+            innerGasketRight.position.set(glassSlotX + glassSlotWidth / 2 - gasketWidth / 2, glassSlotY, doorOffset + doorDepth / 2 + 0.001);
+            group.add(innerGasketRight);
+
+            // === MODERN HANDLE (long vertical bar) ===
+            const handleX = -hw + 0.12;
+            const handleY = 0;
+            const handleZ = doorOffset + doorDepth / 2;
+            const handleLength = 0.35;
+
+            // Mounting plates (top and bottom)
+            const mountPlate1 = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.018, 0.018, 0.012, 16),
                 handleMaterial
             );
-            handleEnd.position.set(hw - frameWidth - 0.08 - leverLength - leverRadius * 2, 0, hd + handleBaseDepth * 2.5);
-            group.add(handleEnd);
+            mountPlate1.rotation.x = Math.PI / 2;
+            mountPlate1.position.set(handleX, handleY + handleLength / 2 - 0.03, handleZ + 0.006);
+            group.add(mountPlate1);
 
-            // Scale down to fit nicely in view
-            group.scale.set(0.6, 0.6, 0.6);
+            const mountPlate2 = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.018, 0.018, 0.012, 16),
+                handleMaterial
+            );
+            mountPlate2.rotation.x = Math.PI / 2;
+            mountPlate2.position.set(handleX, handleY - handleLength / 2 + 0.03, handleZ + 0.006);
+            group.add(mountPlate2);
+
+            // Main handle bar (vertical)
+            const handleBar = new THREE.Mesh(
+                new THREE.CapsuleGeometry(0.012, handleLength - 0.06, 8, 16),
+                handleMaterial
+            );
+            handleBar.position.set(handleX, handleY, handleZ + 0.035);
+            group.add(handleBar);
+
+            // Handle standoffs
+            const standoff1 = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.008, 0.008, 0.025, 8),
+                handleMaterial
+            );
+            standoff1.rotation.x = Math.PI / 2;
+            standoff1.position.set(handleX, handleY + handleLength / 2 - 0.03, handleZ + 0.02);
+            group.add(standoff1);
+
+            const standoff2 = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.008, 0.008, 0.025, 8),
+                handleMaterial
+            );
+            standoff2.rotation.x = Math.PI / 2;
+            standoff2.position.set(handleX, handleY - handleLength / 2 + 0.03, handleZ + 0.02);
+            group.add(standoff2);
+
+            // === LOCK (separate from handle, modern style) ===
+            const lockX = -hw + 0.12;
+            const lockY = -0.35;
+
+            // Lock cylinder housing
+            const lockHousing = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.016, 0.016, 0.015, 16),
+                handleMaterial
+            );
+            lockHousing.rotation.x = Math.PI / 2;
+            lockHousing.position.set(lockX, lockY, handleZ + 0.0075);
+            group.add(lockHousing);
+
+            // Lock cylinder
+            const lockCylinder = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.01, 0.01, 0.008, 16),
+                thresholdMaterial
+            );
+            lockCylinder.rotation.x = Math.PI / 2;
+            lockCylinder.position.set(lockX, lockY, handleZ + 0.018);
+            group.add(lockCylinder);
+
+            // === HINGES (concealed style - just visible barrels) ===
+            const hingeX = hw - 0.02;
+            const hingePositions = [hh - 0.2, hh - 0.6, -hh + 0.2];
+
+            hingePositions.forEach(y => {
+                const hinge = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.006, 0.006, 0.06, 8),
+                    handleMaterial
+                );
+                hinge.position.set(hingeX, y, doorOffset);
+                group.add(hinge);
+            });
+
+            // === WEATHER STRIPPING ===
+            const gasketSize = 0.005;
+
+            const topGasket = createBox(leafWidth, gasketSize, gasketSize, gasketMaterial, false);
+            topGasket.position.set(0, hh - 0.006, doorOffset - doorDepth / 2 - gasketSize / 2);
+            group.add(topGasket);
+
+            const leftGasket = createBox(gasketSize, leafHeight - 0.02, gasketSize, gasketMaterial, false);
+            leftGasket.position.set(-leafWidth / 2 + 0.003, 0, doorOffset - doorDepth / 2 - gasketSize / 2);
+            group.add(leftGasket);
+
+            const rightGasket = createBox(gasketSize, leafHeight - 0.02, gasketSize, gasketMaterial, false);
+            rightGasket.position.set(leafWidth / 2 - 0.003, 0, doorOffset - doorDepth / 2 - gasketSize / 2);
+            group.add(rightGasket);
+
+            // Scale to fit nicely
+            group.scale.set(0.52, 0.52, 0.52);
 
             return group;
         }
