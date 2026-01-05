@@ -222,7 +222,7 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/color-autocomplete.js"></script>
+    <script src="~/js/color-autocomplete.js" asp-append-version="true"></script>
     <script>
         initColorAutocomplete('colorSearch', function(number, hex, name) {
             const currentUrl = new URL(window.location);

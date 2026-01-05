@@ -5,6 +5,9 @@
 (function() {
     'use strict';
 
+    // Cache busting version - update when JS files change
+    const JS_VERSION = '2.1.0';
+
     let lastFocusedElement = null;
     let preview = null;
     let threeJsLoaded = false;
@@ -223,7 +226,7 @@
         // Three.js is loaded via module, wait for ready event
         window.addEventListener('three-ready', function() {
             const script = document.createElement('script');
-            script.src = '/js/ral-preview.js';
+            script.src = '/js/ral-preview.js?v=' + JS_VERSION;
             script.onload = initPreview;
             document.head.appendChild(script);
         });
@@ -231,7 +234,7 @@
         // Load the Three.js loader module
         const loader = document.createElement('script');
         loader.type = 'module';
-        loader.src = '/js/three-loader.js';
+        loader.src = '/js/three-loader.js?v=' + JS_VERSION;
         document.head.appendChild(loader);
     }
 
