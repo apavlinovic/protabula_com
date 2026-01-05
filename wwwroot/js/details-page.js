@@ -131,7 +131,7 @@
         if (!config || typeof RalPreview === 'undefined' || typeof THREE === 'undefined') return;
 
         preview = RalPreview.create(config.container, {
-            model: 'cube',
+            model: 'sphere',
             finish: 'satin',
             color: {
                 hex: config.colorHex,
@@ -187,6 +187,10 @@
         document.querySelector('[data-model].active')?.classList.remove('active');
         btn.classList.add('active');
 
+        // Read current UI state before disposing
+        const currentFinish = document.querySelector('[data-finish].active')?.dataset.finish || 'satin';
+        const currentLighting = document.querySelector('[data-lighting].active')?.dataset.lighting || 'studio';
+
         // Dispose and recreate with new model
         if (preview) {
             preview.dispose();
@@ -194,7 +198,7 @@
 
         preview = RalPreview.create(config.container, {
             model: btn.dataset.model,
-            finish: document.querySelector('[data-finish].active')?.dataset.finish || 'satin',
+            finish: currentFinish,
             color: {
                 hex: config.colorHex,
                 undertoneHex: config.undertoneHex,
@@ -205,6 +209,11 @@
             background: 'transparent',
             powder: { intensity: 0.25, scale: 1.0 }
         });
+
+        // Apply the lighting preset that was selected before the model change
+        if (currentLighting !== 'studio') {
+            preview.setLighting(currentLighting);
+        }
     }
 
     function loadThreeJs() {

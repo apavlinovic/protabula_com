@@ -324,14 +324,7 @@ categorySlug }),
             <div class="control-group">
                 <label>@Localizer["ModelLabel"]</label>
                 <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-secondary btn-icon active" data-model="cube"
-                        title="@Localizer["ModelCube"]">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                        </svg>
-                        <span>@Localizer["ModelCube"]</span>
-                    </button>
-                    <button type="button" class="btn btn-secondary btn-icon" data-model="sphere"
+                    <button type="button" class="btn btn-secondary btn-icon active" data-model="sphere"
                         title="@Localizer["ModelSphere"]">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <circle cx="12" cy="12" r="9" />
@@ -339,6 +332,14 @@ categorySlug }),
                             <path d="M12 3v18" />
                         </svg>
                         <span>@Localizer["ModelSphere"]</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-icon" data-model="bent-panel"
+                        title="@Localizer["ModelBentPanel"]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 16h12a2 2 0 0 0 2-2V6" />
+                            <path d="M3 18h12a4 4 0 0 0 4-4V4" />
+                        </svg>
+                        <span>@Localizer["ModelBentPanel"]</span>
                     </button>
                     <button type="button" class="btn btn-secondary btn-icon" data-model="curved-sample"
                         title="@Localizer["ModelCurvedSample"]">
@@ -412,6 +413,13 @@ categorySlug }),
                                 fill="#ddeeff" />
                         </svg>
                         <span>@Localizer["LightingOvercast"]</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-icon" data-lighting="night"
+                        title="@Localizer["LightingNight"]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="#334466" />
+                        </svg>
+                        <span>@Localizer["LightingNight"]</span>
                     </button>
                 </div>
             </div>

@@ -137,6 +137,7 @@
   "ModelLabel": "Modell",
   "ModelCube": "Würfel",
   "ModelSphere": "Kugel",
+  "ModelBentPanel": "Kantblech",
   "ModelCurvedSample": "S-Kurve",
   "ModelWindow": "Fensterrahmen",
   "ModelDoor": "Tür",
@@ -146,6 +147,7 @@
   "LightingMidday": "Mittag",
   "LightingGolden": "Goldene Stunde",
   "LightingOvercast": "Bewölkt",
+  "LightingNight": "Nacht",
 
   "FaqTitle": "Häufig gestellte Fragen",
   "FaqWhatColor": "Was für eine Farbe ist RAL {0}?",

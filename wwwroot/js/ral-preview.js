@@ -199,60 +199,6 @@
     // ============================================
 
     class ModelFactory {
-        // Create beveled cube geometry
-        static createBeveledCube(size = 1, bevelRadius = 0.04, segments = 8) {
-            // Use RoundedBoxGeometry approach with subdivided box
-            const geometry = new THREE.BoxGeometry(size, size, size, segments, segments, segments);
-            const positions = geometry.attributes.position;
-            const halfSize = size / 2;
-            const innerSize = halfSize - bevelRadius;
-
-            for (let i = 0; i < positions.count; i++) {
-                let x = positions.getX(i);
-                let y = positions.getY(i);
-                let z = positions.getZ(i);
-
-                // Calculate distance from center for each axis
-                const ax = Math.abs(x);
-                const ay = Math.abs(y);
-                const az = Math.abs(z);
-
-                // Check if vertex is in corner/edge region
-                const inCornerX = ax > innerSize;
-                const inCornerY = ay > innerSize;
-                const inCornerZ = az > innerSize;
-
-                if (inCornerX || inCornerY || inCornerZ) {
-                    // Clamp to inner box
-                    const cx = Math.sign(x) * Math.min(ax, innerSize);
-                    const cy = Math.sign(y) * Math.min(ay, innerSize);
-                    const cz = Math.sign(z) * Math.min(az, innerSize);
-
-                    // Direction from clamped point to original
-                    let dx = x - cx;
-                    let dy = y - cy;
-                    let dz = z - cz;
-
-                    // Normalize and scale to bevel radius
-                    const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                    if (len > 0.0001) {
-                        dx /= len;
-                        dy /= len;
-                        dz /= len;
-
-                        x = cx + dx * bevelRadius;
-                        y = cy + dy * bevelRadius;
-                        z = cz + dz * bevelRadius;
-                    }
-
-                    positions.setXYZ(i, x, y, z);
-                }
-            }
-
-            geometry.computeVertexNormals();
-            return geometry;
-        }
-
         // Create window frame geometry
         static createWindowFrame(options = {}) {
             const {
@@ -515,185 +461,152 @@
         }
 
         // Create sphere geometry
-        static createSphere(radius = 0.5, segments = 64) {
+        static createSphere(radius = 0.7, segments = 64) {
             return new THREE.SphereGeometry(radius, segments, segments);
+        }
+
+        // Create bent panel geometry - folded sheet metal (L-shape)
+        static createBentPanel(options = {}) {
+            const {
+                width = 1.2,
+                legLength = 0.9,
+                thickness = 0.03,
+                bendRadius = 0.08,
+                bendSegments = 48
+            } = options;
+
+            // Use Three.js Shape and ExtrudeGeometry for a clean, watertight mesh
+            const shape = new THREE.Shape();
+
+            const outerR = bendRadius + thickness / 2;
+            const innerR = bendRadius - thickness / 2;
+
+            // Both legs should have equal visible length and thickness
+            // Arc center positioned so inner/outer arcs align with leg surfaces
+
+            const arcCenterX = legLength;
+            const arcCenterY = thickness / 2 + innerR; // Places inner arc tangent to horizontal leg top
+
+            // Start at bottom-left of horizontal leg (outer edge)
+            shape.moveTo(0, -thickness / 2);
+
+            // Bottom edge of horizontal leg
+            shape.lineTo(legLength, -thickness / 2);
+
+            // Outer arc of bend
+            for (let i = 0; i <= bendSegments; i++) {
+                const angle = -Math.PI / 2 + (Math.PI / 2) * (i / bendSegments);
+                const x = arcCenterX + Math.cos(angle) * outerR;
+                const y = arcCenterY + Math.sin(angle) * outerR;
+                shape.lineTo(x, y);
+            }
+
+            // Right edge of vertical leg (going up) - same length as horizontal
+            const verticalEndY = arcCenterY + legLength;
+            shape.lineTo(legLength + outerR, verticalEndY);
+
+            // Top edge of vertical leg
+            shape.lineTo(legLength + innerR, verticalEndY);
+
+            // Inner edge of vertical leg (going down to arc)
+            shape.lineTo(legLength + innerR, arcCenterY);
+
+            // Inner arc of bend
+            for (let i = bendSegments; i >= 0; i--) {
+                const angle = -Math.PI / 2 + (Math.PI / 2) * (i / bendSegments);
+                const x = arcCenterX + Math.cos(angle) * innerR;
+                const y = arcCenterY + Math.sin(angle) * innerR;
+                shape.lineTo(x, y);
+            }
+
+            // Top edge of horizontal leg (going back to start)
+            shape.lineTo(0, thickness / 2);
+
+            // Left edge (close the shape)
+            shape.lineTo(0, -thickness / 2);
+
+            // Extrude the shape to give it depth (width)
+            const extrudeSettings = {
+                steps: 1,
+                depth: width,
+                bevelEnabled: false
+            };
+
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+            // Center the geometry
+            geometry.translate(-legLength / 2, -legLength / 2, -width / 2);
+
+            // Rotate so the L-shape is oriented nicely
+            geometry.rotateX(-Math.PI / 2);
+
+            geometry.computeVertexNormals();
+
+            return geometry;
         }
 
         // Create S-curve sample geometry for material visualization
         static createCurvedSample(options = {}) {
             const {
-                width = 1.2,
-                height = 0.8,
-                depth = 0.6,
-                segmentsX = 64,
-                segmentsY = 32,
-                thickness = 0.04
+                width = 1.0,
+                amplitude = 0.15,
+                thickness = 0.03,
+                segments = 192
             } = options;
 
-            // Create parametric S-curve surface
-            const geometry = new THREE.BufferGeometry();
+            // Use Three.js Shape and ExtrudeGeometry for a clean, watertight mesh
+            // The S-curve is defined in 2D (X = position along curve, Y = height based on sine)
+            const shape = new THREE.Shape();
 
-            const verticesTop = [];
-            const verticesBottom = [];
-            const normals = [];
-            const indices = [];
+            // S-curve function: sine wave
+            const sCurve = (u) => Math.sin(u * Math.PI * 2) * amplitude;
 
-            // S-curve function: true S-shape with convex and concave regions
-            const sCurve = (u) => {
-                // Full sine wave creates proper S: up, cross zero, down
-                // Amplitude 0.25 for a gentle curve
-                return Math.sin(u * Math.PI * 2) * 0.25;
+            // Generate points along the S-curve for outer edge (top surface)
+            const outerPoints = [];
+            const innerPoints = [];
+
+            for (let i = 0; i <= segments; i++) {
+                const u = i / segments;
+                const x = (u - 0.5) * width;
+                const y = sCurve(u);
+                outerPoints.push({ x, y: y + thickness / 2 });
+                innerPoints.push({ x, y: y - thickness / 2 });
+            }
+
+            // Start at the left end of outer edge
+            shape.moveTo(outerPoints[0].x, outerPoints[0].y);
+
+            // Trace outer edge (top) left to right
+            for (let i = 1; i <= segments; i++) {
+                shape.lineTo(outerPoints[i].x, outerPoints[i].y);
+            }
+
+            // Right end cap - connect outer to inner
+            shape.lineTo(innerPoints[segments].x, innerPoints[segments].y);
+
+            // Trace inner edge (bottom) right to left
+            for (let i = segments - 1; i >= 0; i--) {
+                shape.lineTo(innerPoints[i].x, innerPoints[i].y);
+            }
+
+            // Left end cap - close the shape
+            shape.lineTo(outerPoints[0].x, outerPoints[0].y);
+
+            // Extrude the shape to give it depth
+            const extrudeSettings = {
+                steps: 64,
+                depth: width * 0.7,
+                bevelEnabled: false
             };
 
-            // Generate vertices for top surface
-            for (let iy = 0; iy <= segmentsY; iy++) {
-                const v = iy / segmentsY;
-                for (let ix = 0; ix <= segmentsX; ix++) {
-                    const u = ix / segmentsX;
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
-                    // Position
-                    const x = (u - 0.5) * width;
-                    const y = (v - 0.5) * height;
+            // Center the geometry
+            geometry.translate(0, 0, -width * 0.35);
 
-                    // Z is the S-curve
-                    const z = sCurve(u) * depth;
+            // Rotate so the S-curve is horizontal with waves going up/down
+            geometry.rotateX(Math.PI / 2);
 
-                    verticesTop.push(x, y, z + thickness / 2);
-                    verticesBottom.push(x, y, z - thickness / 2);
-                }
-            }
-
-            // Calculate normals for top surface
-            const calcNormal = (vertices, ix, iy, cols) => {
-                const idx = (iy * cols + ix) * 3;
-                const idxRight = idx + 3;
-                const idxUp = idx + cols * 3;
-
-                // Get tangent vectors
-                const tx = vertices[idxRight] - vertices[idx];
-                const ty = vertices[idxRight + 1] - vertices[idx + 1];
-                const tz = vertices[idxRight + 2] - vertices[idx + 2];
-
-                const ux = vertices[idxUp] - vertices[idx];
-                const uy = vertices[idxUp + 1] - vertices[idx + 1];
-                const uz = vertices[idxUp + 2] - vertices[idx + 2];
-
-                // Cross product
-                let nx = ty * uz - tz * uy;
-                let ny = tz * ux - tx * uz;
-                let nz = tx * uy - ty * ux;
-
-                // Normalize
-                const len = Math.sqrt(nx * nx + ny * ny + nz * nz);
-                if (len > 0) {
-                    nx /= len;
-                    ny /= len;
-                    nz /= len;
-                }
-
-                return [nx, ny, nz];
-            };
-
-            // Build complete mesh with top, bottom, and edges
-            const allVertices = [];
-            const allNormals = [];
-            const allIndices = [];
-
-            const cols = segmentsX + 1;
-            const rows = segmentsY + 1;
-
-            // Top surface
-            const topOffset = 0;
-            for (let iy = 0; iy < rows; iy++) {
-                for (let ix = 0; ix < cols; ix++) {
-                    const idx = (iy * cols + ix) * 3;
-                    allVertices.push(verticesTop[idx], verticesTop[idx + 1], verticesTop[idx + 2]);
-
-                    // Calculate normal (use finite differences)
-                    const ixSafe = Math.min(ix, segmentsX - 1);
-                    const iySafe = Math.min(iy, segmentsY - 1);
-                    const [nx, ny, nz] = calcNormal(verticesTop, ixSafe, iySafe, cols);
-                    allNormals.push(nx, ny, nz);
-                }
-            }
-
-            // Generate indices for top surface
-            for (let iy = 0; iy < segmentsY; iy++) {
-                for (let ix = 0; ix < segmentsX; ix++) {
-                    const a = topOffset + iy * cols + ix;
-                    const b = topOffset + iy * cols + ix + 1;
-                    const c = topOffset + (iy + 1) * cols + ix + 1;
-                    const d = topOffset + (iy + 1) * cols + ix;
-                    allIndices.push(a, b, c, a, c, d);
-                }
-            }
-
-            // Bottom surface (reversed winding)
-            const bottomOffset = allVertices.length / 3;
-            for (let iy = 0; iy < rows; iy++) {
-                for (let ix = 0; ix < cols; ix++) {
-                    const idx = (iy * cols + ix) * 3;
-                    allVertices.push(verticesBottom[idx], verticesBottom[idx + 1], verticesBottom[idx + 2]);
-
-                    const ixSafe = Math.min(ix, segmentsX - 1);
-                    const iySafe = Math.min(iy, segmentsY - 1);
-                    const [nx, ny, nz] = calcNormal(verticesTop, ixSafe, iySafe, cols);
-                    allNormals.push(-nx, -ny, -nz); // Flipped normal
-                }
-            }
-
-            // Generate indices for bottom surface (reversed)
-            for (let iy = 0; iy < segmentsY; iy++) {
-                for (let ix = 0; ix < segmentsX; ix++) {
-                    const a = bottomOffset + iy * cols + ix;
-                    const b = bottomOffset + iy * cols + ix + 1;
-                    const c = bottomOffset + (iy + 1) * cols + ix + 1;
-                    const d = bottomOffset + (iy + 1) * cols + ix;
-                    allIndices.push(a, c, b, a, d, c); // Reversed
-                }
-            }
-
-            // Edge strips (connect top and bottom along perimeter)
-            const addEdgeStrip = (startTop, startBottom, count, step, normalDir) => {
-                const edgeOffset = allVertices.length / 3;
-
-                for (let i = 0; i <= count; i++) {
-                    const topIdx = (startTop + i * step) * 3;
-                    const bottomIdx = (startBottom + i * step) * 3;
-
-                    // Top edge vertex
-                    allVertices.push(verticesTop[topIdx], verticesTop[topIdx + 1], verticesTop[topIdx + 2]);
-                    allNormals.push(normalDir[0], normalDir[1], normalDir[2]);
-
-                    // Bottom edge vertex
-                    allVertices.push(verticesBottom[bottomIdx], verticesBottom[bottomIdx + 1], verticesBottom[bottomIdx + 2]);
-                    allNormals.push(normalDir[0], normalDir[1], normalDir[2]);
-                }
-
-                // Generate indices for edge strip
-                for (let i = 0; i < count; i++) {
-                    const a = edgeOffset + i * 2;
-                    const b = edgeOffset + i * 2 + 1;
-                    const c = edgeOffset + (i + 1) * 2 + 1;
-                    const d = edgeOffset + (i + 1) * 2;
-                    allIndices.push(a, b, c, a, c, d);
-                }
-            };
-
-            // Front edge (y = -height/2)
-            addEdgeStrip(0, 0, segmentsX, 1, [0, -1, 0]);
-            // Back edge (y = height/2)
-            addEdgeStrip(segmentsY * cols, segmentsY * cols, segmentsX, 1, [0, 1, 0]);
-            // Left edge (x = -width/2)
-            addEdgeStrip(0, 0, segmentsY, cols, [-1, 0, 0]);
-            // Right edge (x = width/2)
-            addEdgeStrip(segmentsX, segmentsX, segmentsY, cols, [1, 0, 0]);
-
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(allVertices, 3));
-            geometry.setAttribute('normal', new THREE.Float32BufferAttribute(allNormals, 3));
-            geometry.setIndex(allIndices);
-
-            // Smooth the normals
             geometry.computeVertexNormals();
 
             return geometry;
@@ -710,42 +623,37 @@
             this.lights = [];
             this.keyLight = null;
             this.fillLight = null;
+            this.rimLight = null;
+            this._animating = false;
+            this._animationId = null;
         }
 
         createStudioSetup() {
-            // Ambient light for overall base illumination
-            const ambient = new THREE.AmbientLight(0xffffff, 0.3);
-            this.lights.push(ambient);
+            // Classic 3-point lighting setup for product visualization
+            // Camera is at front-right-top, ~30° from front
 
-            // Hemisphere light (sky/ground gradient) - higher for softer shadows
-            const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 0.6);
-            hemi.position.set(0, 20, 0);
+            // Ambient: Soft hemisphere for base illumination (prevents pure black shadows)
+            const hemi = new THREE.HemisphereLight(0xffffff, 0xe8e8e8, 0.8);
+            hemi.position.set(0, 10, 0);
             this.lights.push(hemi);
 
-            // Front light (main illumination from camera direction)
-            const frontLight = new THREE.DirectionalLight(0xffffff, 0.7);
-            frontLight.position.set(0, 2, 10);
-            this.lights.push(frontLight);
-
-            // Key light (main directional from top-right)
-            this.keyLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            this.keyLight.position.set(5, 8, 5);
+            // Key light: Main light, 45° right of camera, 45° above
+            // Strongest light, defines the main illumination direction
+            this.keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            this.keyLight.position.set(5, 5, 5);
             this.lights.push(this.keyLight);
 
-            // Fill light (left side, softer) - can be tinted by undertone
-            this.fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            this.fillLight.position.set(-6, 4, 2);
+            // Fill light: Opposite side of key, softer (about 1/2 key intensity)
+            // Fills in shadows without eliminating them
+            this.fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            this.fillLight.position.set(-4, 3, 4);
             this.lights.push(this.fillLight);
 
-            // Top light for specular highlights
-            const topLight = new THREE.DirectionalLight(0xffffff, 0.3);
-            topLight.position.set(0, 10, 0);
-            this.lights.push(topLight);
-
-            // Rim light (back light for edge definition)
-            const rimLight = new THREE.DirectionalLight(0xffffff, 0.25);
-            rimLight.position.set(0, 3, -8);
-            this.lights.push(rimLight);
+            // Rim/back light: Behind and above, creates edge definition
+            // Separates object from background
+            this.rimLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            this.rimLight.position.set(0, 4, -4);
+            this.lights.push(this.rimLight);
 
             // Add all lights to scene
             this.lights.forEach(light => this.scene.add(light));
@@ -765,72 +673,131 @@
             this.fillLight.color.copy(tintedColor);
         }
 
-        // Apply lighting preset
-        // Aligned with backend LightingSimulator.DirectSunlightConditions
-        applyPreset(preset) {
-            // Kelvin to approximate RGB (from TemperatureToLinearRgb algorithm):
-            // 2800K → 0xffb46b (warm amber)
-            // 4000K → 0xffd1a3 (warm yellow)
-            // 5500K → 0xfff4e5 (neutral warm)
-            // 6500K → 0xffffff (D65 white reference)
-            const presets = {
-                'studio': {
-                    // Neutral D65 reference lighting for true color
-                    ambient: { color: 0xffffff, intensity: 0.3 },
-                    hemi: { skyColor: 0xffffff, groundColor: 0xaaaaaa, intensity: 0.6 },
-                    key: { color: 0xffffff, intensity: 0.5 },
-                    fill: { color: 0xffffff, intensity: 0.5 }
+        // Lighting presets
+        static PRESETS = {
+            'studio': {
+                hemi: { skyColor: 0xffffff, groundColor: 0xf0f0f0, intensity: 0.8 },
+                key: { color: 0xffffff, intensity: 1.2 },
+                fill: { color: 0xffffff, intensity: 0.6 },
+                rim: { color: 0xffffff, intensity: 0.5 }
+            },
+            'morning': {
+                hemi: { skyColor: 0xfff8f0, groundColor: 0xf0ebe5, intensity: 0.75 },
+                key: { color: 0xffe8d0, intensity: 1.2 },
+                fill: { color: 0xe8f0f8, intensity: 0.55 },
+                rim: { color: 0xfff4e8, intensity: 0.45 }
+            },
+            'midday': {
+                hemi: { skyColor: 0xfcfcff, groundColor: 0xf0f0f0, intensity: 0.85 },
+                key: { color: 0xfffcf8, intensity: 1.25 },
+                fill: { color: 0xf0f4f8, intensity: 0.6 },
+                rim: { color: 0xffffff, intensity: 0.5 }
+            },
+            'golden': {
+                hemi: { skyColor: 0xfff0e0, groundColor: 0xe8ddd0, intensity: 0.7 },
+                key: { color: 0xffd8a8, intensity: 1.15 },
+                fill: { color: 0xd8e0e8, intensity: 0.5 },
+                rim: { color: 0xffe8c8, intensity: 0.4 }
+            },
+            'overcast': {
+                hemi: { skyColor: 0xf4f4f8, groundColor: 0xe8e8e8, intensity: 0.9 },
+                key: { color: 0xf8f8fc, intensity: 1.0 },
+                fill: { color: 0xf0f2f6, intensity: 0.65 },
+                rim: { color: 0xf0f0f4, intensity: 0.4 }
+            },
+            'night': {
+                // Cool moonlight - visible but with blue tint
+                hemi: { skyColor: 0x445577, groundColor: 0x202030, intensity: 0.5 },
+                key: { color: 0x99aacc, intensity: 0.9 },
+                fill: { color: 0x6677aa, intensity: 0.5 },
+                rim: { color: 0xaabbdd, intensity: 0.5 }
+            }
+        };
+
+        // Apply lighting preset with smooth animation
+        applyPreset(preset, duration = 600) {
+            const target = LightingRig.PRESETS[preset] || LightingRig.PRESETS['studio'];
+
+            // Cancel any ongoing animation
+            if (this._animationId) {
+                cancelAnimationFrame(this._animationId);
+            }
+
+            // Capture current state
+            const hemi = this.lights[0];
+            const start = {
+                hemi: {
+                    skyColor: hemi ? hemi.color.clone() : new THREE.Color(0xffffff),
+                    groundColor: hemi ? hemi.groundColor.clone() : new THREE.Color(0xf0f0f0),
+                    intensity: hemi ? hemi.intensity : 0.8
                 },
-                'morning': {
-                    // Backend: 4000K, 1.05 intensity - warm yellow morning sun
-                    ambient: { color: 0xfff0e0, intensity: 0.28 },
-                    hemi: { skyColor: 0xffeedd, groundColor: 0x998877, intensity: 0.5 },
-                    key: { color: 0xffd1a3, intensity: 0.65 },  // 4000K warm yellow
-                    fill: { color: 0x88aacc, intensity: 0.35 }  // Cool sky fill
+                key: {
+                    color: this.keyLight ? this.keyLight.color.clone() : new THREE.Color(0xffffff),
+                    intensity: this.keyLight ? this.keyLight.intensity : 1.2
                 },
-                'midday': {
-                    // Backend: 5500K, 1.18 intensity - bright neutral sun
-                    ambient: { color: 0xffffff, intensity: 0.35 },
-                    hemi: { skyColor: 0xeeffff, groundColor: 0xcccccc, intensity: 0.7 },
-                    key: { color: 0xfff4e5, intensity: 0.75 },  // 5500K neutral warm
-                    fill: { color: 0xaaccff, intensity: 0.3 }   // Blue sky fill
+                fill: {
+                    color: this.fillLight ? this.fillLight.color.clone() : new THREE.Color(0xffffff),
+                    intensity: this.fillLight ? this.fillLight.intensity : 0.6
                 },
-                'golden': {
-                    // Backend: 2800K, 0.92 intensity - golden hour amber
-                    ambient: { color: 0xffe0b0, intensity: 0.25 },
-                    hemi: { skyColor: 0xffddaa, groundColor: 0x886644, intensity: 0.45 },
-                    key: { color: 0xffb46b, intensity: 0.6 },   // 2800K warm amber
-                    fill: { color: 0x6688aa, intensity: 0.35 }  // Cool contrast
-                },
-                'overcast': {
-                    // Diffused daylight ~6500K - even, soft lighting
-                    ambient: { color: 0xe8e8f0, intensity: 0.5 },
-                    hemi: { skyColor: 0xddddee, groundColor: 0xaaaaaa, intensity: 0.7 },
-                    key: { color: 0xddeeff, intensity: 0.4 },
-                    fill: { color: 0xddeeff, intensity: 0.4 }
+                rim: {
+                    color: this.rimLight ? this.rimLight.color.clone() : new THREE.Color(0xffffff),
+                    intensity: this.rimLight ? this.rimLight.intensity : 0.5
                 }
             };
 
-            const p = presets[preset] || presets['studio'];
+            // Target colors as THREE.Color objects
+            const targetColors = {
+                hemi: {
+                    skyColor: new THREE.Color(target.hemi.skyColor),
+                    groundColor: new THREE.Color(target.hemi.groundColor)
+                },
+                key: { color: new THREE.Color(target.key.color) },
+                fill: { color: new THREE.Color(target.fill.color) },
+                rim: { color: new THREE.Color(target.rim.color) }
+            };
 
-            // Apply to lights (assuming order: ambient, hemi, front, key, fill, top, rim)
-            if (this.lights[0]) {
-                this.lights[0].color.setHex(p.ambient.color);
-                this.lights[0].intensity = p.ambient.intensity;
-            }
-            if (this.lights[1]) {
-                this.lights[1].color.setHex(p.hemi.skyColor);
-                this.lights[1].groundColor.setHex(p.hemi.groundColor);
-                this.lights[1].intensity = p.hemi.intensity;
-            }
-            if (this.keyLight) {
-                this.keyLight.color.setHex(p.key.color);
-                this.keyLight.intensity = p.key.intensity;
-            }
-            if (this.fillLight) {
-                this.fillLight.color.setHex(p.fill.color);
-                this.fillLight.intensity = p.fill.intensity;
-            }
+            const startTime = performance.now();
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Ease out cubic for smooth deceleration
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                // Interpolate hemisphere light
+                if (hemi) {
+                    hemi.color.lerpColors(start.hemi.skyColor, targetColors.hemi.skyColor, eased);
+                    hemi.groundColor.lerpColors(start.hemi.groundColor, targetColors.hemi.groundColor, eased);
+                    hemi.intensity = start.hemi.intensity + (target.hemi.intensity - start.hemi.intensity) * eased;
+                }
+
+                // Interpolate key light
+                if (this.keyLight) {
+                    this.keyLight.color.lerpColors(start.key.color, targetColors.key.color, eased);
+                    this.keyLight.intensity = start.key.intensity + (target.key.intensity - start.key.intensity) * eased;
+                }
+
+                // Interpolate fill light
+                if (this.fillLight) {
+                    this.fillLight.color.lerpColors(start.fill.color, targetColors.fill.color, eased);
+                    this.fillLight.intensity = start.fill.intensity + (target.fill.intensity - start.fill.intensity) * eased;
+                }
+
+                // Interpolate rim light
+                if (this.rimLight) {
+                    this.rimLight.color.lerpColors(start.rim.color, targetColors.rim.color, eased);
+                    this.rimLight.intensity = start.rim.intensity + (target.rim.intensity - start.rim.intensity) * eased;
+                }
+
+                if (progress < 1) {
+                    this._animationId = requestAnimationFrame(animate);
+                } else {
+                    this._animationId = null;
+                }
+            };
+
+            this._animationId = requestAnimationFrame(animate);
         }
 
         // Adjust lighting based on LRV
@@ -855,12 +822,20 @@
         }
 
         dispose() {
+            // Cancel any ongoing animation
+            if (this._animationId) {
+                cancelAnimationFrame(this._animationId);
+                this._animationId = null;
+            }
+
             this.lights.forEach(light => {
                 this.scene.remove(light);
                 if (light.dispose) light.dispose();
             });
             this.lights = [];
             this.keyLight = null;
+            this.fillLight = null;
+            this.rimLight = null;
         }
     }
 
@@ -908,10 +883,11 @@
             const isTransparent = this.options.background === 'transparent';
             this.renderer = new THREE.WebGLRenderer({
                 antialias: true,
-                alpha: isTransparent,
+                alpha: true,
                 powerPreference: 'high-performance'
             });
             this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            this.renderer.setClearColor(0x000000, 0); // Fully transparent
             this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
             this.renderer.toneMappingExposure = 1.1;
             this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -922,11 +898,9 @@
             this.renderer.setSize(width, height);
             this.container.appendChild(this.renderer.domElement);
 
-            // Create scene
+            // Create scene with gradient background
             this.scene = new THREE.Scene();
-            if (!isTransparent) {
-                this.scene.background = new THREE.Color(this.options.background);
-            }
+            this.scene.background = this._createGradientTexture();
 
             // Create camera
             this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -934,6 +908,9 @@
             // Setup lighting
             this.lightingRig = new LightingRig(this.scene);
             this.lightingRig.createStudioSetup();
+
+            // Add floor grid
+            this._createGrid();
 
             // Setup texture generator
             this.textureGen = new TextureGenerator();
@@ -972,13 +949,13 @@
                 const geometry = ModelFactory.createCurvedSample();
                 this.material = this._createMaterial();
                 this.model = new THREE.Mesh(geometry, this.material);
-            } else if (modelOption === 'sphere') {
-                const geometry = ModelFactory.createSphere(0.5, 64);
+            } else if (modelOption === 'bent-panel') {
+                const geometry = ModelFactory.createBentPanel();
                 this.material = this._createMaterial();
                 this.model = new THREE.Mesh(geometry, this.material);
             } else {
-                // Default: beveled cube
-                const geometry = ModelFactory.createBeveledCube(0.85, 0.03, 10);
+                // Default: sphere (best for showing material properties)
+                const geometry = ModelFactory.createSphere(0.5, 64);
                 this.material = this._createMaterial();
                 this.model = new THREE.Mesh(geometry, this.material);
             }
@@ -993,7 +970,46 @@
                 });
             }
 
+            // Tilt model toward camera (-20°)
+            this.model.rotation.x = -0.35;
+
             this.scene.add(this.model);
+        }
+
+        _createGradientTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 2;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Darker gradient: medium gray at top to darker gray at bottom
+            const gradient = ctx.createLinearGradient(0, 0, 0, 512);
+            gradient.addColorStop(0, '#606060');
+            gradient.addColorStop(1, '#303030');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 2, 512);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        _createGrid() {
+            // Create a subtle floor grid for visual grounding
+            const gridSize = 4;
+            const gridDivisions = 16;
+
+            // Grid colors - lighter for dark background
+            const gridColor = 0x555555;
+            const gridCenterColor = 0x666666;
+
+            this.grid = new THREE.GridHelper(gridSize, gridDivisions, gridCenterColor, gridColor);
+            this.grid.position.y = -0.8;
+            this.grid.material.opacity = 0.5;
+            this.grid.material.transparent = true;
+
+            this.scene.add(this.grid);
         }
 
         _createMaterial() {
@@ -1056,10 +1072,10 @@
             const size = box.getSize(new THREE.Vector3());
             const center = box.getCenter(new THREE.Vector3());
 
-            // Calculate camera distance to fit model
+            // Calculate camera distance to fit model (lower = more zoomed in)
             const maxDim = Math.max(size.x, size.y, size.z);
             const fov = this.camera.fov * (Math.PI / 180);
-            const distance = maxDim / (2 * Math.tan(fov / 2)) * 2.2;
+            const distance = maxDim / (2 * Math.tan(fov / 2)) * 1.6;
 
             // Position camera at an angle
             this.camera.position.set(
@@ -1240,6 +1256,13 @@
 
             this.lightingRig.dispose();
 
+            // Dispose grid
+            if (this.grid) {
+                this.scene.remove(this.grid);
+                if (this.grid.geometry) this.grid.geometry.dispose();
+                if (this.grid.material) this.grid.material.dispose();
+            }
+
             // Dispose model resources
             if (this.model) {
                 this.model.traverse(child => {
@@ -1274,7 +1297,7 @@
             return new PreviewInstance(container, options);
         },
         FINISHES: Object.keys(FINISH_PRESETS),
-        MODELS: ['cube', 'window-frame', 'door', 'curved-sample']
+        MODELS: ['sphere', 'bent-panel', 'curved-sample', 'window-frame', 'door']
     };
 
 })();
