@@ -3,7 +3,8 @@
   "MetaDescription": "RAL-Farben mit HEX, RGB & CMYK Codes, Konvertierungstools und Farbvergleichen. RAL Classic, Design System Plus und Effect Farben durchsuchen.",
   "WelcomeHeading": "Vollständige RAL-Farbdatenbank",
   "WelcomeBody": "Über 2.500 RAL-Farben mit genauen HEX-, RGB- und CMYK-Codes. Farben vergleichen, zwischen Formaten konvertieren und den perfekten Farbton für Ihr Projekt finden.",
-  "RalColorsHeading": "RAL-Farben",
+  "BrowseByColor": "Nach Farbe suchen",
+  "RalColorsHeading": "RAL-Paletten",
   "AllColors": "Alle RAL-Farben",
   "AllColorsDesc": "Die komplette Sammlung von RAL Classic, Design System Plus und Effect Farben durchsuchen.",
   "RalClassic": "RAL Classic",
@@ -18,5 +19,17 @@
   "Compare": "Farbvergleich",
   "CompareDesc": "Bis zu 8 RAL-Farben nebeneinander auf verschiedenen Hintergründen vergleichen.",
   "Picker": "Farbwähler",
-  "PickerDesc": "Laden Sie ein Bild hoch und identifizieren Sie die passenden RAL-Farben."
+  "PickerDesc": "Laden Sie ein Bild hoch und identifizieren Sie die passenden RAL-Farben.",
+  "Yellow": "Gelb",
+  "Orange": "Orange",
+  "Red": "Rot",
+  "Violet": "Violett",
+  "Blue": "Blau",
+  "Green": "Grün",
+  "Brown": "Braun",
+  "Grey": "Grau",
+  "White": "Weiß",
+  "Black": "Schwarz",
+  "Beige": "Beige",
+  "Pink": "Rosa"
 }

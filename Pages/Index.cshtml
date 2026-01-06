@@ -41,13 +41,6 @@
 }
 
 <section class="hero">
-    <div class="hero-colors" aria-hidden="true">
-        <div class="color-band band-1"></div>
-        <div class="color-band band-2"></div>
-        <div class="color-band band-3"></div>
-        <div class="color-band band-4"></div>
-        <div class="color-band band-5"></div>
-    </div>
     <div class="hero-content">
         <h1>@Localizer["WelcomeHeading"]</h1>
         <p class="hero-subtitle">@Localizer["WelcomeBody"]</p>
@@ -64,55 +57,82 @@
     <h2 class="section-title">@Localizer["RalColorsHeading"]</h2>
 
     <div class="palette-grid">
-        <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@RouteData.Values["culture"]" class="palette-card palette-classic">
-            <div class="palette-colors">
-                <span style="--c:#F3DA0B"></span>
-                <span style="--c:#E15501"></span>
-                <span style="--c:#CB2C30"></span>
-                <span style="--c:#A03472"></span>
-                <span style="--c:#1B4B9A"></span>
-                <span style="--c:#1E5F4D"></span>
-                <span style="--c:#826644"></span>
-                <span style="--c:#6C6E70"></span>
-            </div>
+        <a asp-page="/ral-colors/Category" asp-route-category="classic" asp-route-culture="@RouteData.Values["culture"]" class="palette-card">
+            <div class="palette-colors" style="background: linear-gradient(135deg, #F3DA0B 0%, #E15501 20%, #CB2C30 40%, #A03472 55%, #1B4B9A 70%, #1E5F4D 85%, #6C6E70 100%);"></div>
             <div class="palette-meta">
                 <strong>@Localizer["RalClassic"]</strong>
                 <span>@Localizer["RalClassicDesc"]</span>
             </div>
         </a>
 
-        <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@RouteData.Values["culture"]" class="palette-card palette-design">
-            <div class="palette-colors">
-                <span style="--c:#9A8B7A"></span>
-                <span style="--c:#8D9A82"></span>
-                <span style="--c:#BEB1A2"></span>
-                <span style="--c:#6E8285"></span>
-                <span style="--c:#A89C8F"></span>
-                <span style="--c:#7D9EB0"></span>
-                <span style="--c:#B8A99A"></span>
-                <span style="--c:#94A0A6"></span>
-            </div>
+        <a asp-page="/ral-colors/Category" asp-route-category="design-plus" asp-route-culture="@RouteData.Values["culture"]" class="palette-card">
+            <div class="palette-colors" style="background: linear-gradient(135deg, #E8D4B8 0%, #C17F59 18%, #8B4C6A 36%, #4A6FA5 54%, #45A77D 72%, #B8C76F 90%);"></div>
             <div class="palette-meta">
                 <strong>@Localizer["RalDesignPlus"]</strong>
                 <span>@Localizer["RalDesignPlusDesc"]</span>
             </div>
         </a>
 
-        <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@RouteData.Values["culture"]" class="palette-card palette-effect">
-            <div class="palette-colors">
-                <span style="--c:#8B8C7A"></span>
-                <span style="--c:#7A8B7D"></span>
-                <span style="--c:#6F7B6D"></span>
-                <span style="--c:#8E9283"></span>
-                <span style="--c:#A09B8B"></span>
-                <span style="--c:#7C8285"></span>
-                <span style="--c:#98A098"></span>
-                <span style="--c:#8A9190"></span>
-            </div>
+        <a asp-page="/ral-colors/Category" asp-route-category="effect" asp-route-culture="@RouteData.Values["culture"]" class="palette-card">
+            <div class="palette-colors" style="background: linear-gradient(135deg, #D4AF37 0%, #C0C0C0 25%, #8B7355 50%, #708090 75%, #B87333 100%);"></div>
             <div class="palette-meta">
                 <strong>@Localizer["RalEffect"]</strong>
                 <span>@Localizer["RalEffectDesc"]</span>
             </div>
+        </a>
+    </div>
+</section>
+
+<section class="root-colors">
+    <h2 class="section-title">@Localizer["BrowseByColor"]</h2>
+    <div class="root-colors-grid">
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="black" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #2C2C2E 0%, #000000 100%);"></div>
+            <span class="root-color-name">@Localizer["Black"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="grey" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #8E8E93 0%, #636366 100%);"></div>
+            <span class="root-color-name">@Localizer["Grey"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="white" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F7 100%); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1), inset 0 -4px 12px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.08);"></div>
+            <span class="root-color-name">@Localizer["White"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="beige" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #F5F5DC 0%, #E8DCC4 100%); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08), inset 0 -4px 12px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.08);"></div>
+            <span class="root-color-name">@Localizer["Beige"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="red" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #FF3B30 0%, #C0392B 100%);"></div>
+            <span class="root-color-name">@Localizer["Red"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="orange" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #FF9500 0%, #E67E22 100%);"></div>
+            <span class="root-color-name">@Localizer["Orange"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="yellow" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #FFD60A 0%, #F4C430 100%);"></div>
+            <span class="root-color-name">@Localizer["Yellow"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="green" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #34C759 0%, #27AE60 100%);"></div>
+            <span class="root-color-name">@Localizer["Green"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="blue" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #007AFF 0%, #2980B9 100%);"></div>
+            <span class="root-color-name">@Localizer["Blue"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="violet" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #AF52DE 0%, #8E44AD 100%);"></div>
+            <span class="root-color-name">@Localizer["Violet"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="pink" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #FF2D55 0%, #FF6B8A 100%);"></div>
+            <span class="root-color-name">@Localizer["Pink"]</span>
+        </a>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@RouteData.Values["culture"]" asp-route-color="brown" class="root-color-card">
+            <div class="root-color-swatch" style="background: linear-gradient(135deg, #A2845E 0%, #8B4513 100%);"></div>
+            <span class="root-color-name">@Localizer["Brown"]</span>
         </a>
     </div>
 </section>

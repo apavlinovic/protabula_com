@@ -25,6 +25,32 @@ public enum RootColor
     Beige
 }
 
+public static class RootColorExtensions
+{
+    private static readonly RootColor[] DisplayOrder =
+    [
+        RootColor.Black,
+        RootColor.Grey,
+        RootColor.White,
+        RootColor.Beige,
+        RootColor.Red,
+        RootColor.Orange,
+        RootColor.Yellow,
+        RootColor.Green,
+        RootColor.Blue,
+        RootColor.Violet,
+        RootColor.Pink,
+        RootColor.Rose,
+        RootColor.Brown
+    ];
+
+    public static int GetDisplayOrder(this RootColor color)
+    {
+        var index = Array.IndexOf(DisplayOrder, color);
+        return index >= 0 ? index : int.MaxValue;
+    }
+}
+
 /// <summary>
 /// Primary undertone classification based on perceived color temperature.
 /// </summary>

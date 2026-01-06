@@ -48,7 +48,7 @@ public class CategoryModel : PageModel
             .Select(c => c.RootColor)
             .Where(r => r != RootColor.Unknown)
             .Distinct()
-            .OrderBy(r => r.ToString())
+            .OrderBy(r => r.GetDisplayOrder())
             .ToList();
 
         // Apply root color filter if selected
