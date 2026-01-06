@@ -18,7 +18,7 @@
     top: -3px;
     width: 4px;
     height: 18px;
-    background: var(--accent);
+    background: #ffffff;
     border-radius: 2px;
     transform: translateX(-50%);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);

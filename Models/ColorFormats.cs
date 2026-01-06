@@ -32,6 +32,7 @@ public sealed record ColorFormats
 
     /// <summary>
     /// Creates ColorFormats from a hex color string. Results are cached.
+    /// LRV is calculated from the hex color.
     /// </summary>
     public static ColorFormats FromHex(string hex)
     {
@@ -52,6 +53,16 @@ public sealed record ColorFormats
             Decimal = ColorMath.HexToDecimal(key),
             Lrv = ColorMath.HexToLrv(key)
         });
+    }
+
+    /// <summary>
+    /// Creates ColorFormats from a RalColor, using its pre-calculated LRV value.
+    /// </summary>
+    public static ColorFormats FromRalColor(RalColor color)
+    {
+        var formats = FromHex(color.Hex);
+        // Return with the official pre-calculated LRV instead of computed
+        return formats with { Lrv = color.Lrv };
     }
 
     // Formatted string helpers for display

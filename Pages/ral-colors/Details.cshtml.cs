@@ -45,7 +45,7 @@ public class RalColorDetailsModel : PageModel
 
         if (Color != RalColor.Empty)
         {
-            Formats = ColorFormats.FromHex(Color.Hex);
+            Formats = ColorFormats.FromRalColor(Color);
             Temperature = ColorMath.EstimateColorTemperature(Color.Hex);
             LightingVariations = LightingSimulator.GenerateUndertoneAwareVariations(Color.Hex);
             DirectSunlightVariations = LightingSimulator.GenerateUndertoneAwareDirectSunlightVariations(Color.Hex);

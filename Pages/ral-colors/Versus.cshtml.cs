@@ -59,8 +59,8 @@ public class VersusModel : PageModel
             return NotFound();
         }
 
-        Formats1 = ColorFormats.FromHex(Color1.Hex);
-        Formats2 = ColorFormats.FromHex(Color2.Hex);
+        Formats1 = ColorFormats.FromRalColor(Color1);
+        Formats2 = ColorFormats.FromRalColor(Color2);
 
         // Calculate comparison metrics
         DeltaE = ColorMath.GetDeltaE(Color1.Hex, Color2.Hex);

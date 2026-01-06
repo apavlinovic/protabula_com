@@ -151,6 +151,7 @@ public sealed class RalColor
         IReadOnlyList<string> tags,
         string hex,
         decimal brightness,
+        double lrv,
         string number,
         string name,
         string nameDe,
@@ -162,6 +163,7 @@ public sealed class RalColor
         Tags = tags;
         Hex = hex;
         Brightness = brightness;
+        Lrv = lrv;
         Number = number;
         Name = name;
         NameDe = nameDe;
@@ -177,6 +179,12 @@ public sealed class RalColor
     public IReadOnlyList<string> Tags { get; }
     public string Hex { get; }
     public decimal Brightness { get; }
+
+    /// <summary>
+    /// Light Reflectance Value (0-100). Pre-calculated from official RAL data.
+    /// </summary>
+    public double Lrv { get; }
+
     public string Number { get; }
     public string Name { get; }
     public string NameDe { get; }
@@ -232,6 +240,7 @@ public sealed class RalColor
         Array.Empty<string>(),
         "#000000",
         0m,
+        0.0,
         string.Empty,
         string.Empty,
         string.Empty,

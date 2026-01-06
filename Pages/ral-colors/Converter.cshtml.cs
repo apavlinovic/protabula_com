@@ -31,7 +31,7 @@ public class ConverterModel : PageModel
 
         if (SelectedColor != null)
         {
-            Formats = ColorFormats.FromHex(SelectedColor.Hex);
+            Formats = ColorFormats.FromRalColor(SelectedColor);
         }
     }
 }

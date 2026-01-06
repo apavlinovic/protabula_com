@@ -604,3 +604,16 @@ hr {
     background: var(--text-primary);
     color: var(--text-on-primary);
 }
+
+/* Text link */
+.text-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition);
+}
+
+.text-link:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
