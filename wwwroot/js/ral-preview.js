@@ -1088,7 +1088,7 @@
             const rect = this.container.getBoundingClientRect();
             const width = rect.width || 400;
             const height = rect.height || 300;
-            this.renderer.setSize(width, height);
+            this.renderer.setSize(width, height, false);
             this.container.appendChild(this.renderer.domElement);
 
             // Create scene with gradient background
@@ -1422,7 +1422,7 @@
 
             this.camera.aspect = width / height;
             this.camera.updateProjectionMatrix();
-            this.renderer.setSize(width, height);
+            this.renderer.setSize(width, height, false);
         }
 
         screenshot() {

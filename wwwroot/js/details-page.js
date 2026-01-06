@@ -6,7 +6,7 @@
     'use strict';
 
     // Cache busting version - update when JS files change
-    const JS_VERSION = '2.4.0';
+    const JS_VERSION = '2.5.0';
 
     let lastFocusedElement = null;
     let preview = null;

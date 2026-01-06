@@ -2,17 +2,17 @@
 .color-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
 }
 
 ::deep .color-tile {
-    width: 19%;
+    /* 5 per row: (100% - 4 gaps) / 5 */
+    width: calc((100% - 4 * var(--spacing-xs)) / 5);
 }
 
 @media (max-width: 900px) {
     ::deep .color-tile {
-        width: 32%;
-        height: auto;
-        padding: var(--spacing-lg) 0;
+        /* 3 per row: (100% - 2 gaps) / 3 */
+        width: calc((100% - 2 * var(--spacing-xs)) / 3);
     }
 }

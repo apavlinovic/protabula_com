@@ -94,12 +94,13 @@ h2 {
 .similar-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
     margin-bottom: var(--spacing-xl);
 }
 
 ::deep .similar-grid .color-tile {
-    width: calc(20% - var(--spacing-sm));
+    /* 5 per row: (100% - 4 gaps) / 5 */
+    width: calc((100% - 4 * var(--spacing-xs)) / 5);
 }
 
 /* Compare links section */
@@ -396,7 +397,8 @@ a.scene-image-wrapper:hover {
     }
 
     ::deep .similar-grid .color-tile {
-        width: calc(50% - var(--spacing-sm));
+        /* 3 per row: (100% - 2 gaps) / 3 */
+        width: calc((100% - 2 * var(--spacing-xs)) / 3);
     }
 
     .scene-grid {
