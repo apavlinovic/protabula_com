@@ -8,7 +8,7 @@
 @{
     var colorTitle = string.IsNullOrEmpty(Model.Color.Name)
     ? $"RAL {Model.Color.Number}"
-    : $"RAL {Model.Color.Number} {Model.Color.Name}";
+    : $"RAL {Model.Color.Number} ({Model.Color.Name})";
 
     // SEO-optimized title
     ViewData["Title"] = $"{colorTitle} - {Localizer["TitleSuffix"].Value}";
@@ -52,32 +52,37 @@ categorySlug }),
 }
 
 @section Head {
-    <link rel="stylesheet" href="~/css/details-page.css" asp-append-version="true" />
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/details-page.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/details-page.min.css" asp-append-version="true" />
+    </environment>
     <script type="application/ld+json">
-                {
-                    "@@context": "https://schema.org",
-                    "@@type": "BreadcrumbList",
-                    "itemListElement": [
-                        {
-                            "@@type": "ListItem",
-                            "position": 1,
-                            "name": "@Localizer["BreadcrumbHome"].Value",
-                            "item": "@baseUrl/@currentCulture"
-                        },
-                        {
-                            "@@type": "ListItem",
-                            "position": 2,
-                            "name": "@Localizer["BreadcrumbColors"].Value",
-                            "item": "@baseUrl/@currentCulture/ral-colors"
-                        },
-                        {
-                            "@@type": "ListItem",
-                            "position": 3,
-                            "name": "@colorTitle"
-                        }
-                    ]
-                }
-                </script>
+                    {
+                        "@@context": "https://schema.org",
+                        "@@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@@type": "ListItem",
+                                "position": 1,
+                                "name": "@Localizer["BreadcrumbHome"].Value",
+                                "item": "@baseUrl/@currentCulture"
+                            },
+                            {
+                                "@@type": "ListItem",
+                                "position": 2,
+                                "name": "@Localizer["BreadcrumbColors"].Value",
+                                "item": "@baseUrl/@currentCulture/ral-colors"
+                            },
+                            {
+                                "@@type": "ListItem",
+                                "position": 3,
+                                "name": "@colorTitle"
+                            }
+                        ]
+                    }
+                    </script>
 }
 
 
@@ -874,7 +879,8 @@ categorySlug }),
         </tr>
     </table>
     <p class="mt-lg">
-        <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="@categorySlug" class="text-link">
+        <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="@categorySlug"
+            class="text-link">
             @Localizer["ExploreCategory", categoryName]
         </a>
     </p>
@@ -912,7 +918,8 @@ categorySlug }),
             }
         </div>
         <p class="mt-lg">
-            <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" asp-route-color="@Model.Color.RootColor.ToString().ToLowerInvariant()" class="text-link">
+            <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+                asp-route-color="@Model.Color.RootColor.ToString().ToLowerInvariant()" class="text-link">
                 @Localizer["ExploreSimilarShades", Localizer[$"RootColor{Model.Color.RootColor}"].Value]
             </a>
         </p>
@@ -1038,8 +1045,8 @@ categorySlug }),
     <figure class="color-share-image">
         <img src="/images/ral-colors/@(Model.Color.Slug).jpg"
             alt="@(string.IsNullOrEmpty(Model.Color.Name)
-                                                                                                            ? Localizer["ImageAltBasic", Model.Color.Number, Model.Color.Hex].Value
-                                                                                                            : Localizer["ImageAltWithName", Model.Color.Number, Model.Color.Name, Model.Color.Hex].Value)"
+                                                                                                                        ? Localizer["ImageAltBasic", Model.Color.Number, Model.Color.Hex].Value
+                                                                                                                        : Localizer["ImageAltWithName", Model.Color.Number, Model.Color.Name, Model.Color.Hex].Value)"
             width="1200" height="630" loading="lazy" />
         <figcaption>
             <button class="btn btn-sm btn-secondary copy-url-btn"

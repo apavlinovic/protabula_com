@@ -1,11 +1,11 @@
 {
-  "Title": "RAL Colors Chart - Complete Color List",
-  "TitleFiltered": "All RAL {0} Colors",
-  "MetaDescription": "Complete RAL color chart with HEX and RGB codes. Browse all RAL Classic, RAL Effect, and RAL Design System Plus colors with search and comparison tools.",
-  "MetaDescriptionFiltered": "Browse all RAL {0} colors across Classic, Effect, and Design System Plus palettes. Find color codes, previews, and comparisons.",
-  "Intro": "On this page you will find the colour shades of all three RAL colour palettes - RAL CLASSIC, RAL EFFECT and RAL DESIGN SYSTEM plus.",
-  "SearchPlaceholder": "Search by name or number...",
-  "NoResults": "No colors found matching your search.",
-  "FilterAll": "All Colors",
-  "FilterByRootColor": "Filter by color family"
+    "Title": "RAL Color Chart – Complete List of All RAL Colors with HEX & RGB Codes",
+    "TitleFiltered": "All RAL {0} Colors – Full Chart & Color Codes",
+    "MetaDescription": "Explore the complete RAL Color Chart with HEX and RGB codes. Browse all RAL Classic, RAL Effect, and RAL Design System Plus colors in one place with search and comparison tools.",
+    "MetaDescriptionFiltered": "View all RAL {0} colors from the official RAL Color Chart, including Classic, Effect, and Design System Plus palettes. Check color codes, live previews, and side-by-side comparisons.",
+    "Intro": "On this page you can explore every shade from the official RAL Color Chart — including all three RAL palettes: RAL CLASSIC, RAL EFFECT, and RAL DESIGN SYSTEM plus. Each color includes accurate HEX and RGB codes for design, architecture, and manufacturing use.",
+    "SearchPlaceholder": "Search RAL color by name or number...",
+    "NoResults": "No RAL colors found matching your search.",
+    "FilterAll": "All RAL Colors",
+    "FilterByRootColor": "Filter by color family"
 }
