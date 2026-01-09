@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C \"C:\\\\Users\\\\Antonio\\\\Documents\\\\Github\\\\protabula_com\" log --oneline -5)"
+      "Bash(git -C \"C:\\\\Users\\\\Antonio\\\\Documents\\\\Github\\\\protabula_com\" log --oneline -5)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(du:*)",
+      "Bash(wc:*)",
+      "Bash(dotnet build:*)",
+      "Bash(ls:*)"
     ]
   }
 }
