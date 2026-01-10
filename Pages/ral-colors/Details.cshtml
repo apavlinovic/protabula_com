@@ -89,49 +89,21 @@ categorySlug }),
 <h1>@colorTitle</h1>
 
 @{
-    var lrvLevel = ColorMath.ClassifyLrv(Model.Formats?.Lrv ?? 0);
-    var undertoneStr = Model.Formats?.Undertone.Secondary != SecondaryUndertone.None
-    ? Localizer["DescUndertone",
-    Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"].Value,
-    Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"].Value].Value
-    : "";
-    var categoryStr = Localizer[$"DescCategory{Model.Color.Category}"].Value;
-    var lrvStr = Localizer[$"DescLrv{lrvLevel}"].Value;
-    var temperatureStr = Localizer[Model.Temperature.Classification].Value.ToLowerInvariant();
-    var rootColorStr = Localizer[$"RootColor{Model.Color.RootColor}"].Value;
+    var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var richDescription = Model.Color.GetLocalizedDescription(culture);
+    if (!string.IsNullOrEmpty(richDescription))
+    {
+        var colorLabel = string.IsNullOrEmpty(Model.Color.GetLocalizedName(culture))
+            ? $"RAL {Model.Color.Number}"
+            : $"RAL {Model.Color.Number} ({Model.Color.GetLocalizedName(culture)})";
+        richDescription = richDescription.Replace("{0}", colorLabel);
+    }
 }
 
-<p class="color-description">
-    @if (!string.IsNullOrEmpty(Model.Color.Name))
-    {
-        @Localizer["DescWithName",
-        Model.Color.Number,
-        Model.Color.Name,
-        temperatureStr,
-        rootColorStr,
-        undertoneStr,
-        categoryStr,
-        lrvStr,
-        Model.Color.Hex,
-        rgb.R,
-        rgb.G,
-        rgb.B]
-        }
-    else
-    {
-        @Localizer["DescNoName",
-        Model.Color.Number,
-        temperatureStr,
-        rootColorStr,
-        undertoneStr,
-        categoryStr,
-        lrvStr,
-        Model.Color.Hex,
-        rgb.R,
-        rgb.G,
-        rgb.B]
-        }
-</p>
+@if (!string.IsNullOrEmpty(richDescription))
+{
+    <p class="color-description color-description-rich">@richDescription</p>
+}
 
 @{
     var colorTileModel = new ColorTileModel(
@@ -233,8 +205,32 @@ categorySlug }),
     </div>
 </div>
 
+@{
+    var lrvLevel = ColorMath.ClassifyLrv(Model.Formats?.Lrv ?? 0);
+    var temperatureStr = Localizer[Model.Temperature.Classification].Value.ToLowerInvariant();
+    var rootColorStr = Localizer[$"RootColor{Model.Color.RootColor}"].Value;
+    var categoryStr = Localizer[$"DescCategory{Model.Color.Category}"].Value;
+
+    string undertonePhrase;
+    if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
+    {
+        var strengthStr = Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"].Value;
+        var undertoneColorStr = Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"].Value.ToLowerInvariant();
+        undertonePhrase = Localizer["DescUndertone", strengthStr, undertoneColorStr].Value;
+    }
+    else
+    {
+        undertonePhrase = "";
+    }
+}
+
 <section class="specular-preview-section mt-2xl">
     <h2>@Localizer["SpecularPreview", Model.Color.Number]</h2>
+    <p class="color-technical-description">
+        @Localizer["TechDescSentence1", Model.Color.Number, temperatureStr, rootColorStr, undertonePhrase, categoryStr]
+        @Localizer["TechDescSentence2", Model.Color.Number, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
+        @Localizer[$"DescLrv{lrvLevel}"]
+    </p>
     <p class="text-secondary text-sm"><em>@Localizer["SpecularDisclaimer"]</em></p>
 
     <div class="specular-preview-container">

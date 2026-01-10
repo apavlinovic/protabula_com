@@ -167,5 +167,8 @@
   "LrvHigh": "hell",
   "LrvVeryHigh": "sehr hell (reflektiert das meiste Licht)",
   "ExploreSimilarShades": "Alle RAL {0}-Töne entdecken →",
-  "ExploreCategory": "Alle {0} Farben durchsuchen →"
+  "ExploreCategory": "Alle {0} Farben durchsuchen →",
+
+  "TechDescSentence1": "RAL {0} ist ein {1}er {2}-Ton{3}, erhältlich in der {4}.",
+  "TechDescSentence2": "Der Hex-Farbcode von RAL {0} ist {1}, mit RGB-Werten von {2}, {3}, {4}."
 }

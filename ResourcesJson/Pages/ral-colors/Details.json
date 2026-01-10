@@ -167,5 +167,8 @@
   "LrvHigh": "light",
   "LrvVeryHigh": "very light (reflects most light)",
   "ExploreSimilarShades": "Explore all RAL {0} shades →",
-  "ExploreCategory": "Browse all {0} colors →"
+  "ExploreCategory": "Browse all {0} colors →",
+
+  "TechDescSentence1": "RAL {0} is a {1} {2} shade{3}, available in the {4}.",
+  "TechDescSentence2": "RAL {0}'s hex color code is {1}, with RGB values of {2}, {3}, {4}."
 }

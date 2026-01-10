@@ -156,7 +156,9 @@ public sealed class RalColor
         string name,
         string nameDe,
         string? descriptionEn = null,
-        string? descriptionDe = null)
+        string? descriptionDe = null,
+        IReadOnlyList<string>? usageTags = null,
+        IReadOnlyList<string>? moodTags = null)
     {
         Category = category;
         RootColor = rootColor;
@@ -169,6 +171,8 @@ public sealed class RalColor
         NameDe = nameDe;
         DescriptionEn = descriptionEn;
         DescriptionDe = descriptionDe;
+        UsageTags = usageTags ?? Array.Empty<string>();
+        MoodTags = moodTags ?? Array.Empty<string>();
     }
 
     public RalCategory Category { get; }
@@ -190,6 +194,16 @@ public sealed class RalColor
     public string NameDe { get; }
     public string? DescriptionEn { get; }
     public string? DescriptionDe { get; }
+
+    /// <summary>
+    /// Usage context tags (e.g., ARCHITECTURE, INDUSTRIAL, INTERIOR_DESIGN).
+    /// </summary>
+    public IReadOnlyList<string> UsageTags { get; }
+
+    /// <summary>
+    /// Mood/feeling tags (e.g., WARM, NATURAL, ELEGANT).
+    /// </summary>
+    public IReadOnlyList<string> MoodTags { get; }
 
     /// <summary>
     /// Returns true if the color has a description available.
@@ -245,5 +259,7 @@ public sealed class RalColor
         string.Empty,
         string.Empty,
         null,
-        null);
+        null,
+        Array.Empty<string>(),
+        Array.Empty<string>());
 }

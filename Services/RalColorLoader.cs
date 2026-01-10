@@ -91,7 +91,9 @@ public sealed class RalColorLoader : IRalColorLoader
                     record.Name ?? string.Empty,
                     record.NameDe ?? string.Empty,
                     record.DescriptionEn,
-                    record.DescriptionDe));
+                    record.DescriptionDe,
+                    record.UsageTags ?? Array.Empty<string>(),
+                    record.MoodTags ?? Array.Empty<string>()));
             }
 
             _cache = colors;
@@ -170,5 +172,7 @@ public sealed class RalColorLoader : IRalColorLoader
         [property: JsonPropertyName("name")] string? Name,
         [property: JsonPropertyName("name_de")] string? NameDe,
         [property: JsonPropertyName("description_en")] string? DescriptionEn,
-        [property: JsonPropertyName("description_de")] string? DescriptionDe);
+        [property: JsonPropertyName("description_de")] string? DescriptionDe,
+        [property: JsonPropertyName("usage_tags")] string[]? UsageTags,
+        [property: JsonPropertyName("mood_tags")] string[]? MoodTags);
 }
