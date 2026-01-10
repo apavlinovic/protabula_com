@@ -205,6 +205,8 @@ categorySlug }),
     </div>
 </div>
 
+<partial name="Shared/_ColorTags" model="(Model.Color.UsageTags, Model.Color.MoodTags)" />
+
 @{
     var lrvLevel = ColorMath.ClassifyLrv(Model.Formats?.Lrv ?? 0);
     var temperatureStr = Localizer[Model.Temperature.Classification].Value.ToLowerInvariant();

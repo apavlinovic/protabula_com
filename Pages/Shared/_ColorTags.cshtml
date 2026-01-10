@@ -1,0 +1,33 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@model (IReadOnlyList<string> UsageTags, IReadOnlyList<string> MoodTags)
+@inject IViewLocalizer Localizer
+
+@if (Model.UsageTags.Any() || Model.MoodTags.Any())
+{
+    <div class="color-tags-section">
+        @if (Model.UsageTags.Any())
+        {
+            <div class="tags-card">
+                <span class="tags-label">@Localizer["UsageTagsLabel"]</span>
+                <div class="tags-list">
+                    @foreach (var tag in Model.UsageTags)
+                    {
+                        <span class="tag tag-usage">@Localizer[$"Usage_{tag}"]</span>
+                    }
+                </div>
+            </div>
+        }
+        @if (Model.MoodTags.Any())
+        {
+            <div class="tags-card">
+                <span class="tags-label">@Localizer["MoodTagsLabel"]</span>
+                <div class="tags-list">
+                    @foreach (var tag in Model.MoodTags)
+                    {
+                        <span class="tag tag-mood">@Localizer[$"Mood_{tag}"]</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
