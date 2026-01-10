@@ -6,9 +6,11 @@
 @model RalColorDetailsModel
 @inject IViewLocalizer Localizer
 @{
-    var colorTitle = string.IsNullOrEmpty(Model.Color.Name)
+    var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var localizedName = Model.Color.GetLocalizedName(currentCulture);
+    var colorTitle = string.IsNullOrEmpty(localizedName)
     ? $"RAL {Model.Color.Number}"
-    : $"RAL {Model.Color.Number} ({Model.Color.Name})";
+    : $"RAL {Model.Color.Number} ({localizedName})";
 
     // SEO-optimized title
     ViewData["Title"] = $"{colorTitle} - {Localizer["TitleSuffix"].Value}";
@@ -23,7 +25,6 @@
     cmyk.C, cmyk.M, cmyk.Y, cmyk.K].Value;
 
     // For structured data
-    var currentCulture = CultureInfo.CurrentUICulture.Name;
     var request = ViewContext.HttpContext.Request;
     var baseUrl = $"{request.Scheme}://{request.Host}";
     var currentUrl = $"{baseUrl}/{currentCulture}/ral-colors/{Model.Color.Slug}";
@@ -89,13 +90,12 @@ categorySlug }),
 <h1>@colorTitle</h1>
 
 @{
-    var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-    var richDescription = Model.Color.GetLocalizedDescription(culture);
+    var richDescription = Model.Color.GetLocalizedDescription(currentCulture);
     if (!string.IsNullOrEmpty(richDescription))
     {
-        var colorLabel = string.IsNullOrEmpty(Model.Color.GetLocalizedName(culture))
+        var colorLabel = string.IsNullOrEmpty(localizedName)
             ? $"RAL {Model.Color.Number}"
-            : $"RAL {Model.Color.Number} ({Model.Color.GetLocalizedName(culture)})";
+            : $"RAL {Model.Color.Number} ({localizedName})";
         richDescription = richDescription.Replace("{0}", colorLabel);
     }
 }
