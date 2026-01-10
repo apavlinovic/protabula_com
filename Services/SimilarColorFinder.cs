@@ -18,6 +18,29 @@ public sealed class SimilarColor
     public double Distance { get; init; }
 }
 
+/// <summary>
+/// A color with mood similarity metrics to the reference color.
+/// </summary>
+public sealed class MoodSimilarColor
+{
+    public required RalColor Color { get; init; }
+
+    /// <summary>
+    /// Number of mood tags shared with the reference color.
+    /// </summary>
+    public int SharedTagCount { get; init; }
+
+    /// <summary>
+    /// Jaccard similarity index (shared / union). Range 0-1, higher = more similar.
+    /// </summary>
+    public double JaccardIndex { get; init; }
+
+    /// <summary>
+    /// The mood tags shared between both colors.
+    /// </summary>
+    public IReadOnlyList<string> SharedTags { get; init; } = [];
+}
+
 public interface ISimilarColorFinder
 {
     /// <summary>
@@ -34,6 +57,15 @@ public interface ISimilarColorFinder
     IReadOnlyList<RalColor> FindSameRootColorInCategory(
         RalColor referenceColor,
         IReadOnlyList<RalColor> allColors);
+
+    /// <summary>
+    /// Find colors with similar mood tags, ranked by Jaccard similarity.
+    /// </summary>
+    IReadOnlyList<MoodSimilarColor> FindSimilarByMood(
+        RalColor referenceColor,
+        IReadOnlyList<RalColor> allColors,
+        int minSharedTags = 2,
+        int maxCount = 8);
 }
 
 public sealed class SimilarColorFinder : ISimilarColorFinder
@@ -67,6 +99,41 @@ public sealed class SimilarColorFinder : ISimilarColorFinder
             .Where(c => c.Number != referenceColor.Number
                      && c.Category == referenceColor.Category
                      && c.RootColor == referenceColor.RootColor)
+            .ToList();
+    }
+
+    public IReadOnlyList<MoodSimilarColor> FindSimilarByMood(
+        RalColor referenceColor,
+        IReadOnlyList<RalColor> allColors,
+        int minSharedTags = 2,
+        int maxCount = 8)
+    {
+        if (referenceColor.MoodTags.Count == 0)
+            return [];
+
+        var referenceTags = referenceColor.MoodTags.ToHashSet();
+
+        return allColors
+            .Where(c => c.Number != referenceColor.Number && c.MoodTags.Count > 0)
+            .Select(c =>
+            {
+                var colorTags = c.MoodTags.ToHashSet();
+                var sharedTags = referenceTags.Intersect(colorTags).ToList();
+                var unionCount = referenceTags.Union(colorTags).Count();
+                var jaccard = unionCount > 0 ? (double)sharedTags.Count / unionCount : 0;
+
+                return new MoodSimilarColor
+                {
+                    Color = c,
+                    SharedTagCount = sharedTags.Count,
+                    JaccardIndex = jaccard,
+                    SharedTags = sharedTags
+                };
+            })
+            .Where(m => m.SharedTagCount >= minSharedTags)
+            .OrderByDescending(m => m.JaccardIndex)
+            .ThenByDescending(m => m.SharedTagCount)
+            .Take(maxCount)
             .ToList();
     }
 }

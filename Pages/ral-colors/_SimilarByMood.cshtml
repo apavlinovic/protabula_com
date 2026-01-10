@@ -1,0 +1,42 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Services
+@using System.Globalization
+@model IReadOnlyList<MoodSimilarColor>
+@inject IViewLocalizer Localizer
+
+@if (Model.Any())
+{
+    var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    <section class="similar-by-mood mt-4xl">
+        <h2>@Localizer["MoodSimilarTitle"]</h2>
+        <p class="text-secondary">@Localizer["MoodSimilarDesc"]</p>
+        <div class="mood-similar-grid">
+            @foreach (var similar in Model)
+            {
+                var localizedName = similar.Color.GetLocalizedName(currentCulture);
+                var colorLabel = string.IsNullOrEmpty(localizedName)
+                ? $"RAL {similar.Color.Number}"
+                : $"RAL {similar.Color.Number} {localizedName}";
+                <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture"
+                    asp-route-colorIdentifier="@similar.Color.Slug" class="mood-similar-card">
+                    <div class="mood-similar-swatch" style="background-color: @similar.Color.Hex;"></div>
+                    <div class="mood-similar-info">
+                        <span class="mood-similar-name">@colorLabel</span>
+                        <span class="mood-similar-tags">
+                            @foreach (var tag in similar.SharedTags.Take(3))
+                            {
+                                <span class="tag tag-mood-sm">@tag</span>
+                            }
+                            @if (similar.SharedTags.Count > 3)
+                            {
+                                <span class="tag tag-mood-sm tag-more">+@(similar.SharedTags.Count - 3)</span>
+                            }
+                        </span>
+                        <span class="mood-similar-match">@Localizer["MoodSimilarMatch", (similar.JaccardIndex *
+                                                100).ToString("0")]</span>
+            </div>
+        </a>
+                }
+        </div>
+    </section>
+}

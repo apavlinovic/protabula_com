@@ -15,6 +15,7 @@ public class RalColorDetailsModel : PageModel
         Color = RalColor.Empty;
         SimilarColors = [];
         SameRootColors = [];
+        MoodSimilarColors = [];
         LightingVariations = [];
         DirectSunlightVariations = [];
     }
@@ -23,6 +24,7 @@ public class RalColorDetailsModel : PageModel
     public RalColor Color { get; set; }
     public IReadOnlyList<SimilarColor> SimilarColors { get; set; }
     public IReadOnlyList<RalColor> SameRootColors { get; set; }
+    public IReadOnlyList<MoodSimilarColor> MoodSimilarColors { get; set; }
     public ColorFormats? Formats { get; private set; }
     public (int Kelvin, string Classification) Temperature { get; private set; }
     public IReadOnlyList<LightingVariation> LightingVariations { get; private set; }
@@ -52,6 +54,7 @@ public class RalColorDetailsModel : PageModel
             var allColors = await _loader.LoadAsync();
             SimilarColors = _similarColorFinder.FindSimilarInCategory(Color, allColors, maxCount: 10);
             SameRootColors = _similarColorFinder.FindSameRootColorInCategory(Color, allColors);
+            MoodSimilarColors = _similarColorFinder.FindSimilarByMood(Color, allColors, minSharedTags: 2, maxCount: 8);
         }
     }
 }

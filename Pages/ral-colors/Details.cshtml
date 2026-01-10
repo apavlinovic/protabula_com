@@ -53,12 +53,7 @@ categorySlug }),
 }
 
 @section Head {
-    <environment include="Development">
-        <link rel="stylesheet" href="~/css/details-page.css" asp-append-version="true" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/details-page.min.css" asp-append-version="true" />
-    </environment>
+    <link rel="stylesheet" href="~/css/details-page.css" asp-append-version="true" />
     <script type="application/ld+json">
                     {
                         "@@context": "https://schema.org",
@@ -205,7 +200,7 @@ categorySlug }),
     </div>
 </div>
 
-<partial name="Shared/_ColorTags" model="(Model.Color.UsageTags, Model.Color.MoodTags)" />
+<partial name="_ColorTags" model="(Model.Color.UsageTags, Model.Color.MoodTags)" />
 
 @{
     var lrvLevel = ColorMath.ClassifyLrv(Model.Formats?.Lrv ?? 0);
@@ -922,6 +917,11 @@ categorySlug }),
             </a>
         </p>
     </section>
+}
+
+@if (Model.MoodSimilarColors.Any())
+{
+    <partial name="_SimilarByMood" model="Model.MoodSimilarColors" />
 }
 
 @* FAQ Section *@
