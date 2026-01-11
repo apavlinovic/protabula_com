@@ -1,0 +1,9 @@
+{
+  "LightingPreview": "RAL {0} {1} Throughout the Day",
+  "LightingPreviewDesc": "See how this color appears from morning to night as natural light changes.",
+  "DirectSunlight": "RAL {0} {1} in Direct Sunlight",
+  "DirectSunlightDesc": "How this color looks when hit by direct sunlight at different times of day.",
+  "SunlightMorning": "Morning Sun",
+  "SunlightMidday": "Midday Sun",
+  "SunlightGoldenHour": "Golden Hour"
+}

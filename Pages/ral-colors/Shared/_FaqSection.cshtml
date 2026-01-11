@@ -1,0 +1,68 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@using protabula_com.Helpers
+@using protabula_com.Services
+@model (RalColor Color, string LocalizedName, double Lrv, LrvLevel LrvLevel, int TempKelvin, string? UndertoneDesc, bool IsWarm, bool IsCool, bool IsNeutralFamily, IReadOnlyList<SimilarColor>? SimilarColors, string Culture)
+@inject IViewLocalizer Localizer
+
+@{
+    var rootColorName = Model.Color.RootColor.ToString().ToLower();
+    var categoryName = Model.Color.Category.ToString();
+}
+
+<section class="faq-section">
+    <h2>@Localizer["FaqTitle"]</h2>
+    <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 itemprop="name">@Localizer["FaqWhatColor", Model.Color.Number]</h3>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p itemprop="text">@Localizer["FaqWhatColorAnswer", Model.Color.Number, Model.LocalizedName, rootColorName, categoryName, Model.Lrv, Model.TempKelvin]</p>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.LocalizedName))
+        {
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqWhatIsNameInRal", Model.LocalizedName]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">@Localizer["FaqWhatIsNameInRalAnswer", Model.LocalizedName, Model.Color.Number, categoryName]</p>
+                </div>
+            </div>
+        }
+
+        @if (Model.IsWarm || Model.IsCool)
+        {
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqWarmCool", Model.Color.Number]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">
+                        @(Model.IsWarm
+                            ? Localizer["FaqWarmAnswer", Model.Color.Number, Model.LocalizedName, Model.TempKelvin, Model.UndertoneDesc ?? ""]
+                            : Localizer["FaqCoolAnswer", Model.Color.Number, Model.LocalizedName, Model.TempKelvin, Model.UndertoneDesc ?? ""])
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (Model.IsNeutralFamily)
+        {
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqLightDark", Model.Color.Number]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">@Localizer["FaqLightDarkAnswer", Model.Color.Number, Model.Lrv, Localizer[$"Lrv{Model.LrvLevel}"].Value]</p>
+                </div>
+            </div>
+        }
+
+        @if (Model.SimilarColors?.Count > 0)
+        {
+            var topSimilar = Model.SimilarColors.Take(4).Select(c => $"RAL {c.Color.Number} {c.Color.GetLocalizedName(Model.Culture)}");
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">@Localizer["FaqSimilar", Model.Color.Number]</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">@Localizer["FaqSimilarAnswer", Model.LocalizedName, string.Join(", ", topSimilar)]</p>
+                </div>
+            </div>
+        }
+    </div>
+</section>

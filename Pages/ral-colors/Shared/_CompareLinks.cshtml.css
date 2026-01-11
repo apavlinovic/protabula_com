@@ -1,0 +1,40 @@
+.compare-links h2 {
+    margin-bottom: var(--spacing-md);
+}
+
+.compare-links-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+::deep .compare-link-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-subtle);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    transition: background var(--transition), color var(--transition);
+}
+
+::deep .compare-link-inline:hover {
+    background: var(--bg-muted);
+    color: var(--text-primary);
+}
+
+.compare-link-swatches-inline {
+    display: flex;
+    width: 32px;
+    height: 16px;
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.compare-link-swatches-inline span {
+    flex: 1;
+}

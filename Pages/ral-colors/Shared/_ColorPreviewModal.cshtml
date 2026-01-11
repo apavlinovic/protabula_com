@@ -1,0 +1,38 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model RalColor
+@inject IViewLocalizer Localizer
+
+@{
+    var bgOptions = new[] {
+        ("#FFFFFF", "BgWhite", true),
+        ("#E0E0E0", "BgLightGrey", false),
+        ("#9E9E9E", "BgGrey", false),
+        ("#424242", "BgDarkGrey", false),
+        ("#000000", "BgBlack", false)
+    };
+}
+
+<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;" role="dialog" aria-modal="true"
+    aria-labelledby="colorPreviewTitle" aria-describedby="colorPreviewDesc"
+    onclick="DetailsPage.closeColorPreview(event)">
+    <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
+    <p id="colorPreviewDesc" class="visually-hidden">RAL @Model.Number @(Model.Name ?? "")</p>
+    <button class="color-preview-close" onclick="DetailsPage.closeColorPreview(event)"
+        aria-label="@Localizer["Close"]">&times;</button>
+    <div class="color-preview-content">
+        <div class="color-preview-swatch" style="background-color: @Model.Hex;"></div>
+    </div>
+    <div class="color-preview-controls">
+        @foreach (var (bgColor, labelKey, isActive) in bgOptions)
+        {
+            <button class="bg-option @(isActive ? "active" : "")" data-bg="@bgColor" onclick="DetailsPage.changePreviewBg('@bgColor', this)">
+                <span class="bg-option-swatch" style="background-color: @bgColor;">
+                    <span style="background-color: @Model.Hex;"></span>
+                </span>
+                <span class="bg-option-label">@Localizer[labelKey]</span>
+            </button>
+        }
+    </div>
+    <div class="color-preview-fullscreen" style="background-color: @Model.Hex;"></div>
+</div>

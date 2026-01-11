@@ -1,0 +1,32 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model (string Slug, string Hex, string Number, string? Name)
+@inject IViewLocalizer Localizer
+
+@{
+    var scenes = new[] {
+("window", "SceneWindowAlt", "SceneWindow"),
+("front-door", "SceneFrontDoorAlt", "SceneFrontDoor"),
+("entrance", "SceneEntranceAlt", "SceneEntrance"),
+("balcony", "SceneBalconyAlt", "SceneBalcony"),
+("window-frame-detail", "SceneWindowFrameDetailAlt", "SceneWindowFrameDetail")
+};
+}
+
+<section class="scene-preview-section">
+    <h2>@Localizer["ScenePreview", Model.Number]</h2>
+    <p class="text-secondary text-sm"><em>@Localizer["SceneDisclaimer"]</em></p>
+    <div class="scene-grid">
+        @foreach (var (scene, altKey, captionKey) in scenes)
+        {
+            var imagePath = $"/images/ral-scenes/{Model.Slug}-{scene}.jpg";
+            <figure class="scene-preview">
+                <a href="@imagePath" target="_blank" class="scene-image-wrapper" style="background-color: @Model.Hex;">
+                    <img src="@imagePath" alt="@Localizer[altKey, Model.Number, Model.Name ?? ""]" class="scene-image"
+                        loading="lazy" />
+                </a>
+                <figcaption>@Localizer[captionKey, Model.Number]</figcaption>
+            </figure>
+        }
+    </div>
+</section>

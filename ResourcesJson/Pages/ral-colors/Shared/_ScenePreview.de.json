@@ -1,0 +1,14 @@
+{
+  "ScenePreview": "RAL {0} auf verschiedenen Oberfl\u00e4chen",
+  "SceneDisclaimer": "Dies sind digitale Darstellungen und k\u00f6nnen die dynamische Natur von Farben nicht vollst\u00e4ndig wiedergeben. Verwenden Sie sie nur als grobe Referenz. F\u00fcr eine exakte Farbabstimmung muss ein reales Muster unter verschiedenen Lichtbedingungen betrachtet werden.",
+  "SceneWindowAlt": "RAL {0} {1} Fenster",
+  "SceneFrontDoorAlt": "RAL {0} {1} Haust\u00fcr",
+  "SceneEntranceAlt": "RAL {0} {1} Eingang",
+  "SceneBalconyAlt": "RAL {0} {1} Balkon",
+  "SceneWindowFrameDetailAlt": "RAL {0} {1} Fensterrahmen Detail",
+  "SceneWindow": "RAL {0} Fenster",
+  "SceneFrontDoor": "RAL {0} Haust\u00fcr",
+  "SceneEntrance": "RAL {0} Eingang",
+  "SceneBalcony": "RAL {0} Balkon",
+  "SceneWindowFrameDetail": "RAL {0} Fensterrahmen Detail"
+}

@@ -1,0 +1,14 @@
+{
+  "LearnMetrics": "Understanding Color Metrics",
+  "LearnMetricsIntro": "Color can be measured in many different ways. Each metric captures a different aspect of how we perceive and work with color.",
+  "LearnHue": "Hue",
+  "LearnHueDesc": "Hue is the pure color position on the color wheel, measured in degrees from 0\u00b0 to 360\u00b0. Red is at 0\u00b0, yellow at 60\u00b0, green at 120\u00b0, cyan at 180\u00b0, blue at 240\u00b0, and magenta at 300\u00b0. Hue tells you what 'family' a color belongs to, independent of how light, dark, or vivid it is.",
+  "LearnSaturation": "Saturation",
+  "LearnSaturationDesc": "Saturation measures how pure or vivid a color is, from 0% (completely gray) to 100% (fully saturated). Low saturation colors appear muted or washed out, while high saturation colors are bold and intense. Saturation is sometimes called 'chroma' or 'intensity'.",
+  "LearnLrv": "Light Reflectance Value (LRV)",
+  "LearnLrvDesc": "LRV measures how much light a surface reflects, from 0 (absorbs all light, pure black) to 100 (reflects all light, pure white). This is crucial for interior design and architecture - colors with LRV below 50 absorb more light than they reflect, making spaces feel smaller and requiring more artificial lighting.",
+  "LearnTemperature": "Color Temperature",
+  "LearnTemperatureDesc": "Color temperature, measured in Kelvin (K), describes whether a color feels warm (lower K, orange/red tones) or cool (higher K, blue tones). This concept comes from blackbody radiation - as metal heats up, it glows from red (\u22482000K) through white (\u22485500K) to blue (\u224810000K). Warm colors create cozy, inviting atmospheres while cool colors feel calm and professional.",
+  "LearnUndertone": "Undertone",
+  "LearnUndertoneDesc": "Undertone is the subtle secondary hue that influences how a color appears and interacts with other colors. Even seemingly neutral colors often have warm (yellow, orange, red) or cool (blue, green, violet) undertones. Understanding undertones is essential for color coordination - colors with matching undertones tend to harmonize better together."
+}

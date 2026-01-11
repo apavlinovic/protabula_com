@@ -2,105 +2,51 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using protabula_com.Models
 @using protabula_com.Helpers
-@using System.Globalization
 @model RalColorDetailsModel
 @inject IViewLocalizer Localizer
 @{
-    var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-    var localizedName = Model.Color.GetLocalizedName(currentCulture);
-    var colorTitle = string.IsNullOrEmpty(localizedName)
-    ? $"RAL {Model.Color.Number}"
-    : $"RAL {Model.Color.Number} ({localizedName})";
-
-    // SEO-optimized title
-    ViewData["Title"] = $"{colorTitle} - {Localizer["TitleSuffix"].Value}";
-
-    // Meta description using ColorFormats
     var rgb = Model.Formats?.Rgb ?? (byte.MinValue, byte.MinValue, byte.MinValue);
     var cmyk = Model.Formats?.Cmyk ?? (0, 0, 0, 0);
+    var categoryName = Localizer[$"Category{Model.Color.Category}"].Value;
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+
+    ViewData["Title"] = $"{Model.ColorTitle} - {Localizer["TitleSuffix"].Value}";
     ViewData["MetaDescription"] = string.IsNullOrEmpty(Model.Color.Name)
     ? Localizer["MetaDescriptionBasic", Model.Color.Number, Model.Color.Hex, rgb.R, rgb.G, rgb.B, cmyk.C, cmyk.M, cmyk.Y,
     cmyk.K].Value
     : Localizer["MetaDescriptionWithName", Model.Color.Number, Model.Color.Name, Model.Color.Hex, rgb.R, rgb.G, rgb.B,
     cmyk.C, cmyk.M, cmyk.Y, cmyk.K].Value;
-
-    // For structured data
-    var request = ViewContext.HttpContext.Request;
-    var baseUrl = $"{request.Scheme}://{request.Host}";
-    var currentUrl = $"{baseUrl}/{currentCulture}/ral-colors/{Model.Color.Slug}";
-
-    // Breadcrumbs - include category
-    var categorySlug = Model.Color.Category switch
-    {
-        RalCategory.Classic => "classic",
-        RalCategory.DesignPlus => "design-plus",
-        RalCategory.Effect => "effect",
-        _ => "classic"
-    };
-    var categoryName = Localizer[$"Category{Model.Color.Category}"].Value;
-
+    ViewData["OgImage"] = $"{baseUrl}/images/ral-colors/{Model.Color.Slug}.jpg";
     ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
 {
-(Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = currentCulture
-}),
-(categoryName, "/ral-colors/Category", new Dictionary<string, string> { ["culture"] = currentCulture, ["category"] =
-categorySlug }),
-(colorTitle, null, null)
+(Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] =
+Model.CurrentCulture }),
+(categoryName, "/ral-colors/Category", new Dictionary<string, string> { ["culture"] = Model.CurrentCulture, ["category"]
+= Model.CategorySlug }),
+(Model.ColorTitle, null, null)
 };
-
-    // OG Image for social sharing
-    ViewData["OgImage"] = $"{baseUrl}/images/ral-colors/{Model.Color.Slug}.jpg";
 }
 
 @section Head {
     <link rel="stylesheet" href="~/css/details-page.css" asp-append-version="true" />
-    <script type="application/ld+json">
-                    {
-                        "@@context": "https://schema.org",
-                        "@@type": "BreadcrumbList",
-                        "itemListElement": [
-                            {
-                                "@@type": "ListItem",
-                                "position": 1,
-                                "name": "@Localizer["BreadcrumbHome"].Value",
-                                "item": "@baseUrl/@currentCulture"
-                            },
-                            {
-                                "@@type": "ListItem",
-                                "position": 2,
-                                "name": "@Localizer["BreadcrumbColors"].Value",
-                                "item": "@baseUrl/@currentCulture/ral-colors"
-                            },
-                            {
-                                "@@type": "ListItem",
-                                "position": 3,
-                                "name": "@colorTitle"
-                            }
-                        ]
-                    }
+    <script type="application/ld+json">{
+                            "@@context": "https://schema.org",
+                            "@@type": "BreadcrumbList",
+                            "itemListElement": [
+                                { "@@type": "ListItem", "position": 1, "name": "@Localizer["BreadcrumbHome"].Value", "item": "@baseUrl/@Model.CurrentCulture" },
+                                { "@@type": "ListItem", "position": 2, "name": "@Localizer["BreadcrumbColors"].Value", "item": "@baseUrl/@Model.CurrentCulture/ral-colors" },
+                                { "@@type": "ListItem", "position": 3, "name": "@Model.ColorTitle" }
+                            ]
+                        }
                     </script>
 }
 
 
-<h1>@colorTitle</h1>
+<h1>@Model.ColorTitle</h1>
 
 @{
-    var richDescription = Model.Color.GetLocalizedDescription(currentCulture);
-    if (!string.IsNullOrEmpty(richDescription))
-    {
-        var colorLabel = string.IsNullOrEmpty(localizedName)
-            ? $"RAL {Model.Color.Number}"
-            : $"RAL {Model.Color.Number} ({localizedName})";
-        richDescription = richDescription.Replace("{0}", colorLabel);
-    }
-}
-
-@if (!string.IsNullOrEmpty(richDescription))
-{
-    <p class="color-description color-description-rich">@richDescription</p>
-}
-
-@{
+    var richDescription = Model.Color.GetLocalizedDescription(Model.CurrentCulture)?.Replace("{0}", Model.ColorTitle);
     var colorTileModel = new ColorTileModel(
     Model.Color.Hex,
     UndertoneHex: Model.Formats?.UndertoneHex,
@@ -108,9 +54,11 @@ categorySlug }),
     OnClick: "DetailsPage.openColorPreview()",
     ClickHint: Localizer["ClickToPreview"].Value,
     NeedsDarkText: Model.Color.NeedsDarkText);
-    var hue = Model.Formats?.Hsl.H ?? 0;
-    var saturation = Model.Formats?.Hsl.S ?? 0;
-    var lrv = Model.Formats?.Lrv ?? 0;
+}
+
+@if (!string.IsNullOrEmpty(richDescription))
+{
+    <p class="color-description color-description-rich">@richDescription</p>
 }
 
 <div class="color-hero">
@@ -167,7 +115,7 @@ categorySlug }),
                     <partial name="Shared/_InfoTooltip" model="@(hueTip, (string ?)null)" />
                 </span>
             </span>
-            <partial name="Shared/_HueDiagram" model="hue" />
+            <partial name="Shared/_HueDiagram" model="Model.Hue" />
         </div>
         <div class="sidebar-card">
             <span class="property-label">
@@ -179,7 +127,7 @@ categorySlug }),
                     <partial name="Shared/_InfoTooltip" model="@(saturationTip, (string ?)null)" />
                 </span>
             </span>
-            <partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" />
+            <partial name="Shared/_SaturationBar" model="new SaturationBarModel(Model.Hue, Model.Saturation)" />
         </div>
         <div class="sidebar-card">
             <span class="property-label">
@@ -191,7 +139,7 @@ categorySlug }),
                     <partial name="Shared/_InfoTooltip" model="@(lrvTip, (string ?)null)" />
                 </span>
             </span>
-            <partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" />
+            <partial name="Shared/_LrvBar" model="new LrvBarModel(Model.Lrv)" />
         </div>
         <div class="sidebar-card">
             <span class="property-label">@Localizer["LabelHex", ""]</span>
@@ -203,30 +151,23 @@ categorySlug }),
 <partial name="_ColorTags" model="(Model.Color.UsageTags, Model.Color.MoodTags)" />
 
 @{
-    var lrvLevel = ColorMath.ClassifyLrv(Model.Formats?.Lrv ?? 0);
     var temperatureStr = Localizer[Model.Temperature.Classification].Value.ToLowerInvariant();
     var rootColorStr = Localizer[$"RootColor{Model.Color.RootColor}"].Value;
     var categoryStr = Localizer[$"DescCategory{Model.Color.Category}"].Value;
-
-    string undertonePhrase;
-    if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
-    {
-        var strengthStr = Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"].Value;
-        var undertoneColorStr = Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"].Value.ToLowerInvariant();
-        undertonePhrase = Localizer["DescUndertone", strengthStr, undertoneColorStr].Value;
-    }
-    else
-    {
-        undertonePhrase = "";
-    }
+    var undertonePhrase = Model.Formats?.Undertone.Secondary != SecondaryUndertone.None
+    ? Localizer["DescUndertone", Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"].Value,
+    Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"].Value.ToLowerInvariant()].Value
+    : "";
 }
 
-<section class="specular-preview-section mt-2xl">
+<hr>
+
+<section class="specular-preview-section">
     <h2>@Localizer["SpecularPreview", Model.Color.Number]</h2>
     <p class="color-technical-description">
         @Localizer["TechDescSentence1", Model.Color.Number, temperatureStr, rootColorStr, undertonePhrase, categoryStr]
         @Localizer["TechDescSentence2", Model.Color.Number, Model.Color.Hex, rgb.R, rgb.G, rgb.B]
-        @Localizer[$"DescLrv{lrvLevel}"]
+        @Localizer[$"DescLrv{Model.LrvLevel}"]
     </p>
     <p class="text-secondary text-sm"><em>@Localizer["SpecularDisclaimer"]</em></p>
 
@@ -372,141 +313,19 @@ categorySlug }),
     </div>
 </section>
 
-<section class="scene-preview-section mt-2xl">
-    <h2>@Localizer["ScenePreview", Model.Color.Number]</h2>
-    <p class="text-secondary text-sm"><em>@Localizer["SceneDisclaimer"]</em></p>
-    <div class="scene-grid">
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-window.jpg" target="_blank" class="scene-image-wrapper"
-                style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-window.jpg"
-                    alt="@Localizer["SceneWindowAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image"
-                    loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneWindow", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-front-door.jpg" target="_blank" class="scene-image-wrapper"
-                style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-front-door.jpg"
-                    alt="@Localizer["SceneFrontDoorAlt", Model.Color.Number, Model.Color.Name ?? ""]"
-                    class="scene-image" loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneFrontDoor", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-entrance.jpg" target="_blank" class="scene-image-wrapper"
-                style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-entrance.jpg"
-                    alt="@Localizer["SceneEntranceAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image"
-                    loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneEntrance", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-balcony.jpg" target="_blank" class="scene-image-wrapper"
-                style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-balcony.jpg"
-                    alt="@Localizer["SceneBalconyAlt", Model.Color.Number, Model.Color.Name ?? ""]" class="scene-image"
-                    loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneBalcony", Model.Color.Number]</figcaption>
-        </figure>
-        <figure class="scene-preview">
-            <a href="/images/ral-scenes/@(Model.Color.Slug)-window-frame-detail.jpg" target="_blank"
-                class="scene-image-wrapper" style="background-color: @Model.Color.Hex;">
-                <img src="/images/ral-scenes/@(Model.Color.Slug)-window-frame-detail.jpg"
-                    alt="@Localizer["SceneWindowFrameDetailAlt", Model.Color.Number, Model.Color.Name ?? ""]"
-                    class="scene-image" loading="lazy" />
-            </a>
-            <figcaption>@Localizer["SceneWindowFrameDetail", Model.Color.Number]</figcaption>
-        </figure>
-    </div>
-</section>
+<hr>
 
-<section class="lighting-preview-section mt-2xl">
-    <h2>@Localizer["LightingPreview", Model.Color.Number, Model.Color.Name ?? ""]</h2>
-    <p class="text-secondary">@Localizer["LightingPreviewDesc"]</p>
-    @{
-        var gradientStops = string.Join(", ", Model.LightingVariations.Select((v, i) =>
-        $"{v.Hex} {i * 100 / (Model.LightingVariations.Count - 1)}%"));
-    }
-    <div class="lighting-gradient-container">
-        <div class="lighting-gradient" style="background: linear-gradient(to right, @gradientStops);"></div>
-        <div class="lighting-labels">
-            @foreach (var variation in Model.LightingVariations)
-            {
-                <div class="lighting-label-item">
-                    <span class="lighting-time">@variation.Hour:00</span>
-                </div>
-            }
-        </div>
-    </div>
-</section>
+<partial name="Shared/_ScenePreview"
+    model="(Model.Color.Slug, Model.Color.Hex, Model.Color.Number, Model.Color.Name)" />
 
-<section class="direct-sunlight-section mt-2xl">
-    <h2>@Localizer["DirectSunlight", Model.Color.Number, Model.Color.Name ?? ""]</h2>
-    <p class="text-secondary">@Localizer["DirectSunlightDesc"]</p>
-    @{
-        var sunlightGradientStops = string.Join(", ", Model.DirectSunlightVariations.Select((v, i) =>
-        $"{v.Hex} {i * 100 / (Model.DirectSunlightVariations.Count - 1)}%"));
-    }
-    <div class="lighting-gradient-container">
-        <div class="lighting-gradient" style="background: linear-gradient(to right, @sunlightGradientStops);"></div>
-        <div class="lighting-labels sunlight-labels">
-            @foreach (var variation in Model.DirectSunlightVariations)
-            {
-                <div class="lighting-label-item">
-                    <svg class="sun-icon sun-icon-@variation.CssClass" viewBox="0 0 48 48" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <!-- Horizon arc -->
-                        <path
-                            d="M4 36 Q24 @(variation.Key == "Midday" ? "8" : variation.Key == "Morning" ? "24" : "24") 44 36"
-                            stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2" fill="none" opacity="0.4" />
-                        <!-- Horizon line -->
-                        <line x1="4" y1="36" x2="44" y2="36" stroke="currentColor" stroke-width="1.5" opacity="0.6" />
-                        <!-- Sun -->
-                        @if (variation.Key == "Morning")
-                        {
-                            <circle cx="12" cy="28" r="6" fill="#F59E0B" />
-                            <g stroke="#F59E0B" stroke-width="1.5">
-                                <line x1="12" y1="18" x2="12" y2="14" />
-                                <line x1="4" y1="28" x2="0" y2="28" />
-                                <line x1="6" y1="22" x2="3" y2="19" />
-                            </g>
-                        }
-                        else if (variation.Key == "Midday")
-                        {
-                            <circle cx="24" cy="16" r="7" fill="#FBBF24" />
-                            <g stroke="#FBBF24" stroke-width="1.5">
-                                <line x1="24" y1="5" x2="24" y2="1" />
-                                <line x1="24" y1="27" x2="24" y2="31" />
-                                <line x1="13" y1="16" x2="9" y2="16" />
-                                <line x1="35" y1="16" x2="39" y2="16" />
-                                <line x1="16" y1="8" x2="13" y2="5" />
-                                <line x1="32" y1="8" x2="35" y2="5" />
-                                <line x1="16" y1="24" x2="13" y2="27" />
-                                <line x1="32" y1="24" x2="35" y2="27" />
-                            </g>
-                        }
-                        else
-                        {
-                            <circle cx="36" cy="28" r="6" fill="#F97316" />
-                            <g stroke="#F97316" stroke-width="1.5">
-                                <line x1="36" y1="18" x2="36" y2="14" />
-                                <line x1="44" y1="28" x2="48" y2="28" />
-                                <line x1="42" y1="22" x2="45" y2="19" />
-                            </g>
-                        }
-                    </svg>
-                    <span class="lighting-time">@Localizer[$"Sunlight{variation.Key}"]</span>
-                </div>
-            }
-        </div>
-    </div>
-</section>
+<hr>
 
-<section class="contrast-section mt-2xl">
+<partial name="Shared/_LightingGradient"
+    model="(Model.LightingVariations, Model.DirectSunlightVariations, Model.Color.Number, Model.Color.Name)" />
+
+<hr>
+
+<section class="contrast-section">
     <h2>@Localizer["ContrastComparison", Model.Color.Number]</h2>
     @{
         var contrastBackgrounds = new[] {
@@ -531,8 +350,9 @@ categorySlug }),
     </div>
 </section>
 
+<hr>
 
-<section class="color-codes-section mt-4xl">
+<section class="color-codes-section">
     <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
     <table class="color-details">
         <tr>
@@ -662,7 +482,7 @@ categorySlug }),
                 @Localizer["LabelLrv", Model.Color.Number]
             </th>
             <td>
-                <partial name="Shared/_LrvBar" model="new LrvBarModel(lrv)" />
+                <partial name="Shared/_LrvBar" model="new LrvBarModel(Model.Lrv)" />
             </td>
         </tr>
         <tr>
@@ -702,7 +522,7 @@ categorySlug }),
                 @Localizer["PropHue"]
             </th>
             <td>
-                <partial name="Shared/_HueDiagram" model="hue" />
+                <partial name="Shared/_HueDiagram" model="Model.Hue" />
             </td>
         </tr>
         <tr>
@@ -717,7 +537,7 @@ categorySlug }),
                 @Localizer["PropSaturation"]
             </th>
             <td>
-                <partial name="Shared/_SaturationBar" model="new SaturationBarModel(hue, saturation)" />
+                <partial name="Shared/_SaturationBar" model="new SaturationBarModel(Model.Hue, Model.Saturation)" />
             </td>
         </tr>
         <tr>
@@ -872,37 +692,21 @@ categorySlug }),
         </tr>
     </table>
     <p class="mt-lg">
-        <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="@categorySlug"
-            class="text-link">
+        <a asp-page="/ral-colors/Category" asp-route-culture="@Model.CurrentCulture"
+            asp-route-category="@Model.CategorySlug" class="text-link">
             @Localizer["ExploreCategory", categoryName]
         </a>
     </p>
 </section>
 
+<hr>
 
-@if (Model.SameRootColors.Any())
-{
-    <section class="compare-links mt-4xl">
-        <h2>@Localizer["CompareWith", Model.Color.Number, Model.Color.Name ?? ""]</h2>
-        <div class="compare-links-list">
-            @foreach (var color in Model.SameRootColors)
-            {
-                <a asp-page="/ral-colors/Versus" asp-route-culture="@currentCulture"
-                    asp-route-slug="@Model.Color.Slug-vs-@color.Slug" class="compare-link-inline">
-                    <span class="compare-link-swatches-inline">
-                        <span style="background-color: @Model.Color.Hex;"></span>
-                        <span style="background-color: @color.Hex;"></span>
-                    </span>
-                    <span>RAL @Model.Color.Number vs @color.Number</span>
-                </a>
-            }
-        </div>
-    </section>
-}
+<partial name="Shared/_CompareLinks" model="(Model.Color, Model.SameRootColors, Model.CurrentCulture)" />
 
 @if (Model.SimilarColors.Any())
 {
-    <section class="similar-colors mt-4xl">
+    <hr>
+    <section class="similar-colors">
         <h2>@Localizer["SimilarColors", Model.Color.Number]</h2>
         <div class="similar-grid">
             @foreach (var similar in Model.SimilarColors)
@@ -911,7 +715,7 @@ categorySlug }),
             }
         </div>
         <p class="mt-lg">
-            <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture"
+            <a asp-page="/ral-colors/Index" asp-route-culture="@Model.CurrentCulture"
                 asp-route-color="@Model.Color.RootColor.ToString().ToLowerInvariant()" class="text-link">
                 @Localizer["ExploreSimilarShades", Localizer[$"RootColor{Model.Color.RootColor}"].Value]
             </a>
@@ -921,130 +725,31 @@ categorySlug }),
 
 @if (Model.MoodSimilarColors.Any())
 {
+    <hr>
     <partial name="_SimilarByMood" model="Model.MoodSimilarColors" />
 }
 
-@* FAQ Section *@
 @{
-    var faqColorName = Model.Color.GetLocalizedName(currentCulture);
-    var faqRootColorName = Model.Color.RootColor.ToString().ToLower();
-    var faqCategoryName = Model.Color.Category.ToString();
-    var faqLrvValue = Model.Formats?.Lrv ?? 0;
-    var faqLrvLevel = ColorMath.ClassifyLrv(faqLrvValue);
-    var faqTempKelvin = Model.Temperature.Kelvin;
     var faqUndertone = Model.Formats?.Undertone;
     var faqIsWarm = faqUndertone?.Primary == PrimaryUndertone.Warm;
     var faqIsCool = faqUndertone?.Primary == PrimaryUndertone.Cool;
-    var faqUndertoneDesc = Model.Formats?.UndertoneDescription ?? "";
-    var faqIsNeutralFamily = Model.Color.RootColor is RootColor.Grey or RootColor.White or RootColor.Black or
-    RootColor.Beige;
 }
-<section class="faq-section mt-4xl">
-    <h2>@Localizer["FaqTitle"]</h2>
-    <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+<hr>
+<partial name="Shared/_FaqSection"
+    model="(Model.Color, Model.LocalizedName, Model.Lrv, Model.LrvLevel, Model.Temperature.Kelvin, Model.Formats?.UndertoneDescription, faqIsWarm, faqIsCool, Model.IsNeutralFamily, Model.SimilarColors, Model.CurrentCulture)" />
 
-        @* FAQ 1: What color is this? (ALWAYS shown) *@
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 itemprop="name">@Localizer["FaqWhatColor", Model.Color.Number]</h3>
-            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">@Localizer["FaqWhatColorAnswer", Model.Color.Number, faqColorName, faqRootColorName,
-                                        faqCategoryName, faqLrvValue, faqTempKelvin]</p>
-            </div>
-        </div>
+<hr>
+<partial name="Shared/_LearnMetrics" />
 
-        @* FAQ 2: What is <name> in RAL? (only if has name) *@
-        @if (!string.IsNullOrEmpty(faqColorName))
-        {
-            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                <h3 itemprop="name">@Localizer["FaqWhatIsNameInRal", faqColorName]</h3>
-                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <p itemprop="text">@Localizer["FaqWhatIsNameInRalAnswer", faqColorName, Model.Color.Number,
-                                            faqCategoryName]</p>
-            </div>
-        </div>
-                }
+<hr>
 
-        @* FAQ 3: Warm or cool? (only if not neutral) *@
-        @if (faqIsWarm || faqIsCool)
-        {
-            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                <h3 itemprop="name">@Localizer["FaqWarmCool", Model.Color.Number]</h3>
-                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <p itemprop="text">
-                        @if (faqIsWarm)
-                        {
-                            @Localizer["FaqWarmAnswer", Model.Color.Number, faqColorName, faqTempKelvin, faqUndertoneDesc]
-                        }
-                        else
-                        {
-                            @Localizer["FaqCoolAnswer", Model.Color.Number, faqColorName, faqTempKelvin, faqUndertoneDesc]
-                        }
-                    </p>
-                </div>
-            </div>
-        }
-
-        @* FAQ 4: Light or dark? (for neutrals) *@
-        @if (faqIsNeutralFamily)
-        {
-            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                <h3 itemprop="name">@Localizer["FaqLightDark", Model.Color.Number]</h3>
-                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <p itemprop="text">@Localizer["FaqLightDarkAnswer", Model.Color.Number, faqLrvValue,
-                                            Localizer[$"Lrv{faqLrvLevel}"].Value]</p>
-            </div>
-        </div>
-                }
-
-        @* FAQ 5: Similar colors (if any exist) *@
-        @if (Model.SimilarColors?.Count > 0)
-        {
-            var topSimilar = Model.SimilarColors.Take(4)
-            .Select(c => $"RAL {c.Color.Number} {c.Color.GetLocalizedName(currentCulture)}");
-            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                <h3 itemprop="name">@Localizer["FaqSimilar", Model.Color.Number]</h3>
-                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <p itemprop="text">@Localizer["FaqSimilarAnswer", faqColorName, string.Join(", ", topSimilar)]</p>
-                </div>
-            </div>
-        }
-    </div>
-</section>
-
-<section class="learn-metrics-section mt-4xl">
-    <h2>@Localizer["LearnMetrics"]</h2>
-    <p class="text-secondary">@Localizer["LearnMetricsIntro"]</p>
-    <div class="learn-metrics-content">
-        <div class="metric-definition">
-            <h3>@Localizer["LearnHue"]</h3>
-            <p>@Localizer["LearnHueDesc"]</p>
-        </div>
-        <div class="metric-definition">
-            <h3>@Localizer["LearnSaturation"]</h3>
-            <p>@Localizer["LearnSaturationDesc"]</p>
-        </div>
-        <div class="metric-definition">
-            <h3>@Localizer["LearnLrv"]</h3>
-            <p>@Localizer["LearnLrvDesc"]</p>
-        </div>
-        <div class="metric-definition">
-            <h3>@Localizer["LearnTemperature"]</h3>
-            <p>@Localizer["LearnTemperatureDesc"]</p>
-        </div>
-        <div class="metric-definition">
-            <h3>@Localizer["LearnUndertone"]</h3>
-            <p>@Localizer["LearnUndertoneDesc"]</p>
-        </div>
-    </div>
-</section>
-
-<section class="color-share-section mt-2xl">
+<section class="color-share-section">
     <h2>@Localizer["ColorImageTitle", Model.Color.Number]</h2>
     <figure class="color-share-image">
         <img src="/images/ral-colors/@(Model.Color.Slug).jpg"
             alt="@(string.IsNullOrEmpty(Model.Color.Name)
-                                                                                                                        ? Localizer["ImageAltBasic", Model.Color.Number, Model.Color.Hex].Value
-                                                                                                                        : Localizer["ImageAltWithName", Model.Color.Number, Model.Color.Name, Model.Color.Hex].Value)"
+                                                                                                                                                                                                                                                                                                                                                                                    ? Localizer["ImageAltBasic", Model.Color.Number, Model.Color.Hex].Value
+                                                                                                                                                                                                                                                                                                                                                                                    : Localizer["ImageAltWithName", Model.Color.Number, Model.Color.Name, Model.Color.Hex].Value)"
             width="1200" height="630" loading="lazy" />
         <figcaption>
             <button class="btn btn-sm btn-secondary copy-url-btn"
@@ -1065,44 +770,4 @@ categorySlug }),
     <script src="~/js/details-page.js" asp-append-version="true" defer></script>
 }
 
-<!-- Full-page color preview modal -->
-<div id="colorPreview" class="color-preview-overlay" style="background-color: #FFFFFF;" role="dialog" aria-modal="true"
-    aria-labelledby="colorPreviewTitle" aria-describedby="colorPreviewDesc"
-    onclick="DetailsPage.closeColorPreview(event)">
-    <h2 id="colorPreviewTitle" class="visually-hidden">@Localizer["ColorPreviewTitle"]</h2>
-    <p id="colorPreviewDesc" class="visually-hidden">RAL @Model.Color.Number @(Model.Color.Name ?? "")</p>
-    <button class="color-preview-close" onclick="DetailsPage.closeColorPreview(event)"
-        aria-label="@Localizer["Close"]">&times;</button>
-    <div class="color-preview-content">
-        <div class="color-preview-swatch" style="background-color: @Model.Color.Hex;"></div>
-    </div>
-    <div class="color-preview-controls">
-        <button class="bg-option active" data-bg="#FFFFFF" onclick="DetailsPage.changePreviewBg('#FFFFFF', this)">
-            <span class="bg-option-swatch" style="background-color: #FFFFFF;"><span
-                    style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgWhite"]</span>
-        </button>
-        <button class="bg-option" data-bg="#E0E0E0" onclick="DetailsPage.changePreviewBg('#E0E0E0', this)">
-            <span class="bg-option-swatch" style="background-color: #E0E0E0;"><span
-                    style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgLightGrey"]</span>
-        </button>
-        <button class="bg-option" data-bg="#9E9E9E" onclick="DetailsPage.changePreviewBg('#9E9E9E', this)">
-            <span class="bg-option-swatch" style="background-color: #9E9E9E;"><span
-                    style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgGrey"]</span>
-        </button>
-        <button class="bg-option" data-bg="#424242" onclick="DetailsPage.changePreviewBg('#424242', this)">
-            <span class="bg-option-swatch" style="background-color: #424242;"><span
-                    style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgDarkGrey"]</span>
-        </button>
-        <button class="bg-option" data-bg="#000000" onclick="DetailsPage.changePreviewBg('#000000', this)">
-            <span class="bg-option-swatch" style="background-color: #000000;"><span
-                    style="background-color: @Model.Color.Hex;"></span></span>
-            <span class="bg-option-label">@Localizer["BgBlack"]</span>
-        </button>
-    </div>
-    <!-- Fullscreen mode: color fills entire overlay -->
-    <div class="color-preview-fullscreen" style="background-color: @Model.Color.Hex;"></div>
-</div>
+<partial name="Shared/_ColorPreviewModal" model="Model.Color" />

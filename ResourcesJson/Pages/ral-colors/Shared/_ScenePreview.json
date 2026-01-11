@@ -1,0 +1,14 @@
+{
+  "ScenePreview": "RAL {0} on different surfaces",
+  "SceneDisclaimer": "These are digital renders and cannot truly capture the dynamic nature of colors. Use them only as a rough reference. For exact color matching, a real-world sample must be viewed under different lighting conditions.",
+  "SceneWindowAlt": "RAL {0} {1} Window",
+  "SceneFrontDoorAlt": "RAL {0} {1} Front Door",
+  "SceneEntranceAlt": "RAL {0} {1} Entrance",
+  "SceneBalconyAlt": "RAL {0} {1} Balcony",
+  "SceneWindowFrameDetailAlt": "RAL {0} {1} Window Frame Detail",
+  "SceneWindow": "RAL {0} Window",
+  "SceneFrontDoor": "RAL {0} Front Door",
+  "SceneEntrance": "RAL {0} Entrance",
+  "SceneBalcony": "RAL {0} Balcony",
+  "SceneWindowFrameDetail": "RAL {0} Window Frame Detail"
+}

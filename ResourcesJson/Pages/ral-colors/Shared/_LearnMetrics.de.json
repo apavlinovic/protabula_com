@@ -1,0 +1,14 @@
+{
+  "LearnMetrics": "Farbmetriken verstehen",
+  "LearnMetricsIntro": "Farbe kann auf viele verschiedene Arten gemessen werden. Jede Metrik erfasst einen anderen Aspekt davon, wie wir Farbe wahrnehmen und damit arbeiten.",
+  "LearnHue": "Farbton",
+  "LearnHueDesc": "Der Farbton ist die reine Farbposition auf dem Farbkreis, gemessen in Grad von 0\u00b0 bis 360\u00b0. Rot liegt bei 0\u00b0, Gelb bei 60\u00b0, Gr\u00fcn bei 120\u00b0, Cyan bei 180\u00b0, Blau bei 240\u00b0 und Magenta bei 300\u00b0. Der Farbton sagt aus, zu welcher 'Familie' eine Farbe geh\u00f6rt, unabh\u00e4ngig davon, wie hell, dunkel oder lebendig sie ist.",
+  "LearnSaturation": "S\u00e4ttigung",
+  "LearnSaturationDesc": "Die S\u00e4ttigung misst, wie rein oder lebendig eine Farbe ist, von 0% (komplett grau) bis 100% (voll ges\u00e4ttigt). Farben mit niedriger S\u00e4ttigung erscheinen ged\u00e4mpft oder ausgewaschen, w\u00e4hrend Farben mit hoher S\u00e4ttigung kr\u00e4ftig und intensiv sind. S\u00e4ttigung wird manchmal auch 'Chroma' oder 'Intensit\u00e4t' genannt.",
+  "LearnLrv": "Lichtreflexionswert (LRV)",
+  "LearnLrvDesc": "Der LRV misst, wie viel Licht eine Oberfl\u00e4che reflektiert, von 0 (absorbiert alles Licht, reines Schwarz) bis 100 (reflektiert alles Licht, reines Wei\u00df). Dies ist entscheidend f\u00fcr Innenarchitektur und Architektur - Farben mit LRV unter 50 absorbieren mehr Licht als sie reflektieren, lassen R\u00e4ume kleiner wirken und erfordern mehr k\u00fcnstliche Beleuchtung.",
+  "LearnTemperature": "Farbtemperatur",
+  "LearnTemperatureDesc": "Die Farbtemperatur, gemessen in Kelvin (K), beschreibt, ob eine Farbe warm (niedrigerer K-Wert, orange/rote T\u00f6ne) oder k\u00fchl (h\u00f6herer K-Wert, blaue T\u00f6ne) wirkt. Dieses Konzept stammt von der Schwarzk\u00f6rperstrahlung - wenn Metall erhitzt wird, gl\u00fcht es von Rot (\u22482000K) \u00fcber Wei\u00df (\u22485500K) bis Blau (\u224810000K). Warme Farben schaffen gem\u00fctliche, einladende Atmosph\u00e4ren, w\u00e4hrend k\u00fchle Farben ruhig und professionell wirken.",
+  "LearnUndertone": "Unterton",
+  "LearnUndertoneDesc": "Der Unterton ist der subtile sekund\u00e4re Farbton, der beeinflusst, wie eine Farbe erscheint und mit anderen Farben interagiert. Selbst scheinbar neutrale Farben haben oft warme (gelb, orange, rot) oder k\u00fchle (blau, gr\u00fcn, violett) Untert\u00f6ne. Das Verst\u00e4ndnis von Untert\u00f6nen ist essentiell f\u00fcr die Farbkoordination - Farben mit passenden Untert\u00f6nen harmonieren tendenziell besser miteinander."
+}

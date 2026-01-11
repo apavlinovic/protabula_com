@@ -1,0 +1,24 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using protabula_com.Models
+@model (RalColor CurrentColor, IReadOnlyList<RalColor> SameRootColors, string Culture)
+@inject IViewLocalizer Localizer
+
+@if (Model.SameRootColors.Any())
+{
+    <section class="compare-links">
+        <h2>@Localizer["CompareWith", Model.CurrentColor.Number, Model.CurrentColor.Name ?? ""]</h2>
+        <div class="compare-links-list">
+            @foreach (var color in Model.SameRootColors)
+            {
+                <a asp-page="/ral-colors/Versus" asp-route-culture="@Model.Culture"
+                    asp-route-slug="@Model.CurrentColor.Slug-vs-@color.Slug" class="compare-link-inline">
+                    <span class="compare-link-swatches-inline">
+                        <span style="background-color: @Model.CurrentColor.Hex;"></span>
+                        <span style="background-color: @color.Hex;"></span>
+                    </span>
+                    <span>RAL @Model.CurrentColor.Number vs @color.Number</span>
+                </a>
+            }
+        </div>
+    </section>
+}

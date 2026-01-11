@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using protabula_com.Helpers;
 using protabula_com.Models;
@@ -29,6 +30,29 @@ public class RalColorDetailsModel : PageModel
     public (int Kelvin, string Classification) Temperature { get; private set; }
     public IReadOnlyList<LightingVariation> LightingVariations { get; private set; }
     public IReadOnlyList<DirectSunlightVariation> DirectSunlightVariations { get; private set; }
+
+    // Computed properties to reduce inline C# in the view
+    public string CurrentCulture => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    public string LocalizedName => Color.GetLocalizedName(CurrentCulture);
+    public string ColorTitle => string.IsNullOrEmpty(LocalizedName)
+        ? $"RAL {Color.Number}"
+        : $"RAL {Color.Number} ({LocalizedName})";
+
+    public string CategorySlug => Color.Category switch
+    {
+        RalCategory.Classic => "classic",
+        RalCategory.DesignPlus => "design-plus",
+        RalCategory.Effect => "effect",
+        _ => "classic"
+    };
+
+    public int Hue => Formats?.Hsl.H ?? 0;
+    public int Saturation => Formats?.Hsl.S ?? 0;
+    public double Lrv => Formats?.Lrv ?? 0;
+    public LrvLevel LrvLevel => ColorMath.ClassifyLrv(Lrv);
+
+    public bool IsNeutralFamily => Color.RootColor is RootColor.Grey or RootColor.White
+        or RootColor.Black or RootColor.Beige;
 
     public async Task OnGetAsync(string colorIdentifier)
     {

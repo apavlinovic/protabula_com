@@ -1,0 +1,29 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<section class="learn-metrics-section">
+    <h2>@Localizer["LearnMetrics"]</h2>
+    <p class="text-secondary">@Localizer["LearnMetricsIntro"]</p>
+    <div class="learn-metrics-content">
+        <div class="metric-definition">
+            <h3>@Localizer["LearnHue"]</h3>
+            <p>@Localizer["LearnHueDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnSaturation"]</h3>
+            <p>@Localizer["LearnSaturationDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnLrv"]</h3>
+            <p>@Localizer["LearnLrvDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnTemperature"]</h3>
+            <p>@Localizer["LearnTemperatureDesc"]</p>
+        </div>
+        <div class="metric-definition">
+            <h3>@Localizer["LearnUndertone"]</h3>
+            <p>@Localizer["LearnUndertoneDesc"]</p>
+        </div>
+    </div>
+</section>

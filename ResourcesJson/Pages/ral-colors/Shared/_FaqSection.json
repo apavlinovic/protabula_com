@@ -1,0 +1,19 @@
+{
+  "FaqTitle": "Frequently Asked Questions",
+  "FaqWhatColor": "What color is RAL {0}?",
+  "FaqWhatColorAnswer": "RAL {0} is {1}, a {2} color in the RAL {3} palette. It has a light reflectance value (LRV) of {4}, and a color temperature of approximately {5}K.",
+  "FaqWhatIsNameInRal": "What is {0} in RAL?",
+  "FaqWhatIsNameInRalAnswer": "{0} is RAL {1} from the RAL {2} palette.",
+  "FaqWarmCool": "Is RAL {0} a warm or cool color?",
+  "FaqWarmAnswer": "RAL {0} ({1}) is a warm color with a color temperature around {2}K. {3}",
+  "FaqCoolAnswer": "RAL {0} ({1}) is a cool color with a color temperature around {2}K. {3}",
+  "FaqLightDark": "Is RAL {0} light or dark?",
+  "FaqLightDarkAnswer": "RAL {0} has a light reflectance value (LRV) of {1}, which is classified as {2}. LRV measures how much light a color reflects on a scale of 0 (pure black) to 100 (pure white).",
+  "FaqSimilar": "What colors are similar to RAL {0}?",
+  "FaqSimilarAnswer": "Colors perceptually similar to {0} include: {1}. These colors share similar hue, saturation, and brightness characteristics.",
+  "LrvVeryLow": "very dark (absorbs most light)",
+  "LrvLow": "dark",
+  "LrvModerate": "medium brightness",
+  "LrvHigh": "light",
+  "LrvVeryHigh": "very light (reflects most light)"
+}
