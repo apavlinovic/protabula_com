@@ -3,16 +3,12 @@
     font-family: var(--font-text);
     font-weight: 400;
     font-style: normal;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
 .wrapper {
     max-width: var(--wrapper-max-width);
     margin: 0 auto;
     padding: var(--spacing-lg);
-    flex: 1;
 }
 
 /* Main content area */

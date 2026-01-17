@@ -69,45 +69,6 @@ Model.CurrentCulture }),
         <div class="sidebar-card">
             <span class="property-label">
                 <span class="metric-header">
-                    @Localizer["UndertoneIntro"]
-                    @{
-                        var undertoneTip = Localizer["UndertoneTip"].Value;
-                    }
-                    <partial name="Shared/_InfoTooltip" model="@(undertoneTip, (string ?)null)" />
-                </span>
-            </span>
-            @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
-            {
-                <div class="undertone-swatches">
-                    <div class="undertone-swatch-pair">
-                        <span class="undertone-swatch-color" style="background-color: @Model.Color.Hex;"></span>
-                        <span class="undertone-swatch-arrow">→</span>
-                        <span class="undertone-swatch-color" style="background-color: @Model.Formats?.UndertoneHex;"></span>
-                    </div>
-                </div>
-                <span class="property-value">@Model.Formats?.UndertoneDescription</span>
-            }
-            else
-            {
-                <span class="property-value">@Localizer["UndertoneNeutral"]</span>
-            }
-        </div>
-        <div class="sidebar-card">
-            <span class="property-label">
-                <span class="metric-header">
-                    @Localizer["PropTemperature"]
-                    @{
-                        var temperatureTip = Localizer["TemperatureTip"].Value;
-                    }
-                    <partial name="Shared/_InfoTooltip" model="@(temperatureTip, (string ?)null)" />
-                </span>
-            </span>
-            <partial name="Shared/_TemperatureBadge"
-                model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
-        </div>
-        <div class="sidebar-card">
-            <span class="property-label">
-                <span class="metric-header">
                     @Localizer["PropHue"]
                     @{
                         var hueTip = Localizer["HueTip"].Value;
@@ -142,8 +103,32 @@ Model.CurrentCulture }),
             <partial name="Shared/_LrvBar" model="new LrvBarModel(Model.Lrv)" />
         </div>
         <div class="sidebar-card">
-            <span class="property-label">@Localizer["LabelHex", ""]</span>
+            <span class="property-label">RAL @Model.Color.Number HEX</span>
             <span class="property-value">@Model.Color.Hex</span>
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">RAL @Model.Color.Number CMYK</span>
+            <span class="property-value">@Model.Formats?.Cmyk.C%, @Model.Formats?.Cmyk.M%, @Model.Formats?.Cmyk.Y%, @Model.Formats?.Cmyk.K%</span>
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">@Localizer["LabelColorFamily"]</span>
+            <a asp-page="/ral-colors/Index" asp-route-culture="@Model.CurrentCulture"
+                asp-route-color="@Model.Color.RootColor.ToString().ToLowerInvariant()" class="badge badge-@Model.Color.RootColor.ToString().ToLowerInvariant()">
+                @Localizer[$"RootColor{Model.Color.RootColor}"]
+            </a>
+        </div>
+        <div class="sidebar-card">
+            <span class="property-label">
+                <span class="metric-header">
+                    @Localizer["PropTemperature"]
+                    @{
+                        var temperatureTip = Localizer["TemperatureTip"].Value;
+                    }
+                    <partial name="Shared/_InfoTooltip" model="@(temperatureTip, (string ?)null)" />
+                </span>
+            </span>
+            <partial name="Shared/_TemperatureBadge"
+                model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
         </div>
     </div>
 </div>
@@ -353,8 +338,9 @@ Model.CurrentCulture }),
 <hr>
 
 <section class="color-codes-section">
-    <h2>@Localizer["ColorCodesTitle", Model.Color.Number]</h2>
+    <h2>@Localizer["ColorCodesTitle"]</h2>
     <table class="color-details">
+        @* Primary color information *@
         <tr>
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -414,36 +400,24 @@ Model.CurrentCulture }),
             <td>
                 @if (Model.Formats?.Undertone.Secondary != SecondaryUndertone.None)
                 {
-                    @* Has detectable undertone direction *@
-                    <span class="badge badge-@Model.Formats?.Undertone.Primary.ToString().ToLowerInvariant()">
-                        @Localizer[$"Undertone{Model.Formats?.Undertone.Primary}"]
-                    </span>
-                    <span class="text-secondary text-sm">
-                        (@Localizer[$"Undertone{Model.Formats?.Undertone.Strength}"]
-                        @Localizer[$"UndertoneSecondary{Model.Formats?.Undertone.Secondary}"])
-                    </span>
+                    <div class="undertone-table-cell">
+                        <div class="undertone-swatches">
+                            <div class="undertone-swatch-pair">
+                                <span class="undertone-swatch-color" style="background-color: @Model.Color.Hex;"></span>
+                                <span class="undertone-swatch-arrow">→</span>
+                                <span class="undertone-swatch-color" style="background-color: @Model.Formats?.UndertoneHex;"></span>
+                            </div>
+                        </div>
+                        <span class="property-value">@Model.Formats?.UndertoneDescription</span>
+                    </div>
                 }
                 else
                 {
-                    @* Truly achromatic - no undertone *@
                     <span>@Localizer["UndertoneNeutral"]</span>
                 }
             </td>
         </tr>
-        <tr>
-            <th scope="row">
-                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M4 9V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" />
-                    <path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
-                    <path d="M9 9v6" />
-                    <path d="M15 9v6" />
-                    <path d="M9 12h6" />
-                </svg>
-                @Localizer["LabelHex", Model.Color.Number]
-            </th>
-            <td>@Model.Color.Hex</td>
-        </tr>
+        @* Color codes *@
         <tr>
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -469,47 +443,26 @@ Model.CurrentCulture }),
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2" />
-                    <path d="M12 20v2" />
-                    <path d="m4.93 4.93 1.41 1.41" />
-                    <path d="m17.66 17.66 1.41 1.41" />
-                    <path d="M2 12h2" />
-                    <path d="M20 12h2" />
-                    <path d="m6.34 17.66-1.41 1.41" />
-                    <path d="m19.07 4.93-1.41 1.41" />
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                    <rect width="12" height="8" x="6" y="14" />
                 </svg>
-                @Localizer["LabelLrv", Model.Color.Number]
+                @Localizer["LabelCmyk", Model.Color.Number]
             </th>
             <td>
-                <partial name="Shared/_LrvBar" model="new LrvBarModel(Model.Lrv)" />
+                <div class="color-value-list">
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
+                                style="background:#00ffff;"></span> C</span> <span>@Model.Formats?.Cmyk.C%</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
+                                style="background:#ff00ff;"></span> M</span> <span>@Model.Formats?.Cmyk.M%</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
+                                style="background:#ffff00;"></span> Y</span> <span>@Model.Formats?.Cmyk.Y%</span></span>
+                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
+                                style="background:#000000;"></span> K</span> <span>@Model.Formats?.Cmyk.K%</span></span>
+                </div>
             </td>
         </tr>
-        <tr>
-            <th scope="row">
-                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="19" x2="5" y1="5" y2="19" />
-                    <circle cx="6.5" cy="6.5" r="2.5" />
-                    <circle cx="17.5" cy="17.5" r="2.5" />
-                </svg>
-                @Localizer["LabelRgbPercent", Model.Color.Number]
-            </th>
-            <td>@Model.Formats?.RgbPercentString</td>
-        </tr>
-        <tr>
-            <th scope="row">
-                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="m2 22 1-1h3l9-9" />
-                    <path d="M3 21v-3l9-9" />
-                    <circle cx="15" cy="6" r="3" />
-                    <path d="m22 2-1.5 1.5" />
-                </svg>
-                @Localizer["LabelHsv", Model.Color.Number]
-            </th>
-            <td>@Model.Formats?.HsvString</td>
-        </tr>
+        @* Color properties with visualizations *@
         <tr>
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -544,61 +497,37 @@ Model.CurrentCulture }),
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="m2 22 1-1h3l9-9" />
-                    <path d="M3 21v-3l9-9" />
-                    <circle cx="15" cy="6" r="3" />
-                    <path d="m22 2-1.5 1.5" />
+                    <circle cx="12" cy="12" r="5" />
+                    <path d="M12 1v2" />
+                    <path d="M12 21v2" />
                 </svg>
-                @Localizer["LabelHsl", Model.Color.Number]
-            </th>
-            <td>@Model.Formats?.HslString</td>
-        </tr>
-        <tr>
-            <th scope="row">
-                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="6 9 6 2 18 2 18 9" />
-                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                    <rect width="12" height="8" x="6" y="14" />
-                </svg>
-                @Localizer["LabelCmyk", Model.Color.Number]
+                @Localizer["PropLightness"]
             </th>
             <td>
-                <div class="color-value-list">
-                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
-                                style="background:#00ffff;"></span> C</span> <span>@Model.Formats?.Cmyk.C%</span></span>
-                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
-                                style="background:#ff00ff;"></span> M</span> <span>@Model.Formats?.Cmyk.M%</span></span>
-                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
-                                style="background:#ffff00;"></span> Y</span> <span>@Model.Formats?.Cmyk.Y%</span></span>
-                    <span class="color-value-row"><span class="color-dot-label"><span class="color-dot"
-                                style="background:#000000;"></span> K</span> <span>@Model.Formats?.Cmyk.K%</span></span>
-                </div>
+                <partial name="Shared/_LightnessBar" model="new LightnessBarModel(Model.Hue, Model.Lightness)" />
             </td>
         </tr>
         <tr>
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
-                    <polyline points="17 2 12 7 7 2" />
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2" />
+                    <path d="M12 20v2" />
+                    <path d="m4.93 4.93 1.41 1.41" />
+                    <path d="m17.66 17.66 1.41 1.41" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <path d="m6.34 17.66-1.41 1.41" />
+                    <path d="m19.07 4.93-1.41 1.41" />
                 </svg>
-                @Localizer["LabelYiq", Model.Color.Number]
+                @Localizer["PropLrv"]
             </th>
-            <td>@Model.Formats?.YiqString</td>
+            <td>
+                <partial name="Shared/_LrvBar" model="new LrvBarModel(Model.Lrv)" />
+            </td>
         </tr>
-        <tr>
-            <th scope="row">
-                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M12 3v18" />
-                    <path d="M3 12h18" />
-                    <path d="m4 4 16 16" />
-                </svg>
-                @Localizer["LabelXyz", Model.Color.Number]
-            </th>
-            <td>@Model.Formats?.XyzString</td>
-        </tr>
+        @* CIE Lab components *@
         <tr>
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -641,6 +570,34 @@ Model.CurrentCulture }),
                 <partial name="Shared/_CieLabBar" model="@(new CieLabComponentModel("b", Model.Formats?.Lab.b ?? 0))" />
             </td>
         </tr>
+        @* Color temperature *@
+        <tr>
+            <th scope="row">
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+                </svg>
+                @Localizer["PropTemperature"]
+            </th>
+            <td>
+                <partial name="Shared/_TemperatureBadge"
+                    model="new TemperatureBadgeModel(Model.Temperature.Kelvin, Model.Temperature.Classification)" />
+            </td>
+        </tr>
+        @* Quick copy values *@
+        <tr>
+            <th scope="row">
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 22 1-1h3l9-9" />
+                    <path d="M3 21v-3l9-9" />
+                    <circle cx="15" cy="6" r="3" />
+                    <path d="m22 2-1.5 1.5" />
+                </svg>
+                @Localizer["LabelHsl", Model.Color.Number]
+            </th>
+            <td>@Model.Formats?.HslString</td>
+        </tr>
         <tr>
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -669,6 +626,41 @@ Model.CurrentCulture }),
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4.5 3h15" />
+                    <path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3" />
+                    <path d="M6 14h12" />
+                </svg>
+                @Localizer["LabelHunterLab", Model.Color.Number]
+            </th>
+            <td>@Model.Formats?.HunterLabString</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v18" />
+                    <path d="M3 12h18" />
+                    <path d="m4 4 16 16" />
+                </svg>
+                @Localizer["LabelXyz", Model.Color.Number]
+            </th>
+            <td>@Model.Formats?.XyzString</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
+                    <polyline points="17 2 12 7 7 2" />
+                </svg>
+                @Localizer["LabelYiq", Model.Color.Number]
+            </th>
+            <td>@Model.Formats?.YiqString</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect x="14" y="14" width="4" height="6" rx="2" />
                     <rect x="6" y="4" width="4" height="16" rx="2" />
                     <path d="M6 4h4" />
@@ -682,13 +674,26 @@ Model.CurrentCulture }),
             <th scope="row">
                 <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M4.5 3h15" />
-                    <path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3" />
-                    <path d="M6 14h12" />
+                    <line x1="19" x2="5" y1="5" y2="19" />
+                    <circle cx="6.5" cy="6.5" r="2.5" />
+                    <circle cx="17.5" cy="17.5" r="2.5" />
                 </svg>
-                @Localizer["LabelHunterLab", Model.Color.Number]
+                @Localizer["LabelRgbPercent", Model.Color.Number]
             </th>
-            <td>@Model.Formats?.HunterLabString</td>
+            <td>@Model.Formats?.RgbPercentString</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m2 22 1-1h3l9-9" />
+                    <path d="M3 21v-3l9-9" />
+                    <circle cx="15" cy="6" r="3" />
+                    <path d="m22 2-1.5 1.5" />
+                </svg>
+                @Localizer["LabelHsv", Model.Color.Number]
+            </th>
+            <td>@Model.Formats?.HsvString</td>
         </tr>
     </table>
     <p class="mt-lg">

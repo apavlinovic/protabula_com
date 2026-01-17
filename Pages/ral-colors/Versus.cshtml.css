@@ -22,7 +22,7 @@
     box-shadow: 0 0 0 3px var(--accent);
 }
 
-.versus-swatch.dark {
+::deep .versus-swatch.dark {
     color: #000;
 }
 
@@ -57,11 +57,6 @@
 }
 
 /* Color Comparison Section */
-.versus-comparison {
-    background: var(--bg-subtle);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-}
 
 .versus-comparison h2 {
     margin-bottom: var(--spacing-lg);
@@ -76,6 +71,9 @@
 }
 
 .table-scroll-wrapper {
+    background: var(--bg-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -198,7 +196,8 @@ p.comparison-summary {
     position: relative;
     height: 8px;
     border-radius: 4px;
-    background: linear-gradient(to right,
+    background: linear-gradient(
+        to right,
         #22c55e 0%,
         #22c55e 5%,
         #84cc16 10%,
@@ -336,7 +335,9 @@ p.comparison-summary {
     text-align: center;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: opacity 0.2s, visibility 0.2s;
+    transition:
+        opacity 0.2s,
+        visibility 0.2s;
     pointer-events: none;
 }
 

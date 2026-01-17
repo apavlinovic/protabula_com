@@ -48,6 +48,7 @@ public class RalColorDetailsModel : PageModel
 
     public int Hue => Formats?.Hsl.H ?? 0;
     public int Saturation => Formats?.Hsl.S ?? 0;
+    public int Lightness => Formats?.Hsl.L ?? 0;
     public double Lrv => Formats?.Lrv ?? 0;
     public LrvLevel LrvLevel => ColorMath.ClassifyLrv(Lrv);
 
