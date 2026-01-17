@@ -5,6 +5,9 @@
   "BreadcrumbHome": "Home",
   "BreadcrumbColors": "RAL Colors",
   "Intro": "Side-by-side comparison of RAL {0} and RAL {1}. Click on a color to view its full details page.",
+  "ChangeColor": "Change",
+  "SwapColors": "Swap colors",
+  "SearchPlaceholder": "Search RAL colors...",
   "ViewDetails": "View Full Details",
   "ViewColor": "View RAL {0}",
   "CompareMore": "Compare more colors",
@@ -67,5 +70,8 @@
   "SceneFrontDoor": "Front Door",
   "SceneEntrance": "Entrance",
   "SceneBalcony": "Balcony",
-  "SceneWindowFrameDetail": "Window Frame Detail"
+  "SceneWindowFrameDetail": "Window Frame Detail",
+  "CategoryClassic": "RAL Classic",
+  "CategoryDesignPlus": "RAL Design Plus",
+  "CategoryEffect": "RAL Effect"
 }

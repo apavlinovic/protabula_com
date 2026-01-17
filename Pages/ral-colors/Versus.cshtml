@@ -65,23 +65,72 @@
     @Localizer["Intro", Model.Color1.Number, Model.Color2.Number]
 </p>
 
-<div class="versus-swatches">
-    <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color1.Slug"
-       class="versus-swatch @(Model.Color1.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color1.Hex;">
-        <span class="versus-swatch-number">RAL @Model.Color1.Number</span>
-        @if (!string.IsNullOrEmpty(Model.Color1.Name))
-        {
-            <span class="versus-swatch-name">@Model.Color1.Name</span>
-        }
-    </a>
-    <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color2.Slug"
-       class="versus-swatch @(Model.Color2.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color2.Hex;">
-        <span class="versus-swatch-number">RAL @Model.Color2.Number</span>
-        @if (!string.IsNullOrEmpty(Model.Color2.Name))
-        {
-            <span class="versus-swatch-name">@Model.Color2.Name</span>
-        }
-    </a>
+@{
+    var autocomplete1 = new ColorAutocompleteModel(
+        "colorSearch1",
+        Localizer["SearchPlaceholder"].Value,
+        Model.AllColors,
+        Model.Color1.Number);
+    var autocomplete2 = new ColorAutocompleteModel(
+        "colorSearch2",
+        Localizer["SearchPlaceholder"].Value,
+        Model.AllColors,
+        Model.Color2.Number);
+}
+
+<div class="versus-swatches-container">
+    <div class="versus-swatches">
+        <div class="versus-swatch-wrapper">
+            <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color1.Slug"
+               class="versus-swatch @(Model.Color1.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color1.Hex;">
+                <span class="versus-swatch-number">RAL @Model.Color1.Number</span>
+                @if (!string.IsNullOrEmpty(Model.Color1.Name))
+                {
+                    <span class="versus-swatch-name">@Model.Color1.Name</span>
+                }
+            </a>
+            <div class="swatch-change-control">
+                <button type="button" class="btn-change-color" onclick="toggleColorPicker(1)" aria-label="@Localizer["ChangeColor"]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                    </svg>
+                    @Localizer["ChangeColor"]
+                </button>
+                <div class="color-picker-dropdown" id="colorPicker1">
+                    <partial name="Shared/_ColorAutocomplete" model="autocomplete1" />
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn-swap-colors" onclick="swapColors()" title="@Localizer["SwapColors"]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m16 3 4 4-4 4"/>
+                <path d="M20 7H4"/>
+                <path d="m8 21-4-4 4-4"/>
+                <path d="M4 17h16"/>
+            </svg>
+        </button>
+        <div class="versus-swatch-wrapper">
+            <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture" asp-route-colorIdentifier="@Model.Color2.Slug"
+               class="versus-swatch @(Model.Color2.NeedsDarkText ? "dark" : "")" style="background-color: @Model.Color2.Hex;">
+                <span class="versus-swatch-number">RAL @Model.Color2.Number</span>
+                @if (!string.IsNullOrEmpty(Model.Color2.Name))
+                {
+                    <span class="versus-swatch-name">@Model.Color2.Name</span>
+                }
+            </a>
+            <div class="swatch-change-control">
+                <button type="button" class="btn-change-color" onclick="toggleColorPicker(2)" aria-label="@Localizer["ChangeColor"]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                    </svg>
+                    @Localizer["ChangeColor"]
+                </button>
+                <div class="color-picker-dropdown" id="colorPicker2">
+                    <partial name="Shared/_ColorAutocomplete" model="autocomplete2" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @{
@@ -404,3 +453,68 @@
 <a asp-page="/ral-colors/Index" class="btn btn-ghost mt-xl" asp-route-culture="@RouteData.Values["culture"]">
     &larr; @Localizer["BackToColors"]
 </a>
+
+@section Scripts {
+    <script src="~/js/color-autocomplete.js" asp-append-version="true"></script>
+    <script>
+        const currentCulture = '@currentCulture';
+        const color1Slug = '@Model.Color1.Slug';
+        const color2Slug = '@Model.Color2.Slug';
+
+        // Convert color number to URL-friendly slug (spaces to underscores)
+        function toSlug(colorNumber) {
+            return colorNumber.replace(/ /g, '_');
+        }
+
+        // Navigate to new versus URL
+        function navigateToVersus(slug1, slug2) {
+            window.location.href = `/${currentCulture}/ral-colors/${slug1}-vs-${slug2}`;
+        }
+
+        // Toggle color picker dropdown
+        function toggleColorPicker(which) {
+            const picker = document.getElementById(`colorPicker${which}`);
+            const otherPicker = document.getElementById(`colorPicker${which === 1 ? 2 : 1}`);
+
+            // Close the other picker
+            otherPicker.classList.remove('active');
+
+            // Toggle this picker
+            picker.classList.toggle('active');
+
+            if (picker.classList.contains('active')) {
+                const input = picker.querySelector('.autocomplete-input');
+                if (input) {
+                    input.focus();
+                }
+            }
+        }
+
+        // Swap colors
+        function swapColors() {
+            navigateToVersus(color2Slug, color1Slug);
+        }
+
+        // Close pickers when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.swatch-change-control')) {
+                document.querySelectorAll('.color-picker-dropdown').forEach(p => p.classList.remove('active'));
+            }
+        });
+
+        // Initialize autocompletes
+        initColorAutocomplete('colorSearch1', function(number, hex, name) {
+            const newSlug = toSlug(number);
+            if (newSlug !== color1Slug) {
+                navigateToVersus(newSlug, color2Slug);
+            }
+        });
+
+        initColorAutocomplete('colorSearch2', function(number, hex, name) {
+            const newSlug = toSlug(number);
+            if (newSlug !== color2Slug) {
+                navigateToVersus(color1Slug, newSlug);
+            }
+        });
+    </script>
+}

@@ -33,6 +33,9 @@ public class VersusModel : PageModel
     // Scene images
     public IReadOnlyList<string> Scenes { get; private set; } = [];
 
+    // All colors for autocomplete
+    public IReadOnlyList<RalColor> AllColors { get; private set; } = [];
+
     public async Task<IActionResult> OnGetAsync(string slug)
     {
         if (string.IsNullOrWhiteSpace(slug))
@@ -70,6 +73,7 @@ public class VersusModel : PageModel
         Temperature2 = ColorMath.EstimateColorTemperature(Color2.Hex);
 
         Scenes = _colorImageService.GetValidScenes();
+        AllColors = await _loader.LoadAsync();
 
         return Page();
     }
