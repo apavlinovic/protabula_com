@@ -1,12 +1,16 @@
 using System.Globalization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using protabula_com.Endpoints;
 using protabula_com.Localization;
+using protabula_com.Middleware;
 using protabula_com.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +29,70 @@ builder.Services.AddSingleton<IRalColorLoader, RalColorLoader>();
 builder.Services.AddSingleton<ISimilarColorFinder, SimilarColorFinder>();
 builder.Services.AddSingleton<ISitemapGenerator, SitemapGenerator>();
 builder.Services.AddSingleton<IColorImageService, ColorImageService>();
+
+// Configure IP blocklist options
+builder.Services.Configure<IpBlocklistOptions>(
+    builder.Configuration.GetSection(IpBlocklistOptions.SectionName));
+
+// Configure rate limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // Global rate limit: 100 requests per minute per IP
+    options.AddPolicy("global", context =>
+    {
+        var ip = context.GetRealClientIp().ToString();
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            Window = TimeSpan.FromMinutes(1),
+            PermitLimit = 100,
+            QueueLimit = 0
+        });
+    });
+
+    // Stricter limit for color detail pages: 30 requests per minute per IP
+    options.AddPolicy("color-pages", context =>
+    {
+        var ip = context.GetRealClientIp().ToString();
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            Window = TimeSpan.FromMinutes(1),
+            PermitLimit = 30,
+            QueueLimit = 0
+        });
+    });
+
+    // Very strict limit for API endpoints: 20 requests per minute per IP
+    options.AddPolicy("api", context =>
+    {
+        var ip = context.GetRealClientIp().ToString();
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            Window = TimeSpan.FromMinutes(1),
+            PermitLimit = 20,
+            QueueLimit = 0
+        });
+    });
+
+    // Handle rejected requests - record violations for auto-blocking
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        var ip = context.HttpContext.GetRealClientIp().ToString();
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+        var blocklistOptions = context.HttpContext.RequestServices
+            .GetRequiredService<IOptionsMonitor<IpBlocklistOptions>>().CurrentValue;
+
+        IpBlocklistMiddleware.RecordViolation(ip, blocklistOptions, logger);
+
+        logger.LogWarning("Rate limit exceeded for IP {Ip} on {Path}",
+            ip, context.HttpContext.Request.Path);
+
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "text/plain";
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please slow down.", cancellationToken);
+    };
+});
 
 // Configure forwarded headers for reverse proxy (nginx, Cloudflare, etc.)
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -67,6 +135,12 @@ else
 }
 
 app.UseForwardedHeaders();
+
+// Bot protection middleware (must be early in pipeline)
+app.UseCloudflareRealIp();  // Extract real IP from Cloudflare headers
+app.UseIpBlocklist();        // Block banned IPs and countries
+app.UseRateLimiter();        // Apply rate limiting
+
 app.UseHttpsRedirection();
 
 // Only enable response compression in non-development environments
@@ -112,13 +186,18 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorPages()
-   .WithStaticAssets();
+   .WithStaticAssets()
+   .RequireRateLimiting("global");
 
 // Redirect root to English
 app.MapGet("/", () => Results.Redirect("/en"));
 
-// Map API and utility endpoints
-app.MapColorEndpoints();
+// Map API endpoints with stricter rate limits via route groups
+var apiGroup = app.MapGroup("/api").RequireRateLimiting("api");
+apiGroup.MapGet("/ral/match", ColorEndpoints.HandleRalMatch);
+apiGroup.MapGet("/colors/search", ColorEndpoints.HandleColorSearch);
+
+// Map other endpoints (use global rate limit)
 app.MapImageEndpoints(app.Environment);
 app.MapSeoEndpoints();
 
