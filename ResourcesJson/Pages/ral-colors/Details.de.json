@@ -170,6 +170,11 @@
     "LrvVeryHigh": "sehr hell (reflektiert das meiste Licht)",
     "ExploreSimilarShades": "Alle RAL {0}-Töne entdecken →",
     "ExploreCategory": "Alle {0} Farben durchsuchen →",
+    "UseCasesTitle": "Einsatzbereiche für RAL {0}",
+    "UseCasesIntroWithName": "RAL {0} {1} wird häufig in den folgenden Anwendungen eingesetzt.",
+    "UseCasesIntroBasic": "RAL {0} wird häufig in den folgenden Anwendungen eingesetzt.",
+    "UseCasesDisclaimer": "Diese Hinweise sind ein Ausgangspunkt. Für wichtige Entscheidungen immer mit einem realen Muster prüfen.",
+    "UseCasesGuideLink": "Mehr erfahren im RAL-Farbleitfaden →",
 
     "TechDescSentence1": "RAL {0} ist ein {1}er {2}-Ton{3}, erhältlich in der {4}.",
     "TechDescSentence2": "Der Hex-Farbcode von RAL {0} ist {1}, mit RGB-Werten von {2}, {3}, {4}."

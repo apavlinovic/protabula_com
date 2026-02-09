@@ -1,0 +1,250 @@
+@page "/ral-colors/guide"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
+@inject IViewLocalizer Localizer
+@model GuideModel
+@{
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var cultureLang = currentCulture.StartsWith("de") ? "de" : "en";
+    var request = ViewContext.HttpContext.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+
+    ViewData["Title"] = Localizer["Title"].Value;
+    ViewData["MetaDescription"] = Localizer["MetaDescription"].Value;
+
+    ViewData["Breadcrumbs"] = new List<(string, string?, object?)>
+    {
+        (Localizer["BreadcrumbColors"].Value, "/ral-colors/Index", new Dictionary<string, string> { ["culture"] = currentCulture }),
+        (Localizer["BreadcrumbGuide"].Value, null, null)
+    };
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "WebPage",
+        "name": "@ViewData["Title"]",
+        "description": "@ViewData["MetaDescription"]",
+        "url": "@baseUrl/@currentCulture/ral-colors/guide",
+        "isPartOf": {
+            "@@type": "WebSite",
+            "name": "Protabula",
+            "url": "@baseUrl"
+        },
+        "about": {
+            "@@type": "Thing",
+            "name": "@Localizer["SchemaAbout"]"
+        }
+    }
+    </script>
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="guide-intro">@Localizer["Intro"]</p>
+
+@* --- History --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionHistoryTitle"]</h2>
+    <p>@Localizer["SectionHistoryBody1"]</p>
+    <p>@Localizer["SectionHistoryBody2"]</p>
+    <p>@Localizer["SectionHistoryBody3"]</p>
+</section>
+
+@* --- Numbering --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionNumberingTitle"]</h2>
+    <p>@Localizer["SectionNumberingIntro"]</p>
+
+    <div class="guide-subsection">
+        <h3>@Localizer["NumberingClassicTitle"]</h3>
+        <p>@Localizer["NumberingClassicBody"]</p>
+        <ul class="guide-family-list">
+            @for (var i = 1; i <= 9; i++)
+            {
+                <li>@Localizer[$"NumberingClassicFamily{i}"]</li>
+            }
+        </ul>
+    </div>
+
+    <div class="guide-subsection">
+        <h3>@Localizer["NumberingDesignTitle"]</h3>
+        <p>@Localizer["NumberingDesignBody"]</p>
+    </div>
+
+    <div class="guide-subsection">
+        <h3>@Localizer["NumberingEffectTitle"]</h3>
+        <p>@Localizer["NumberingEffectBody"]</p>
+    </div>
+</section>
+
+@* --- Collections --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionCollectionsTitle"]</h2>
+    <p>@Localizer["SectionCollectionsIntro"]</p>
+
+    <div class="guide-collection-cards">
+        <div class="guide-collection-card">
+            <div class="guide-collection-header">
+                <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="classic" class="text-link">
+                    @Localizer["CollectionClassicTitle"]
+                </a>
+                <span class="guide-collection-count">@Localizer["CollectionClassicCount"]</span>
+            </div>
+            <p>@Localizer["CollectionClassicBody"]</p>
+        </div>
+        <div class="guide-collection-card">
+            <div class="guide-collection-header">
+                <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="design-plus" class="text-link">
+                    @Localizer["CollectionDesignPlusTitle"]
+                </a>
+                <span class="guide-collection-count">@Localizer["CollectionDesignPlusCount"]</span>
+            </div>
+            <p>@Localizer["CollectionDesignPlusBody"]</p>
+        </div>
+        <div class="guide-collection-card">
+            <div class="guide-collection-header">
+                <a asp-page="/ral-colors/Category" asp-route-culture="@currentCulture" asp-route-category="effect" class="text-link">
+                    @Localizer["CollectionEffectTitle"]
+                </a>
+                <span class="guide-collection-count">@Localizer["CollectionEffectCount"]</span>
+            </div>
+            <p>@Localizer["CollectionEffectBody"]</p>
+        </div>
+    </div>
+</section>
+
+@* --- Choosing --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionChoosingTitle"]</h2>
+    <p>@Localizer["SectionChoosingIntro"]</p>
+    <ol class="guide-steps">
+        @for (var i = 1; i <= 6; i++)
+        {
+            <li>
+                <strong>@Localizer[$"ChoosingStep{i}Title"]</strong>
+                <span>@Localizer[$"ChoosingStep{i}Body"]</span>
+            </li>
+        }
+    </ol>
+</section>
+
+@* --- Popular Colors --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionPopularTitle"]</h2>
+    <p>@Localizer["SectionPopularIntro"]</p>
+
+    @{
+        var groups = new[]
+        {
+            (Localizer["PopularWhitesTitle"].Value, Model.PopularWhites),
+            (Localizer["PopularNeutralsTitle"].Value, Model.PopularNeutrals),
+            (Localizer["PopularAccentsTitle"].Value, Model.PopularAccents)
+        };
+    }
+    @foreach (var (groupTitle, colors) in groups)
+    {
+        <h3>@groupTitle</h3>
+        <div class="guide-popular-grid">
+            @foreach (var color in colors)
+            {
+                <a asp-page="/ral-colors/Details" asp-route-culture="@currentCulture"
+                   asp-route-colorIdentifier="@color.Slug" class="guide-popular-card">
+                    <span class="guide-popular-swatch" style="background-color: @color.Hex;"
+                          aria-hidden="true"></span>
+                    <span class="guide-popular-info">
+                        <span class="guide-popular-number">RAL @color.Number</span>
+                        <span class="guide-popular-name">@color.GetLocalizedName(cultureLang)</span>
+                        <span class="guide-popular-hex text-secondary">@color.Hex</span>
+                    </span>
+                </a>
+            }
+        </div>
+    }
+</section>
+
+@* --- Use Cases --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionUseCasesTitle"]</h2>
+    <p>@Localizer["SectionUseCasesIntro"]</p>
+    <dl class="guide-use-cases">
+        @{
+            var useCases = new[] { "Architecture", "Interiors", "Product", "Infrastructure", "Vehicles" };
+        }
+        @foreach (var uc in useCases)
+        {
+            <dt>@Localizer[$"UseCase{uc}Title"]</dt>
+            <dd>@Localizer[$"UseCase{uc}Body"]</dd>
+        }
+    </dl>
+</section>
+
+@* --- RAL vs Other Systems --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionComparisonTitle"]</h2>
+    <p>@Localizer["SectionComparisonIntro"]</p>
+    <dl class="guide-comparison">
+        @{
+            var comparisons = new[] { "Pantone", "Ncs", "Digital" };
+        }
+        @foreach (var comp in comparisons)
+        {
+            <dt>@Localizer[$"Comparison{comp}Title"]</dt>
+            <dd>@Localizer[$"Comparison{comp}Body"]</dd>
+        }
+    </dl>
+</section>
+
+@* --- Digital vs Physical --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionDigitalTitle"]</h2>
+    <p><em>@Localizer["SectionDigitalIntro"]</em></p>
+    <p>@Localizer["SectionDigitalBody1"]</p>
+    <p>@Localizer["SectionDigitalBody2"]</p>
+    <p>@Localizer["SectionDigitalBody3"]</p>
+</section>
+
+@* --- Tools --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionToolsTitle"]</h2>
+    <p>@Localizer["SectionToolsIntro"]</p>
+    <div class="guide-tools-grid">
+        <a asp-page="/ral-colors/Converter" asp-route-culture="@currentCulture" class="guide-tool-card">
+            <strong>@Localizer["ToolConverterTitle"]</strong>
+            <span class="text-secondary">@Localizer["ToolConverterDesc"]</span>
+        </a>
+        <a asp-page="/ral-colors/Compare" asp-route-culture="@currentCulture" class="guide-tool-card">
+            <strong>@Localizer["ToolCompareTitle"]</strong>
+            <span class="text-secondary">@Localizer["ToolCompareDesc"]</span>
+        </a>
+        <a asp-page="/ral-colors/Picker" asp-route-culture="@currentCulture" class="guide-tool-card">
+            <strong>@Localizer["ToolPickerTitle"]</strong>
+            <span class="text-secondary">@Localizer["ToolPickerDesc"]</span>
+        </a>
+    </div>
+</section>
+
+@* --- FAQ --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionFaqTitle"]</h2>
+    <div class="guide-faq">
+        @for (var i = 1; i <= 5; i++)
+        {
+            <details class="guide-faq-item">
+                <summary>@Localizer[$"Faq{i}Q"]</summary>
+                <p>@Localizer[$"Faq{i}A"]</p>
+            </details>
+        }
+    </div>
+</section>
+
+@* --- Explore --- *@
+<section class="guide-section">
+    <h2>@Localizer["SectionExploreTitle"]</h2>
+    <p>@Localizer["SectionExploreBody"]</p>
+    <p>
+        <a asp-page="/ral-colors/Index" asp-route-culture="@currentCulture" class="text-link">
+            @Localizer["ExploreAllColors"]
+        </a>
+    </p>
+</section>

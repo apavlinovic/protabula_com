@@ -1,0 +1,310 @@
+.guide-intro {
+    font-size: 1.125rem;
+    max-width: 680px;
+}
+
+/* --- Sections --- */
+
+.guide-section {
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-lg);
+    background: var(--surface-bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.guide-section h2 {
+    margin-top: 0;
+}
+
+.guide-section p {
+    max-width: 720px;
+}
+
+/* --- Subsections (h3 groups within a section) --- */
+
+.guide-subsection {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-light);
+}
+
+.guide-subsection:first-of-type {
+    margin-top: var(--spacing-md);
+    padding-top: 0;
+    border-top: none;
+}
+
+.guide-subsection h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* --- Numbering family list --- */
+
+.guide-family-list {
+    margin: var(--spacing-sm) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-xs) var(--spacing-md);
+}
+
+.guide-family-list li {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+}
+
+/* --- Collection cards --- */
+
+.guide-collection-cards {
+    margin-top: var(--spacing-md);
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.guide-collection-card {
+    padding: var(--spacing-md);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+}
+
+.guide-collection-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.guide-collection-header a {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.guide-collection-count {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    background: var(--surface-bg);
+    border: 1px solid var(--border-light);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.guide-collection-card p {
+    margin: 0;
+    font-size: 0.9375rem;
+}
+
+/* --- Steps --- */
+
+.guide-steps {
+    margin: var(--spacing-md) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: guide-step;
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.guide-steps li {
+    counter-increment: guide-step;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-left: 3px solid var(--accent);
+    background: var(--bg-subtle);
+    border-radius: var(--border-radius-sm);
+}
+
+.guide-steps li::before {
+    content: counter(guide-step) ". ";
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.guide-steps li strong {
+    display: inline;
+    margin-right: var(--spacing-xs);
+}
+
+.guide-steps li span {
+    display: inline;
+}
+
+/* --- Popular colors grid --- */
+
+.guide-popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--spacing-sm);
+    margin: var(--spacing-sm) 0 var(--spacing-lg);
+}
+
+.guide-popular-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.guide-popular-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.guide-popular-swatch {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-light);
+}
+
+.guide-popular-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.guide-popular-number {
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+
+.guide-popular-name {
+    font-size: 0.8125rem;
+}
+
+.guide-popular-hex {
+    font-size: 0.75rem;
+    font-family: var(--font-mono, monospace);
+}
+
+/* --- Use cases (dl) --- */
+
+.guide-use-cases,
+.guide-comparison {
+    margin: var(--spacing-md) 0 0;
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.guide-use-cases dt,
+.guide-comparison dt {
+    font-weight: 600;
+    margin: 0;
+    padding: var(--spacing-sm) var(--spacing-md) 0;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-bottom: none;
+    border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+}
+
+.guide-use-cases dd,
+.guide-comparison dd {
+    margin: 0;
+    padding: 0 var(--spacing-md) var(--spacing-sm);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    font-size: 0.9375rem;
+}
+
+/* --- Tools grid --- */
+
+.guide-tools-grid {
+    margin-top: var(--spacing-md);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.guide-tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.guide-tool-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.guide-tool-card strong {
+    color: var(--accent);
+}
+
+.guide-tool-card span {
+    font-size: 0.875rem;
+}
+
+/* --- FAQ --- */
+
+.guide-faq {
+    display: grid;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.guide-faq-item {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.guide-faq-item summary {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.guide-faq-item summary::before {
+    content: "+";
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+}
+
+.guide-faq-item[open] summary::before {
+    content: "\2212";
+}
+
+.guide-faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.guide-faq-item p {
+    margin: 0;
+    padding: 0 var(--spacing-md) var(--spacing-md) calc(var(--spacing-md) + 22px + var(--spacing-sm));
+    font-size: 0.9375rem;
+}

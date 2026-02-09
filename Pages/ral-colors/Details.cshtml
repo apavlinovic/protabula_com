@@ -1,4 +1,5 @@
 @page "/ral-colors/{colorIdentifier}"
+@using System.Text.Json
 @using Microsoft.AspNetCore.Mvc.Localization
 @using protabula_com.Models
 @using protabula_com.Helpers
@@ -26,6 +27,45 @@ Model.CurrentCulture }),
 = Model.CategorySlug }),
 (Model.ColorTitle, null, null)
 };
+
+    var hasSchemaData = !string.IsNullOrEmpty(Model.Color.Number);
+    var schemaName = string.IsNullOrEmpty(Model.LocalizedName)
+        ? $"RAL {Model.Color.Number}"
+        : $"RAL {Model.Color.Number} {Model.LocalizedName}";
+    var schemaDescription = Model.Color.GetLocalizedDescription(Model.CurrentCulture);
+    if (string.IsNullOrWhiteSpace(schemaDescription))
+    {
+        schemaDescription = ViewData["MetaDescription"]?.ToString() ?? string.Empty;
+    }
+    var schemaUrl = $"{baseUrl}/{Model.CurrentCulture}/ral-colors/{Model.Color.Slug}";
+    var schemaImage = $"{baseUrl}/images/ral-colors/{Model.Color.Slug}.jpg";
+    var alternateNames = new List<string>();
+    if (!string.IsNullOrWhiteSpace(Model.Color.Name))
+    {
+        alternateNames.Add(Model.Color.Name);
+    }
+    if (!string.IsNullOrWhiteSpace(Model.Color.NameDe)
+        && !string.Equals(Model.Color.NameDe, Model.Color.Name, StringComparison.OrdinalIgnoreCase))
+    {
+        alternateNames.Add(Model.Color.NameDe);
+    }
+    var schemaThing = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Thing",
+        ["name"] = schemaName,
+        ["description"] = schemaDescription,
+        ["alternateName"] = alternateNames.Count > 0 ? alternateNames : null,
+        ["identifier"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "PropertyValue",
+            ["propertyID"] = "RAL",
+            ["value"] = Model.Color.Number
+        },
+        ["image"] = schemaImage,
+        ["url"] = schemaUrl,
+        ["color"] = Model.Color.Hex
+    };
 }
 
 @section Head {
@@ -40,6 +80,12 @@ Model.CurrentCulture }),
                             ]
                         }
                     </script>
+    @if (hasSchemaData)
+    {
+        <script type="application/ld+json">
+            @Html.Raw(JsonSerializer.Serialize(schemaThing))
+        </script>
+    }
 }
 
 
@@ -133,7 +179,25 @@ Model.CurrentCulture }),
     </div>
 </div>
 
-<partial name="_ColorTags" model="(Model.Color.UsageTags, Model.Color.MoodTags)" />
+@{
+    var useCasesIntro = string.IsNullOrEmpty(Model.LocalizedName)
+        ? Localizer["UseCasesIntroBasic", Model.Color.Number].Value
+        : Localizer["UseCasesIntroWithName", Model.Color.Number, Model.LocalizedName].Value;
+}
+@if (Model.Color.UsageTags.Any() || Model.Color.MoodTags.Any())
+{
+    <section class="use-cases-section">
+        <h2>@Localizer["UseCasesTitle", Model.Color.Number]</h2>
+        <p>@useCasesIntro</p>
+        <partial name="_ColorTags" model="(Model.Color.UsageTags, Model.Color.MoodTags)" />
+        <p class="text-secondary text-sm"><em>@Localizer["UseCasesDisclaimer"]</em></p>
+        <p class="mt-lg">
+            <a asp-page="/ral-colors/Guide" asp-route-culture="@Model.CurrentCulture" class="text-link">
+                @Localizer["UseCasesGuideLink"]
+            </a>
+        </p>
+    </section>
+}
 
 @{
     var temperatureStr = Localizer[Model.Temperature.Classification].Value.ToLowerInvariant();

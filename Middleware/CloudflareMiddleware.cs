@@ -70,4 +70,25 @@ public static class CloudflareMiddlewareExtensions
     {
         return context.Items["ClientCountry"] as string ?? "XX";
     }
+
+    /// <summary>
+    /// Returns true if the request User-Agent matches a known search engine crawler.
+    /// Used to exempt legitimate bots from rate limiting and country blocking.
+    /// </summary>
+    public static bool IsSearchEngineBot(this HttpContext context)
+    {
+        var ua = context.Request.Headers.UserAgent.FirstOrDefault();
+        if (string.IsNullOrEmpty(ua)) return false;
+
+        // Check for common search engine bot identifiers
+        return ua.Contains("Googlebot", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("bingbot", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("Slurp", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("DuckDuckBot", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("YandexBot", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("Baiduspider", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("AdsBot-Google", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("Googlebot-Image", StringComparison.OrdinalIgnoreCase)
+            || ua.Contains("APIs-Google", StringComparison.OrdinalIgnoreCase);
+    }
 }

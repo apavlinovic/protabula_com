@@ -39,39 +39,48 @@ builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-    // Global rate limit: 100 requests per minute per IP
+    // Global rate limit: 200 requests per minute per IP (bots exempt)
     options.AddPolicy("global", context =>
     {
+        if (context.IsSearchEngineBot())
+            return RateLimitPartition.GetNoLimiter(string.Empty);
+
         var ip = context.GetRealClientIp().ToString();
         return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
         {
             Window = TimeSpan.FromMinutes(1),
-            PermitLimit = 100,
-            QueueLimit = 0
+            PermitLimit = 200,
+            QueueLimit = 10
         });
     });
 
-    // Stricter limit for color detail pages: 30 requests per minute per IP
+    // Stricter limit for color detail pages: 60 requests per minute per IP (bots exempt)
     options.AddPolicy("color-pages", context =>
     {
+        if (context.IsSearchEngineBot())
+            return RateLimitPartition.GetNoLimiter(string.Empty);
+
+        var ip = context.GetRealClientIp().ToString();
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            Window = TimeSpan.FromMinutes(1),
+            PermitLimit = 60,
+            QueueLimit = 5
+        });
+    });
+
+    // Strict limit for API endpoints: 30 requests per minute per IP (bots exempt)
+    options.AddPolicy("api", context =>
+    {
+        if (context.IsSearchEngineBot())
+            return RateLimitPartition.GetNoLimiter(string.Empty);
+
         var ip = context.GetRealClientIp().ToString();
         return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
         {
             Window = TimeSpan.FromMinutes(1),
             PermitLimit = 30,
-            QueueLimit = 0
-        });
-    });
-
-    // Very strict limit for API endpoints: 20 requests per minute per IP
-    options.AddPolicy("api", context =>
-    {
-        var ip = context.GetRealClientIp().ToString();
-        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
-        {
-            Window = TimeSpan.FromMinutes(1),
-            PermitLimit = 20,
-            QueueLimit = 0
+            QueueLimit = 5
         });
     });
 

@@ -4,6 +4,7 @@
     "MetaDescription": "Explore the complete RAL Color Chart with HEX and RGB codes. Browse all RAL Classic, RAL Effect, and RAL Design System Plus colors in one place with search and comparison tools.",
     "MetaDescriptionFiltered": "View all RAL {0} colors from the official RAL Color Chart, including Classic, Effect, and Design System Plus palettes. Check color codes, live previews, and side-by-side comparisons.",
     "Intro": "On this page you can explore every shade from the official RAL Color Chart — including all three RAL palettes: RAL CLASSIC, RAL EFFECT, and RAL DESIGN SYSTEM plus. Each color includes accurate HEX and RGB codes for design, architecture, and manufacturing use.",
+    "GuideCta": "New to the system? Read the RAL Color Guide →",
     "SearchPlaceholder": "Search RAL color by name or number...",
     "NoResults": "No RAL colors found matching your search.",
     "FilterAll": "All RAL Colors",

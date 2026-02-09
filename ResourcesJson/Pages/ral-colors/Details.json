@@ -170,6 +170,11 @@
   "LrvVeryHigh": "very light (reflects most light)",
   "ExploreSimilarShades": "Explore all RAL {0} shades →",
   "ExploreCategory": "Browse all {0} colors →",
+  "UseCasesTitle": "Use Cases for RAL {0}",
+  "UseCasesIntroWithName": "RAL {0} {1} is commonly specified for the applications below.",
+  "UseCasesIntroBasic": "RAL {0} is commonly specified for the applications below.",
+  "UseCasesDisclaimer": "Use these suggestions as a starting point. Always confirm with a physical sample for critical decisions.",
+  "UseCasesGuideLink": "Learn more in the RAL Color Guide →",
 
   "TechDescSentence1": "RAL {0} is a {1} {2} shade{3}, available in the {4}.",
   "TechDescSentence2": "RAL {0}'s hex color code is {1}, with RGB values of {2}, {3}, {4}."

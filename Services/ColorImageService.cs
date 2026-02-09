@@ -136,8 +136,8 @@ public class ColorImageService : IColorImageService
         // Light colors need a lighter neutral to avoid blown-out highlights
         // Dark colors work well with a mid-gray neutral
         var (nr, ng, nb) = targetLuminance > 0.35f
-            ? ColorMath.ParseHex("#CFCFCF") // Slightly darker neutral for light colors (brighter output)
-            : ColorMath.ParseHex("#B3B3B3"); // Slightly brighter neutral for dark colors (brighter output)
+            ? ColorMath.ParseHex("#D9D9D9") // Lighter neutral for light colors (brighter output)
+            : ColorMath.ParseHex("#C0C0C0"); // Lighter neutral for dark colors (brighter output)
         var neutralBase = new Rgba32(nr, ng, nb);
 
         // Strength lets you dial back tinting (0..1). Start with 1, reduce if needed.

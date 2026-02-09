@@ -12,7 +12,7 @@ public interface ISitemapGenerator
 public sealed class SitemapGenerator : ISitemapGenerator
 {
     private static readonly string[] SupportedCultures = ["en", "de"];
-    private static readonly string[] StaticPages = ["", "ral-colors", "ral-colors/converter", "ral-colors/compare", "ral-colors/picker", "privacy"];
+    private static readonly string[] StaticPages = ["", "ral-colors", "ral-colors/guide", "ral-colors/converter", "ral-colors/compare", "ral-colors/picker", "privacy"];
     private static readonly string[] CategoryPages = ["ral-colors/classic", "ral-colors/design-plus", "ral-colors/effect"];
 
     private readonly IRalColorLoader _colorLoader;

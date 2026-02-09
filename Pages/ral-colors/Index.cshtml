@@ -61,6 +61,11 @@
 
 <h1>@ViewData["Title"]</h1>
 <p>@Localizer["Intro"]</p>
+<p class="text-secondary">
+    <a asp-page="/ral-colors/Guide" asp-route-culture="@currentCulture" class="text-link">
+        @Localizer["GuideCta"]
+    </a>
+</p>
 
 @if (Model.AvailableRootColors.Count > 1)
 {

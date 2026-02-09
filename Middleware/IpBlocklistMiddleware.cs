@@ -70,15 +70,16 @@ public class IpBlocklistMiddleware
             return;
         }
 
-        // Check if country is blocked
-        if (options.BlockedCountries.Contains(country, StringComparer.OrdinalIgnoreCase))
+        // Check if country is blocked (exempt search engine bots)
+        if (!context.IsSearchEngineBot() &&
+            options.BlockedCountries.Contains(country, StringComparer.OrdinalIgnoreCase))
         {
             await RejectRequest(context, ipString, $"blocked country ({country})", options.LogBlockedRequests);
             return;
         }
 
-        // Check if IP is auto-blocked
-        if (_autoBlocked.TryGetValue(ipString, out var blockedUntil))
+        // Check if IP is auto-blocked (exempt search engine bots)
+        if (!context.IsSearchEngineBot() && _autoBlocked.TryGetValue(ipString, out var blockedUntil))
         {
             if (DateTime.UtcNow < blockedUntil)
             {
